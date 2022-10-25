@@ -35,3 +35,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
+# Config Files
+backend/config/db.config.js
