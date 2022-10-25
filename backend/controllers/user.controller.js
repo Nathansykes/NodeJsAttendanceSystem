@@ -9,15 +9,15 @@ exports.create = (req, res) => {
         return;
       }
       
-      // Create a Animal model object
+      // Create a User model object
       const user = new User({
-        Id: mongoose.Types.ObjectId(),
+        Id: req.body.Id,
         AccessLevel: req.body.AccessLevel,
         FirstName: req.body.FirstName,
         LastName: req.body.LastName,
       });
       
-      // Save Animal in the database
+      // Save User in the database
       user
         .save()
         .then(data => {
