@@ -1,9 +1,35 @@
 const db = require("../models");
-const Users = db.users;
+var mongoose = require('mongoose');
+const User = db.users;
  
 // Create and Save a new User
 exports.create = (req, res) => {
- 
+    if (!req.body.FirstName) {
+        res.status(400).send({ message: "Content can not be empty!" });
+        return;
+      }
+      
+      // Create a Animal model object
+      const user = new User({
+        Id: mongoose.Types.ObjectId(),
+        AccessLevel: req.body.AccessLevel,
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+      });
+      
+      // Save Animal in the database
+      user
+        .save()
+        .then(data => {
+          console.log("User saved in the database: " + data);
+          res.redirect('/index');
+        })
+        .catch(err => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the User."
+          });
+        });
 };
  
 // Retrieve all Users from the database.

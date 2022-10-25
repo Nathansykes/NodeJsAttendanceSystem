@@ -4,10 +4,10 @@ module.exports = mongoose =>
       "user",
       mongoose.Schema(
         {
-          id: String,
-          accessLevel: Number,
-          firstName: String,
-          lastName: String,
+          Id: String,
+          AccessLevel: Number,
+          FirstName: String,
+          LastName: String,
         }
       )
     );
