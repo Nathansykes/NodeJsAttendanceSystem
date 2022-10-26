@@ -12,11 +12,11 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\server.js",
-            "serverReadyAction": {
-                "pattern": "listening on port ([0-9]+)",
-                "uriFormat": "http://localhost:%s",
-                "action": "openExternally"
-              }
+            // "serverReadyAction": {
+            //     "pattern": "listening on port ([0-9]+)",
+            //     "uriFormat": "http://localhost:%s",
+            //     "action": "openExternally"
+            //   }
         },
         {
             "type": "node-terminal",

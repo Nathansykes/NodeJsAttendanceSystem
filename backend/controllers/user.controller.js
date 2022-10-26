@@ -1,6 +1,6 @@
 const db = require("../models");
 var mongoose = require('mongoose');
-const User = db.Users;
+const User = db.users;
 const Student = db.Students;
  
 // Create and Save a new User
@@ -10,16 +10,23 @@ exports.create = (req, res) => {
         return;
       }
       
+      var user;
       // Create a User model object
-      const user = new Student({
-        Id: req.body.Id,
-        AccessLevel: req.body.AccessLevel,
-        FirstName: req.body.FirstName,
-        LastName: req.body.LastName,
-      });
+      try {
+        user = new Student({
+          Id: req.body.Id,
+          AccessLevel: req.body.AccessLevel,
+          FirstName: req.body.FirstName,
+          LastName: req.body.LastName,
+        });
+      } catch (error) {
+        console.log(error);
+      }
       
       // Save User in the database
-      user
+      
+      try {
+        user
         .save()
         .then(data => {
           console.log("User saved in the database: " + data);
@@ -31,6 +38,10 @@ exports.create = (req, res) => {
               err.message || "Some error occurred while creating the User."
           });
         });
+      } catch (error) {
+        console.log(error);        
+      }
+      
 };
  
 // Retrieve all Users from the database.

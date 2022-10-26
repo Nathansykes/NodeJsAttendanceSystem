@@ -1,24 +1,49 @@
 var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
 
-var userSchema = new Schema(
-  {
-    Id: String,
-    AccessLevel: Number,
-    FirstName: String,
-    LastName: String,    
-  },
-  {
-    discriminatorKey: 'userType'
-  }
-)
 
 module.exports = mongoose => 
 {
     var User = mongoose.model(
-      "User",
-      userSchema
+      "user",
+      mongoose.Schema(
+        {
+          Id: String,
+          AccessLevel: Number,
+          FirstName: String,
+          LastName: String,
+        },
+        {
+          discriminatorKey: "userType",
+        }
+      )
     );
 
     return User;
 };
+
+// var userSchema = mongoose.Schema(
+//   {
+//     Id: String,
+//     AccessLevel: Number,
+//     FirstName: String,
+//     LastName: String,    
+//   },
+//   {
+//     discriminatorKey: 'userType'
+//   }
+// )
+
+// module.exports = mongoose.model(
+//   "user",
+//   userSchema
+// );
+
+// module.exports = mongoose => 
+// {
+//     var User = mongoose.model(
+//       "User",
+//       userSchema
+//     );
+
+//     return User;
+// };
