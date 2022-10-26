@@ -1,15 +1,23 @@
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
+
+var userSchema = new Schema(
+  {
+    Id: String,
+    AccessLevel: Number,
+    FirstName: String,
+    LastName: String,    
+  },
+  {
+    discriminatorKey: 'userType'
+  }
+)
+
 module.exports = mongoose => 
 {
     var User = mongoose.model(
-      "user",
-      mongoose.Schema(
-        {
-          Id: String,
-          AccessLevel: Number,
-          FirstName: String,
-          LastName: String,
-        }
-      )
+      "User",
+      userSchema
     );
 
     return User;

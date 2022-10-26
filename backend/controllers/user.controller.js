@@ -1,6 +1,7 @@
 const db = require("../models");
 var mongoose = require('mongoose');
-const User = db.users;
+const User = db.Users;
+const Student = db.Students;
  
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -10,7 +11,7 @@ exports.create = (req, res) => {
       }
       
       // Create a User model object
-      const user = new User({
+      const user = new Student({
         Id: req.body.Id,
         AccessLevel: req.body.AccessLevel,
         FirstName: req.body.FirstName,
