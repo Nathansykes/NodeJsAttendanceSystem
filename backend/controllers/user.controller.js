@@ -1,7 +1,7 @@
 const db = require("../models");
 var mongoose = require('mongoose');
-const User = db.users;
-const Student = db.Students;
+let User = require("../models/user.model");
+let Student = require("../models/student.model");
  
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -30,6 +30,7 @@ exports.create = (req, res) => {
         .save()
         .then(data => {
           console.log("User saved in the database: " + data);
+          res.send({ token: token });
           res.redirect('/index');
         })
         .catch(err => {
