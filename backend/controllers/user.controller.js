@@ -10,27 +10,17 @@ exports.create = (req, res) => {
         return;
       }
       
-      var user;
       // Create a User model object
-      try {
-        user = new Student({
-          Id: req.body.Id,
-          AccessLevel: req.body.AccessLevel,
-          FirstName: req.body.FirstName,
-          LastName: req.body.LastName,
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      var user = createUser(req.body, res);
       
       // Save User in the database
-      
       try {
         user
         .save()
         .then(data => {
-          console.log("User saved in the database: " + data);
-          res.send({ token: token });
+          var successMessage = `User saved in the database: ${data}`;
+          console.log(successMessage);
+          res.send({ message: successMessage });
           res.redirect('/index');
         })
         .catch(err => {
@@ -44,6 +34,39 @@ exports.create = (req, res) => {
       }
       
 };
+
+function createUser(body, res)
+{
+  var user;
+  var errorMessage = `User could not be created: ${body.UserType} is not a valid UserType.`;
+
+  var schema = {
+    Id: body.Id,
+    AccessLevel: body.AccessLevel,
+    FirstName: body.FirstName,
+    LastName: body.LastName,
+  }
+
+  try 
+  {
+    switch(body.UserType) 
+    {
+      case "Student":
+        user = new Student(schema);
+        break;
+        default:
+          res.send({message : errorMessage});
+          throw errorMessage;
+    }
+  }
+  catch (error) 
+  {
+    console.log(error);
+    res.send({message : error});
+  }
+
+  return user;
+}
  
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
