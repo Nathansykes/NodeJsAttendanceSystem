@@ -1,0 +1,1 @@
+var options = { discriminatorKey: "userType"}

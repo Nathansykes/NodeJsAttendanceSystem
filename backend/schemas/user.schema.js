@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 let Schema =  mongoose.Schema;
+let options = require('./user.schema.options');
 
 let userSchema = new Schema(
     {
@@ -7,9 +8,6 @@ let userSchema = new Schema(
         AccessLevel: Number,
         FirstName: String,
         LastName: String,
-    },
-    {
-        discriminatorKey: "userType",
-    });
+    },options);
 
 module.exports = userSchema;

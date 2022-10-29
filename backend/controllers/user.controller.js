@@ -21,7 +21,7 @@ exports.create = (req, res) => {
           var successMessage = `User saved in the database: ${data}`;
           console.log(successMessage);
           res.send({ message: successMessage });
-          res.redirect('/index');
+          //res.redirect('/index'); // cant'send response here as it's already sent
         })
         .catch(err => {
           res.status(500).send({
@@ -29,10 +29,10 @@ exports.create = (req, res) => {
               err.message || "Some error occurred while creating the User."
           });
         });
+        return;
       } catch (error) {
-        console.log(error);        
+        console.log(error);
       }
-      
 };
 
 function createUser(body, res)
@@ -40,7 +40,7 @@ function createUser(body, res)
   var user;
   var errorMessage = `User could not be created: ${body.UserType} is not a valid UserType.`;
 
-  var schema = {
+  var data = {
     Id: body.Id,
     AccessLevel: body.AccessLevel,
     FirstName: body.FirstName,
@@ -52,17 +52,17 @@ function createUser(body, res)
     switch(body.UserType) 
     {
       case "Student":
-        user = new Student(schema);
+        user = new Student(data);
         break;
         default:
-          res.send({message : errorMessage});
+          //res.send({message : errorMessage});
           throw errorMessage;
     }
   }
   catch (error) 
   {
     console.log(error);
-    res.send({message : error});
+    //res.send({message : error});
   }
 
   return user;
@@ -72,7 +72,7 @@ function createUser(body, res)
 exports.findAll = (req, res) => {
   User.find().then(data => 
     {
-      res.send(data);
+      res.json(JSON.stringify(data));
     });
 };
  
@@ -84,7 +84,7 @@ exports.findOne = (req, res) => {
 
   User.findOne({ Id : id }).then(data => 
     {
-      res.send(data);
+      res.json(JSON.stringify(data));
     })
 };
  
