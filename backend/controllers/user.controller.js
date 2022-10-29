@@ -70,12 +70,22 @@ function createUser(body, res)
  
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
- 
+  User.find().then(data => 
+    {
+      res.send(data);
+    });
 };
  
 // Find a single User with an id
 exports.findOne = (req, res) => {
- 
+
+  const urlParams = new URLSearchParams(req.url);
+  const id = urlParams.get('/users/id');
+
+  User.findOne({ Id : id }).then(data => 
+    {
+      res.send(data);
+    })
 };
  
 // Update a User by the id in the request

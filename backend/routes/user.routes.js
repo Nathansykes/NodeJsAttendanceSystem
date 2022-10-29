@@ -18,9 +18,6 @@ router.put("/users/:id", userController.update);
  
 // Delete a user with id
 router.delete("/users/:id", userController.delete);
- 
-// Delete all users of the database
-router.delete("/users/", userController.deleteAll);
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
