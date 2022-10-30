@@ -21,7 +21,6 @@ exports.create = (req, res) => {
           var successMessage = `User saved in the database: ${data}`;
           console.log(successMessage);
           res.send({ message: successMessage });
-          //res.redirect('/index'); // cant'send response here as it's already sent
         })
         .catch(err => {
           res.status(500).send({
@@ -55,14 +54,12 @@ function createUser(body, res)
         user = new Student(data);
         break;
         default:
-          //res.send({message : errorMessage});
           throw errorMessage;
     }
   }
   catch (error) 
   {
     console.log(error);
-    //res.send({message : error});
   }
 
   return user;
