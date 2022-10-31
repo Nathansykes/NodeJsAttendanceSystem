@@ -1,16 +1,4 @@
-module.exports = mongoose => 
-{
-    var User = mongoose.model(
-      "user",
-      mongoose.Schema(
-        {
-          Id: String,
-          AccessLevel: Number,
-          FirstName: String,
-          LastName: String,
-        }
-      )
-    );
+var mongoose = require("mongoose");
+var userSchema = require("../schemas/user.schema")
 
-    return User;
-};
+module.exports = mongoose.model('User', userSchema);
