@@ -2,8 +2,8 @@ import http from "../http-common";
 
 class UserDataService {
 
-    getAll() {
-      return http.get("/users");
+    getAll(userType) {
+      return http.get("/users/all/", { params : {UserType : userType}});
     }
 
     get(id) {
@@ -22,8 +22,8 @@ class UserDataService {
         return http.delete(`/users/${id}`);
     }
 
-    findByName(firstName, lastName) {
-        return http.get(`/users?firstname=${firstName}&lastname=${lastName}`);
+    findByName(userType, firstName, lastName) {
+        return http.get("/users", {params : { UserType: userType, firstname : firstName, lastname : lastName}});
     }  
 }
 
