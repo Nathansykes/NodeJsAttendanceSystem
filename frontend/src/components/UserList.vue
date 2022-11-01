@@ -22,7 +22,9 @@
             :key="index"
             @click="setActiveUser(user, index)"
           >
-            {{ "Id: " + user._id + "Name: " + user.FirstName + " " + user.LastName }}
+            {{ user._id }}
+            <br/>
+            {{ user.FirstName + " " + user.LastName }}
           </li>
         </ul>
   
