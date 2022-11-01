@@ -2,6 +2,14 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
+
+const UserType = {
+  Student: 'Student',
+  Tutor: 'Tutor',
+  AcademicAdvisor: 'AcademicAdvisor',
+  ModuleLeader: 'ModuleLeader',
+  CourseLeader: 'CourseLeader',
+}
  
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -53,8 +61,8 @@ function createUser(body, res)
       case "Student":
         user = new Student(data);
         break;
-        default:
-          throw errorMessage;
+      default:
+        throw errorMessage;
     }
   }
   catch (error) 
@@ -65,29 +73,51 @@ function createUser(body, res)
   return user;
 }
  
-// Retrieve all Users from the database.
-exports.findAll = (req, res) => 
+// Find all users matching query
+exports.find = (req, res) => 
 {
-  console.log(req.query);
+  firstName = req.query.firstname;
+  lastName = req.query.lastname;
 
-  if (Object.keys(req.query).length !== 0)
+  switch(req.query.UserType) 
   {
-    const firstName = req.query.firstname;
-    const lastName = req.query.lastname;
-
-    User.find({ FirstName : firstName, LastName : lastName }).then(data => 
-      {
-        res.json(JSON.stringify(data));
-      })
+    case UserType.Student:
+      Student.find({ FirstName : firstName, LastName : lastName }).then(data => 
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+    case "All":
+      User.find({ FirstName : firstName, LastName : lastName }).then(data => 
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+    default:
+      res.status(500).send("UserType is not valid.");
   }
-  else 
-  {
-    User.find().then(data => 
-      {
-        res.json(JSON.stringify(data));
-      });
-  } 
 };
+
+// Find all users
+exports.findAll = (req, res) => {
+    switch (req.query.UserType) 
+    {
+      case UserType.Student:
+        Student.find().then(data => 
+          {
+            res.json(JSON.stringify(data));
+          });
+        break;
+      case 'All':
+        User.find().then(data => 
+          {
+            res.json(JSON.stringify(data));
+          });
+        break;
+      default:
+        break;
+    }
+}
  
 // Find a single User with an id
 exports.findOne = (req, res) => {

@@ -8,7 +8,10 @@ var userController = require('../controllers/user.controller');
 router.post("/users/", userController.create);
  
 // Retrieve all users
-router.get("/users/", userController.findAll);
+router.get("/users/All/", userController.findAll);
+
+// Retrieve all users matching query
+router.get("/users/", userController.find);
  
 // Retrieve a single user with id
 router.get("/users/:id", userController.findOne);
