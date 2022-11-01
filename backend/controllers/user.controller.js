@@ -4,10 +4,11 @@ let User = require("../models/user.model");
 let Student = require("../models/student.model");
 
 const UserType = {
-    Student: 'Student',
-    AcademicAdvisor: 'AcademicAdvisor',
-    ModuleLeader: 'ModuleLeader',
-    CourseLeader: 'CourseLeader',
+    Student: 0,
+    Tutor: 1,
+    AcademicAdvisor: 2,
+    ModuleLeader: 3,
+    CourseLeader: 4,
 }
  
 // Create and Save a new User
