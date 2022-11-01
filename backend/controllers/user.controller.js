@@ -57,7 +57,7 @@ function createUser(body, res)
   {
     switch(body.UserType) 
     {
-      case userType.Student:
+      case UserType.Student:
         user = new Student(data);
         break;
         default:
@@ -74,45 +74,33 @@ function createUser(body, res)
  
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  var users = getAllUsers(req.body, res);
-  res.json(JSON.stringify(users));
-
-  // User.find().then(data => 
-  //   {
-  //     res.json(JSON.stringify(data));
-  //   });
-};
-
-function getAllUsers(body, res)
-{
   var user;
-  var errorMessage = `${body.UserType} is not a valid UserType.`;
+  var errorMessage = `${req.query.UserType} is not a valid UserType.`;
 
   try 
   {
-    var users;
-    switch(body.UserType) 
+    switch(req.query.UserType) 
     {
-      case userType.Student:
-        Student.find().then(data => users);
+      case UserType.Student:
+        Student.find().then(data => {
+          res.json(JSON.stringify(data));
+        });
         break;
       case "All":
-        User.find().then(data => users);
+        User.find().then(data => {
+          res.json(JSON.stringify(data));
+        });
         break;
         default:
           throw errorMessage;
-    }
-    if(users){
-      res.json(JSON.stringify(users));
     }
   }
   catch (error) 
   {
     console.log(error);
   }
+};
 
-  return user;
-}
  
 // Find a single User with an id
 exports.findOne = (req, res) => {
