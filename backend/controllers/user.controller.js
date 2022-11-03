@@ -39,11 +39,19 @@ function createUser(body, res)
   var user;
   var errorMessage = `User could not be created: ${body.UserType} is not a valid UserType.`;
 
-  var data = {
-    Id: body.Id,
-    AccessLevel: body.AccessLevel,
-    FirstName: body.FirstName,
-    LastName: body.LastName,
+  try 
+  {
+    var data = {
+      _id: mongoose.Types.ObjectId(body.Id),
+      AccessLevel: body.AccessLevel,
+      FirstName: body.FirstName,
+      LastName: body.LastName,
+    }
+  }
+  catch (error) 
+  {
+    console.log(error);
+    res.send({ message : error.toString()});
   }
 
   try 
