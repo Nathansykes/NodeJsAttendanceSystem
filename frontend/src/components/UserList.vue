@@ -64,7 +64,7 @@
     },
     methods: {
       retrieveUsers() {
-        UserDataService.getAll('All')
+        UserDataService.getAll()
           .then(response => 
           {
             const users = JSON.parse(response.data);

@@ -3,7 +3,7 @@ import http from "../http-common";
 class UserDataService {
 
     getAll(userType) {
-      return http.get("/users/all/", { params : {UserType : userType}});
+      return http.get("/users", { params : {UserType : userType}});
     }
 
     get(id) {
@@ -23,6 +23,7 @@ class UserDataService {
     }
 
     findByName(userType, firstName, lastName) {
+        console.log(userType, firstName, lastName);
         return http.get("/users", {params : { UserType: userType, firstname : firstName, lastname : lastName}});
     }  
 }
