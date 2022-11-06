@@ -81,18 +81,17 @@ function createUser(body, res)
   return user;
 }
 
-
-
 // Find all users matching query
 exports.find = (req, res) =>
 {
 
   var filter = {};
-  if (req.query.firstname)
+  if (req.query.firstname){
     filter.FirstName = req.query.firstname;
-  if (req.query.lastname)
+  }
+  if (req.query.lastname){
     filter.LastName = req.query.lastname;
-
+  }
 
   switch(req.query.UserType)
   {
