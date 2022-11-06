@@ -4,6 +4,7 @@
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="name"/>
+            <UserSelectList />
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
               @click="searchName"
@@ -51,9 +52,13 @@
   
 <script>
   import UserDataService from "../services/user.data.service";
+  import UserSelectList from "./shared/UserSelectList.vue";
   
   export default {
     name: "users-list",
+    components: {
+      UserSelectList
+    },
     data() {
       return {
         users: [],
