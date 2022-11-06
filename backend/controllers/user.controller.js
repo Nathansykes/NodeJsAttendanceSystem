@@ -74,11 +74,27 @@ function createUser(body, res)
 }
  
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {
-  User.find().then(data => 
-    {
-      res.json(JSON.stringify(data));
-    });
+exports.findAll = (req, res) => 
+{
+  console.log(req.query);
+
+  if (Object.keys(req.query).length !== 0)
+  {
+    const firstName = req.query.firstname;
+    const lastName = req.query.lastname;
+
+    User.find({ FirstName : firstName, LastName : lastName }).then(data => 
+      {
+        res.json(JSON.stringify(data));
+      })
+  }
+  else 
+  {
+    User.find().then(data => 
+      {
+        res.json(JSON.stringify(data));
+      });
+  } 
 };
  
 // Find a single User with an id
