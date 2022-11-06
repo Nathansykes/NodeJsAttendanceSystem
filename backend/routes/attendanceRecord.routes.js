@@ -5,23 +5,23 @@ var router = express.Router();
 var attendanceController = require('../controllers/attendanceRecord.controller');
  
 // Create a new attendance
-router.post("/attendances/", attendanceController.create);
+router.post("/attendanceRecords/", attendanceController.create);
  
 // Retrieve all attendances
-router.get("/attendances/", attendanceController.findAll);
+router.get("/attendanceRecords/", attendanceController.findAll);
  
 // Retrieve a single attendance with id
-router.get("/attendances/:id", attendanceController.findOne);
+router.get("/attendanceRecords/:id", attendanceController.findOne);
  
 // Update a attendance with id
-router.put("/attendances/:id", attendanceController.update);
+router.put("/attendanceRecords/:id", attendanceController.update);
  
 // Delete a attendance with id
-router.delete("/attendances/:id", attendanceController.delete);
+router.delete("/attendanceRecords/:id", attendanceController.delete);
 
 /* GET attendances listing. */
 router.get('/', function(req, res, next) {
-  res.send('attendances');
+  res.send('attendanceRecords');
 });
 
 module.exports = router;
