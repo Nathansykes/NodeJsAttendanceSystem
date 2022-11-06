@@ -10,17 +10,17 @@ const UserType = {
   ModuleLeader: 'ModuleLeader',
   CourseLeader: 'CourseLeader',
 }
- 
+
 // Create and Save a new User
 exports.create = (req, res) => {
     if (!req.body.FirstName) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
       }
-      
+
       // Create a User model object
       const user = createUser(req.body, res);
-      
+
       // Save User in the database
       try {
         user
@@ -62,9 +62,9 @@ function createUser(body, res)
     res.send({ message : error.toString()});
   }
 
-  try 
+  try
   {
-    switch(body.UserType) 
+    switch(body.UserType)
     {
       case "Student":
         user = new Student(data);
@@ -73,78 +73,67 @@ function createUser(body, res)
         throw errorMessage;
     }
   }
-  catch (error) 
+  catch (error)
   {
     console.log(error);
   }
 
   return user;
 }
- 
-// Find all users matching query
-exports.find = (req, res) => 
-{
-  firstName = req.query.firstname;
-  lastName = req.query.lastname;
 
-  switch(req.query.UserType) 
+
+
+// Find all users matching query
+exports.find = (req, res) =>
+{
+
+  var filter = {};
+  if (req.query.firstname)
+    filter.FirstName = req.query.firstname;
+  if (req.query.lastname)
+    filter.LastName = req.query.lastname;
+
+
+  switch(req.query.UserType)
   {
     case UserType.Student:
-      Student.find({ FirstName : firstName, LastName : lastName }).then(data => 
+      Student.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
       break;
     case "All":
-      User.find({ FirstName : firstName, LastName : lastName }).then(data => 
+    case undefined:
+    case null:
+      User.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
       break;
     default:
       res.status(500).send("UserType is not valid.");
+      break;
   }
 };
 
-// Find all users
-exports.findAll = (req, res) => {
-    switch (req.query.UserType) 
-    {
-      case UserType.Student:
-        Student.find().then(data => 
-          {
-            res.json(JSON.stringify(data));
-          });
-        break;
-      case 'All':
-        User.find().then(data => 
-          {
-            res.json(JSON.stringify(data));
-          });
-        break;
-      default:
-        break;
-    }
-}
- 
 // Find a single User with an id
 exports.findOne = (req, res) => {
 
   const urlParams = new URLSearchParams(req.url);
   const id = urlParams.get('/users/id');
 
-  User.findOne({ Id : id }).then(data => 
+  User.findOne({ Id : id }).then(data =>
     {
       res.json(JSON.stringify(data));
     })
 };
- 
+
 // Update a User by the id in the request
 exports.update = (req, res) => {
- 
+
 };
- 
+
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
- 
+
 };
