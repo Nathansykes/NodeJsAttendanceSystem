@@ -62,8 +62,7 @@ exports.findAll = (req, res) => {
 // Find a single Attendance with an id
 exports.findOne = (req, res) => {
 
-  const urlParams = new URLSearchParams(req.url);
-  const id = urlParams.get('/attendances/id');
+  const id = req.query.id;
 
   Attendance.findOne({ Id : id }).then(data => 
     {
