@@ -2,7 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
-const UserType = require("../public/usertypes");
+const UserType = require("../../shared/usertypes");
 
 // Create and Save a new User
 exports.create = (req, res) => {
