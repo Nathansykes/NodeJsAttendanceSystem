@@ -4,6 +4,7 @@ let User = require("../models/user.model");
 let Student = require("../models/student.model");
 let AcademicAdvisor = require("../models/advisor.model");
 const UserTypes = require("../../shared/usertypes");
+let moduleLeader = require("../models/moduleLeader.model");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -66,17 +67,21 @@ function createUser(body, res)
       case UserTypes.Student.Id:
         user = new Student(data);
         break;
-      case "AcademicAdvisor":
+      case UserTypes.ModuleLeader.Id:
+        user = new moduleLeader(data);
+        break; 
+      case UserTypes.AcademicAdvisor.Id:
         user = new AcademicAdvisor(data);
         break;
       default:
         throw errorMessage;
     }
   }
-  catch (error)
+  catch (error) 
   {
     console.log(error);
   }
+
   return user;
 }
 
