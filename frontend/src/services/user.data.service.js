@@ -23,7 +23,9 @@ class UserDataService {
     }
 
     findByName(userType, firstName, lastName) {
-        console.log(userType, firstName, lastName);
+        console.log(userType)
+        console.log(firstName)
+        console.log(lastName)
         return http.get("/users", {params : { UserType: userType, firstname : firstName, lastname : lastName}});
     }  
 }

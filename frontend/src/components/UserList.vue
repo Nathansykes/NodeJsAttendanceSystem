@@ -4,7 +4,7 @@
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="name"/>
-            <UserSelectList />
+            <UserSelectList @selectUserType="(value) => this.selectedUserType = value"/>
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
               @click="searchName"
@@ -64,18 +64,19 @@
         users: [],
         currentUser: null,
         currentIndex: -1,
-        name: ""
+        name: "",
+        selectedUserType: ''
       };
     },
     methods: {
       retrieveUsers() {
-        UserDataService.getAll()
+        UserDataService.getAll(UserSelectList.selectedUserType)
           .then(response => 
           {
             const users = JSON.parse(response.data);
 
             this.users = users;
-            console.log(users);
+            //console.log(users);
           })
           .catch(e => {
             console.log(e);
@@ -96,13 +97,13 @@
       searchName() {
         const names = this.name.split(" ");       
 
-        UserDataService.findByName('All', names[0], names[1])
+        UserDataService.findByName(this.selectedUserType, names[0], names[1])
           .then(response => 
           {
             const users = JSON.parse(response.data);
 
             this.users = users;
-            console.log(users);
+            //console.log(users);
             this.setActiveUser(null);
           })
           .catch(e => {
