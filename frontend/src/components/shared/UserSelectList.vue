@@ -7,7 +7,7 @@
 
 <script>
 
-import UserTypes from '../../services/usertypes';
+import UserTypes from '../../../public/usertypes';
 
 export default {
     data () {

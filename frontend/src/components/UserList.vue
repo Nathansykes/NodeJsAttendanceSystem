@@ -76,7 +76,6 @@
             const users = JSON.parse(response.data);
 
             this.users = users;
-            //console.log(users);
           })
           .catch(e => {
             console.log(e);
@@ -103,7 +102,6 @@
             const users = JSON.parse(response.data);
 
             this.users = users;
-            //console.log(users);
             this.setActiveUser(null);
           })
           .catch(e => {
