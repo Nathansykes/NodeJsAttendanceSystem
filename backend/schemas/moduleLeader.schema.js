@@ -8,5 +8,3 @@ let moduleLeaderSchema = new Schema(
     {
         Module: {type : mongoose.Schema.Types.ObjectId, ref : module.modelName},
     }, options);
-
-module.exports = moduleLeaderSchema;
