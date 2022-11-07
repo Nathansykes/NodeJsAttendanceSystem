@@ -7,7 +7,7 @@
 
 <script>
 
-import UserTypes from '../../../public/usertypes';
+import UserTypes from '../../../../shared/usertypes';
 
 export default {
     data () {
