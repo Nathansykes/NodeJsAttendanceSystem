@@ -85,8 +85,9 @@ exports.find = (req, res) =>
   if (req.query.lastname){
     filter.LastName = req.query.lastname;
   }
-  var userType = parseInt(req.query.UserType);
-
+  if(req.query.UserType){
+    var userType = parseInt(req.query.UserType);
+  }
   switch(userType)
   {
     case UserType.Student.id:
