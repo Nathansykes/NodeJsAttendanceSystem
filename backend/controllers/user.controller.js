@@ -2,14 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
-
-const UserType = {
-  Student: 'Student',
-  Tutor: 'Tutor',
-  AcademicAdvisor: 'AcademicAdvisor',
-  ModuleLeader: 'ModuleLeader',
-  CourseLeader: 'CourseLeader',
-}
+const UserType = require("../public/usertypes");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -92,16 +85,17 @@ exports.find = (req, res) =>
   if (req.query.lastname){
     filter.LastName = req.query.lastname;
   }
+  var userType = parseInt(req.query.UserType);
 
-  switch(req.query.UserType)
+  switch(userType)
   {
-    case UserType.Student:
+    case UserType.Student.id:
       Student.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
       break;
-    case "All":
+    case UserType.All.id:
     case undefined:
     case null:
       User.find(filter).then(data =>

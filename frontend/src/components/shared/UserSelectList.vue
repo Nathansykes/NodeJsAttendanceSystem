@@ -1,29 +1,26 @@
 <template>
     <select class="form-select" @change="selectUserType">
-        <option v-for="userType in userTypes" :key="userType">{{userType}}</option>
+        <option v-for="userType in userTypes" :key="userType.id" :value="userType.id">{{userType.name}}</option>
     </select>
-    <input type="hidden" :value=selectedUserType />
 </template>
 
 
 <script>
+
+import UserTypes from '../../services/usertypes';
+
 export default {
     data () {
         return {
-        selectedUserType: '',
-        userTypes: [
-            'All' ,
-            'Student',
-            'Course Leader',
-            'Module Leader',
-            'Academic Advisor',
-            'Tutor'
-            ]
+            selectedUserType: '',
+            userTypes: UserTypes
         }
     },
+    emits: ['selectUserType'],
     methods: {
         selectUserType: function (event) {
-            this.selected = event.target.value.replace(' ', '');
+            this.selectedUserType = event.target.value,
+            this.$emit('selectUserType', this.selectedUserType);
         }
     }
 }
