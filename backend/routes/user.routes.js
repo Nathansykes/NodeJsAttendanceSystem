@@ -7,8 +7,8 @@ var userController = require('../controllers/user.controller');
 // Create a new user
 router.post("/users/", userController.create);
  
-// Retrieve all users
-router.get("/users/", userController.findAll);
+// Retrieve all users matching query
+router.get("/users/", userController.find);
  
 // Retrieve a single user with id
 router.get("/users/:id", userController.findOne);

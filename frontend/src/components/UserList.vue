@@ -91,7 +91,7 @@
       searchName() {
         const names = this.name.split(" ");       
 
-        UserDataService.findByName(names[0], names[1])
+        UserDataService.findByName('All', names[0], names[1])
           .then(response => 
           {
             const users = JSON.parse(response.data);

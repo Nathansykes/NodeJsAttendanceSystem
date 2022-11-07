@@ -2,17 +2,25 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
- 
+
+const UserType = {
+  Student: 'Student',
+  Tutor: 'Tutor',
+  AcademicAdvisor: 'AcademicAdvisor',
+  ModuleLeader: 'ModuleLeader',
+  CourseLeader: 'CourseLeader',
+}
+
 // Create and Save a new User
 exports.create = (req, res) => {
     if (!req.body.FirstName) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
       }
-      
+
       // Create a User model object
       const user = createUser(req.body, res);
-      
+
       // Save User in the database
       try {
         user
@@ -54,67 +62,77 @@ function createUser(body, res)
     res.send({ message : error.toString()});
   }
 
-  try 
+  try
   {
-    switch(body.UserType) 
+    switch(body.UserType)
     {
       case "Student":
         user = new Student(data);
         break;
-        default:
-          throw errorMessage;
+      default:
+        throw errorMessage;
     }
   }
-  catch (error) 
+  catch (error)
   {
     console.log(error);
   }
 
   return user;
 }
- 
-// Retrieve all Users from the database.
-exports.findAll = (req, res) => 
+
+// Find all users matching query
+exports.find = (req, res) =>
 {
-  console.log(req.query);
 
-  if (Object.keys(req.query).length !== 0)
-  {
-    const firstName = req.query.firstname;
-    const lastName = req.query.lastname;
-
-    User.find({ FirstName : firstName, LastName : lastName }).then(data => 
-      {
-        res.json(JSON.stringify(data));
-      })
+  var filter = {};
+  if (req.query.firstname){
+    filter.FirstName = req.query.firstname;
   }
-  else 
+  if (req.query.lastname){
+    filter.LastName = req.query.lastname;
+  }
+
+  switch(req.query.UserType)
   {
-    User.find().then(data => 
-      {
-        res.json(JSON.stringify(data));
-      });
-  } 
+    case UserType.Student:
+      Student.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+    case "All":
+    case undefined:
+    case null:
+      User.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+    default:
+      res.status(500).send("UserType is not valid.");
+      break;
+  }
 };
- 
+
 // Find a single User with an id
 exports.findOne = (req, res) => {
 
   const urlParams = new URLSearchParams(req.url);
   const id = urlParams.get('/users/id');
 
-  User.findOne({ Id : id }).then(data => 
+  User.findOne({ Id : id }).then(data =>
     {
       res.json(JSON.stringify(data));
     })
 };
- 
+
 // Update a User by the id in the request
 exports.update = (req, res) => {
- 
+
 };
- 
+
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
- 
+
 };
