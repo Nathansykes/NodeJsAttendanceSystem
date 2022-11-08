@@ -2,7 +2,6 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
-const UserType = require("../../shared/usertypes");
 const UserTypes = require("../../shared/usertypes");
 
 // Create and Save a new User
@@ -90,13 +89,13 @@ exports.find = (req, res) =>
   }
   switch(userType)
   {
-    case UserType.Student.Id:
+    case UserTypes.Student.Id:
       Student.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
       break;
-    case UserType.All.Id:
+    case UserTypes.All.Id:
     case undefined:
     case null:
       User.find(filter).then(data =>
