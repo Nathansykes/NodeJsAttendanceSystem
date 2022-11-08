@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
 const UserType = require("../../shared/usertypes");
+const UserTypes = require("../../shared/usertypes");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -59,7 +60,7 @@ function createUser(body, res)
   {
     switch(body.UserType)
     {
-      case "Student":
+      case UserTypes.Student.Id:
         user = new Student(data);
         break;
       default:
@@ -77,7 +78,6 @@ function createUser(body, res)
 // Find all users matching query
 exports.find = (req, res) =>
 {
-
   var filter = {};
   if (req.query.firstname){
     filter.FirstName = req.query.firstname;
@@ -90,13 +90,13 @@ exports.find = (req, res) =>
   }
   switch(userType)
   {
-    case UserType.Student.id:
+    case UserType.Student.Id:
       Student.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
       break;
-    case UserType.All.id:
+    case UserType.All.Id:
     case undefined:
     case null:
       User.find(filter).then(data =>

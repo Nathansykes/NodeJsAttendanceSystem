@@ -1,9 +1,9 @@
 const UserTypes = {
-    All: {id: 0, name: "All"},
-    Student: { id: 1, name: "Student" },
-    CourseLeader: { id: 2, name: "CourseLeader" },
-    ModuleLeader: { id: 3, name: "ModuleLeader" },
-    AcademicAdvisor: { id: 4, name: "AcademicAdvisor" },
-    Tutor: { id: 5, name: "Tutor" }    
+    All: { Id: 0, Name: "Any"},
+    Student: { Id: 1, Name: "Student" },
+    CourseLeader: { Id: 2, Name: "Course Leader" },
+    ModuleLeader: { Id: 3, Name: "Module Leader" },
+    AcademicAdvisor: { Id: 4, Name: "Academic Advisor" },
+    Tutor: { Id: 5, Name: "Tutor" }    
 }
 module.exports = UserTypes;
