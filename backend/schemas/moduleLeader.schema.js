@@ -6,5 +6,5 @@ let module = require('../models/module.model');
 
 let moduleLeaderSchema = new Schema(
     {
-        Module: {type : mongoose.Schema.Types.ObjectId, ref : module.modelName},
+        Modules : [{type : mongoose.Schema.Types.ObjectId, ref : Module.modelName, "default" : [] }],
     }, options);
