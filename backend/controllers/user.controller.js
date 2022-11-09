@@ -19,9 +19,8 @@ exports.create = (req, res) => {
         user
         .save()
         .then(data => {
-          var successMessage = `User saved in the database: ${data}`;
-          console.log(successMessage);
-          res.send({ message: successMessage });
+          console.log(`User saved in the database: ${data}`);
+          res.json(JSON.stringify(data));
         })
         .catch(err => {
           res.status(500).send({
@@ -112,21 +111,55 @@ exports.find = (req, res) =>
 // Find a single User with an id
 exports.findOne = (req, res) => {
 
-  const urlParams = new URLSearchParams(req.url);
-  const id = urlParams.get('/users/id');
+  const id = req.params.id;
 
-  User.findOne({ Id : id }).then(data =>
+  User.findById(id).then(data =>
     {
       res.json(JSON.stringify(data));
-    })
+    });
 };
 
 // Update a User by the id in the request
 exports.update = (req, res) => {
 
+  const id = req.params.id;
+  
+  var updateData = {
+    AccessLevel: req.body.AccessLevel,
+    FirstName: req.body.FirstName,
+    LastName: req.body.LastName,
+  }
+
+  User.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  {
+    if (data)
+    {
+      console.log("Updated User : ", data);
+      res.json(JSON.stringify(data));
+    }
+    else
+    {
+      console.log(err)
+      res.send({message : err});
+    };
+  });
 };
 
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
+  
+  const id = req.params.id;
 
+  User.findByIdAndDelete(id).then(data => 
+    {
+      if (data) 
+      {
+        const message = `User deleted: ${data}`;
+        console.log(message)
+        res.send({message : message});
+      }
+      else 
+      {
+        res.send({message : `Error. No user matches the Id: ${id}`})
+      }
+    });
 };
