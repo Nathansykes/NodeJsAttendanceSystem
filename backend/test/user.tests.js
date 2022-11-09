@@ -5,6 +5,7 @@ let server = require('../app');
 let should = chai.should();
 let User = require('../models/user.model');
 let Student = require('../models/student.model');
+const UserTypes = require("../../shared/usertypes");
 
 chai.use(chaiHttp);
 
@@ -37,7 +38,7 @@ describe('POST /users', () => {
                 Id: userId,
                 FirstName: userName,
                 LastName: "Jefferson",
-                UserType: "Student",
+                UserType: UserTypes.Student.Id,
             }; 
             done();
         })
@@ -58,7 +59,7 @@ describe('POST /users', () => {
                 returnedUser.should.have.property('FirstName');
                 returnedUser.should.have.property('LastName');
                 returnedUser.should.have.property('__t');
-                returnedUser.__t.should.eql('Student');
+                returnedUser.__t.should.eql(UserTypes.Student.Name);
                 returnedUser.should.be.an.instanceof(Student);
                 
                 done();
