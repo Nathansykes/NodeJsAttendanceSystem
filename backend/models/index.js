@@ -1,7 +1,5 @@
 const myArgs = process.argv;
-
 const connectionIndex = myArgs.indexOf('--connection');
-const connectionString = myArgs[connectionIndex + 1];
 
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -9,9 +7,14 @@ mongoose.Promise = global.Promise;
 const db = {};
 db.mongoose = mongoose;
 
-if (connectionString) 
+// index.Of will return -1 by default if no index is found
+if (connectionIndex > -1) 
 {
-    db.url = connectionString;
+    const connectionString = myArgs[connectionIndex + 1];
+    if (connectionString) 
+    {
+        db.url = connectionString;
+    }
 }
 else 
 {
