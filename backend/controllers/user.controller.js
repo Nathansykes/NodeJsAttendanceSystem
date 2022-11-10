@@ -62,8 +62,9 @@ function createUser(body, res)
       case UserTypes.Student.Id:
         user = new Student(data);
         break;
-      case "Academic Advisor":
+      case "AcademicAdvisor":
         user = new AcademicAdvisor(data);
+        break;
       default:
         throw errorMessage;
     }
