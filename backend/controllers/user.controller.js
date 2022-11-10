@@ -2,6 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
+let AcademicAdvisor = require("../models/advisor.model");
 const UserTypes = require("../../shared/usertypes");
 
 // Create and Save a new User
@@ -61,6 +62,8 @@ function createUser(body, res)
       case UserTypes.Student.Id:
         user = new Student(data);
         break;
+      case "Academic Advisor":
+        user = new AcademicAdvisor(data);
       default:
         throw errorMessage;
     }
