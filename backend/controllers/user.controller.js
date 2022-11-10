@@ -2,6 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 let User = require("../models/user.model");
 let Student = require("../models/student.model");
+let AcademicAdvisor = require("../models/advisor.model");
 const UserTypes = require("../../shared/usertypes");
 
 // Create and Save a new User
@@ -54,12 +55,19 @@ function createUser(body, res)
     res.send({ message : error.toString()});
   }
 
+  if(body.UserType){
+     var userType = parseInt(body.UserType);
+  } // check userType is able to be parsed
+
   try
   {
-    switch(body.UserType)
+    switch(userType)
     {
       case UserTypes.Student.Id:
         user = new Student(data);
+        break;
+      case "AcademicAdvisor":
+        user = new AcademicAdvisor(data);
         break;
       default:
         throw errorMessage;
@@ -69,7 +77,6 @@ function createUser(body, res)
   {
     console.log(error);
   }
-
   return user;
 }
 
