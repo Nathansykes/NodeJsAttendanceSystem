@@ -55,11 +55,12 @@ function createUser(body, res)
     res.send({ message : error.toString()});
   }
 
-var userType = parseInt(body.UserType);
+  if(body.UserType){
+     var userType = parseInt(body.UserType);
+  } // check userType is able to be parsed
 
   try
   {
-    var userType = parseInt(body.UserType);
     switch(userType)
     {
       case UserTypes.Student.Id:
@@ -68,11 +69,6 @@ var userType = parseInt(body.UserType);
       case "AcademicAdvisor":
         user = new AcademicAdvisor(data);
         break;
-      //check userType is not null or undefined
-      case undefined:
-        throw errorMessage;
-      case null:
-        throw errorMessage;
       default:
         throw errorMessage;
     }
