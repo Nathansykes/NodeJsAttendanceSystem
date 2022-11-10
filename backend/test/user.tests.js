@@ -5,7 +5,8 @@ let server = require('../app');
 let should = chai.should();
 let User = require('../models/user.model');
 let Student = require('../models/student.model');
-const UserTypes = require("../../shared/usertypes");
+// This Should Break The Pipeline
+const UserTypes = require("../../shared/userType");
 
 chai.use(chaiHttp);
 
