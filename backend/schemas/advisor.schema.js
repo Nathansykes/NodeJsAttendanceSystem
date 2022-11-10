@@ -5,7 +5,7 @@ let Student = require('../models/student.model');
 
 let advisorSchema = new Schema(
     {
-        Student: {type: mongoose.Schema.Types.ObjectId, ref : Student.modelName}
+        Students: [{type: mongoose.Schema.Types.ObjectId, ref : Student.modelName, "default" : []}],
     }, options);
 
 module.exports = advisorSchema;
