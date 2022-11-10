@@ -55,9 +55,12 @@ function createUser(body, res)
     res.send({ message : error.toString()});
   }
 
+var userType = parseInt(body.UserType);
+
   try
   {
-    switch(body.UserType)
+    var userType = parseInt(body.UserType);
+    switch(userType)
     {
       case UserTypes.Student.Id:
         user = new Student(data);
@@ -65,6 +68,11 @@ function createUser(body, res)
       case "AcademicAdvisor":
         user = new AcademicAdvisor(data);
         break;
+      //check userType is not null or undefined
+      case undefined:
+        throw errorMessage;
+      case null:
+        throw errorMessage;
       default:
         throw errorMessage;
     }
@@ -73,7 +81,6 @@ function createUser(body, res)
   {
     console.log(error);
   }
-
   return user;
 }
 
