@@ -4,7 +4,6 @@ let options = require('./user.schema.options');
 
 let userSchema = new Schema(
     {
-        AccessLevel: Number,
         FirstName: String,
         LastName: String,
     }, options);
