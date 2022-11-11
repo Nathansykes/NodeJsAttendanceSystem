@@ -16,6 +16,10 @@ var attendanceRouter = require('./routes/attendanceRecord.routes');
 var authRouter = require('./routes/auth.routes');
 
 function Authenticate(req, res, next){
+  if (req.path.toLowerCase() == '/login') {
+    next();
+    return;
+  }
   var result = Auth.verifyToken(req);
   if (result.Status == 200)
   {

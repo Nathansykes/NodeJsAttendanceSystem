@@ -9,11 +9,13 @@ const UserTypes = require("../../shared/usertypes");
 
 chai.use(chaiHttp);
 
+
 //Testing GET /users
 describe('GET /users', () => {
     it('it should GET all the users', (done) => {
         chai.request(server)
         .get('/users')
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -50,6 +52,7 @@ describe('POST /users', () => {
     it('it should POST an user ', (done) => {        
         chai.request(server)
             .post('/users')
+            .auth(token, {type: 'bearer'})
             .send(user)
             .end((err, res) => {
                 const returnedUser = (User)(JSON.parse(res.body));
@@ -73,6 +76,7 @@ describe('GET /users', () => {
     it('it should GET user', (done) => {
         chai.request(server)
         .get(`/users/${userId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -104,6 +108,7 @@ describe('PUT /users', () => {
     it('it should PUT an user ', (done) => {        
         chai.request(server)
             .put(`/users/${userId}`)
+            .auth(token, {type: 'bearer'})
             .send(user)
             .end((err, res) => {
                 const returnedUser = (User)(JSON.parse(res.body));
@@ -125,6 +130,7 @@ describe('DELETE /users', () => {
     it('it should DELETE user', (done) => {
         chai.request(server)
         .delete(`/users/${userId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             done();
