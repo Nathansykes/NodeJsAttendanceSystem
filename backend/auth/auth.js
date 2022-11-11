@@ -27,31 +27,30 @@ exports.generateToken = (userId) => {
 }
 
 exports.verifyToken = (req) => {
-    const authHeader = req.headers['authorization']
     var response = {
         Status: 0,
-        Message: ''
+        Message: ""
     }
-    var token;
-    if (!authHeader) {
-        response.Status = 401;
-        response.Message = "No authentication token provided";
-    }
-    if (authHeader.startsWith('Bearer ')) {
-        token = authHeader.split(' ')[1];
-
-        if (token) {
-            if (tokenIsValid(token)) {
-                response.Status = 200;
-                response.Message = "Token is valid";
-            }
-            else {
-                response.Status = 401;
-                response.Message = "Token is invalid";
-            }
+    
+    if (requestHasToken(req)) {
+        var token = req.headers['authorization'].split(' ')[1];
+        if (tokenIsValid(token)) {
+            response.Status = 200;
+            response.Message = "Token is valid";
+            return response;
         }
     }
+    response.Status = 401;
+    response.Message = "Token invalid or not provided";
     return response;
+}
+
+function requestHasToken(req) {
+    const authHeader = req.headers['authorization']
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        return true;
+    }
+    return false;
 }
 
 function tokenIsValid(token) {
