@@ -5,17 +5,18 @@ const Student = require("../models/student.model");
 const AcademicAdvisor = require("../models/advisor.model");
 const ModuleLeader = require("../models/moduleLeader.model");
 const CourseLeader = require("../models/courseLeader.model");
+const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
 
 // Create and Save a new User
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     if (!req.body.FirstName) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
       }
 
       // Create a User model object
-      const user = createUser(req.body, res);
+      const user = await createUser(req.body, res);
 
       // Save User in the database
       try {
@@ -37,11 +38,13 @@ exports.create = (req, res) => {
       }
 };
 
-function createUser(body, res)
+async function createUser(body, res)
 {
   var user;
   var errorMessage = `User could not be created: ${body.UserType} is not a valid UserType.`;
 
+  var passwordHash = await Auth.createHash(body.Password);
+  
   try 
   {
     var data = {
@@ -49,6 +52,7 @@ function createUser(body, res)
       AccessLevel: body.AccessLevel,
       FirstName: body.FirstName,
       LastName: body.LastName,
+      //Password: passwordHash,
     }
   }
   catch (error) 
