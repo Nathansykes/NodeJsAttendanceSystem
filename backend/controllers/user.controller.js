@@ -52,7 +52,7 @@ async function createUser(body, res)
       AccessLevel: body.AccessLevel,
       FirstName: body.FirstName,
       LastName: body.LastName,
-      //Password: passwordHash,
+      Password: passwordHash,
     }
   }
   catch (error) 

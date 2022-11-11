@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
+var authRouter = require('./routes/auth.routes');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', attendanceRouter);
+app.use('/', authRouter);
 // adding cors module
 app.use(cors());
 
