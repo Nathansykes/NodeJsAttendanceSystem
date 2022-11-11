@@ -1,10 +1,11 @@
 const db = require("../models");
 var mongoose = require('mongoose');
-let User = require("../models/user.model");
-let Student = require("../models/student.model");
-let AcademicAdvisor = require("../models/advisor.model");
+const User = require("../models/user.model");
+const Student = require("../models/student.model");
+const AcademicAdvisor = require("../models/advisor.model");
+const ModuleLeader = require("../models/moduleLeader.model");
+const CourseLeader = require("../models/courseLeader.model");
 const UserTypes = require("../../shared/usertypes");
-let moduleLeader = require("../models/moduleLeader.model");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -67,12 +68,15 @@ function createUser(body, res)
       case UserTypes.Student.Id:
         user = new Student(data);
         break;
-      case UserTypes.ModuleLeader.Id:
-        user = new moduleLeader(data);
-        break; 
-      case UserTypes.AcademicAdvisor.Id:
-        user = new AcademicAdvisor(data);
-        break;
+        case UserTypes.AcademicAdvisor.Id:
+          user = new AcademicAdvisor(data);
+          break;
+        case UserTypes.ModuleLeader.Id:
+          user = new ModuleLeader(data);
+          break; 
+        case UserTypes.CourseLeader.Id:
+          user = new CourseLeader(data);
+          break; 
       default:
         throw errorMessage;
     }
