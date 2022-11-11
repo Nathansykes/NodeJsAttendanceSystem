@@ -28,6 +28,7 @@ function Authenticate(req, res, next){
 
 var app = express();
 
+app.use(Authenticate);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -43,7 +44,6 @@ app.use('/', moduleRouter);
 app.use('/', attendanceRouter);
 app.use('/', authRouter);
 
-app.use(Authenticate);
 
 // adding cors module
 app.use(cors());
