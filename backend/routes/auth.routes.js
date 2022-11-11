@@ -6,4 +6,6 @@ var authController = require('../controllers/auth.controller');
 
 router.post("/login", authController.login);
 
+router.post("/verifyToken", authController.verfiyToken);
+
 module.exports = router;
