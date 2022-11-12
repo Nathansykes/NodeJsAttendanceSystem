@@ -41,9 +41,9 @@ function createCourse(body, res)
   {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
-      CourseLeader: req.body.CourseLeader,
-      Title: req.body.Title,
-      Modules : req.body.Modules,
+      CourseLeader: body.CourseLeader,
+      Title: body.Title,
+      Modules : body.Modules,
     }
     course = new Course(data);
   }
