@@ -18,8 +18,7 @@ if (connectionIndex > -1)
 }
 else 
 {
-    const dbConfig = require("../config/db.config.js");
-    db.url = dbConfig.url;
+    db.url = process.env.CONNECTION_STRING;
 }
 
 db.users = require("./user.model.js")(mongoose);

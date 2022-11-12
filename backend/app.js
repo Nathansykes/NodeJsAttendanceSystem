@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -37,6 +39,7 @@ app.use(cors());
 
 //Database connection code
 const db = require("./models");
+console.log(db.url);
 db.mongoose.connect(db.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
