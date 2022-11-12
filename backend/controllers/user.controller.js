@@ -15,7 +15,7 @@ exports.create = (req, res) => {
       }
 
       // Create a User model object
-      const user = createUser(req.body, res);
+      const user = createUserFromBody(req.body, res);
 
       // Save User in the database
       try {
@@ -37,13 +37,10 @@ exports.create = (req, res) => {
       }
 };
 
-function createUser(body, res)
-{
+function createUserFromBody(body, res) {
   var user;
-  var errorMessage = `User could not be created: ${body.UserType} is not a valid UserType.`;
 
-  try 
-  {
+  try {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
       AccessLevel: body.AccessLevel,
@@ -51,41 +48,43 @@ function createUser(body, res)
       LastName: body.LastName,
     }
   }
-  catch (error) 
-  {
+  catch (error) {
     console.log(error);
-    res.send({ message : error.toString()});
+    res.send({ message: error.toString() });
   }
 
-  if(body.UserType){
-     var userType = parseInt(body.UserType);
+  if (body.UserType) {
+    var userType = parseInt(body.UserType);
   } // check userType is able to be parsed
 
-  try
-  {
-    switch(userType)
-    {
+  return this.createUser(data, userType);
+}
+
+exports.createUser = (data, userType) => {
+  var errorMessage = `User could not be created: ${userType} is not a valid UserType.`;
+
+  var user;
+  try {
+    switch (userType) {
       case UserTypes.Student.Id:
         user = new Student(data);
         break;
-        case UserTypes.AcademicAdvisor.Id:
-          user = new AcademicAdvisor(data);
-          break;
-        case UserTypes.ModuleLeader.Id:
-          user = new ModuleLeader(data);
-          break; 
-        case UserTypes.CourseLeader.Id:
-          user = new CourseLeader(data);
-          break; 
+      case UserTypes.AcademicAdvisor.Id:
+        user = new AcademicAdvisor(data);
+        break;
+      case UserTypes.ModuleLeader.Id:
+        user = new ModuleLeader(data);
+        break;
+      case UserTypes.CourseLeader.Id:
+        user = new CourseLeader(data);
+        break;
       default:
         throw errorMessage;
     }
   }
-  catch (error) 
-  {
+  catch (error) {
     console.log(error);
   }
-
   return user;
 }
 

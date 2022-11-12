@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var bodyParser = require("body-parser");
 var cors = require('cors');
+var fileupload = require("express-fileupload");
 
 
 var indexRouter = require('./routes/index');
@@ -13,9 +14,11 @@ var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
+var fileuploadRouter = require('./routes/fileupload.routes');
 
 var app = express();
 
+app.use(fileupload());
 // not needed in backend
 // app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
@@ -33,6 +36,7 @@ app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
+app.use('/', fileuploadRouter);
 // adding cors module
 app.use(cors());
 
