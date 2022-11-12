@@ -40,6 +40,7 @@ describe('POST /users', () => {
                 Id: userId,
                 FirstName: userName,
                 LastName: "Jefferson",
+                Password: "password",
                 UserType: UserTypes.Student.Id,
             }; 
             done();
