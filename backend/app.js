@@ -13,6 +13,7 @@ var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
+var authRouter = require('./routes/auth.routes');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
+app.use('/', authRouter);
 // adding cors module
 app.use(cors());
 
