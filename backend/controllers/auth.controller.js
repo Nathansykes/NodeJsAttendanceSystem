@@ -8,7 +8,7 @@ exports.login = (req, res) => {
         return;
     }
 
-    User.findOne({ Id : req.body.Id }).then(data =>
+    User.findById(req.body.Id).then(data =>
         {
             console.log(data);
             if (data) {
