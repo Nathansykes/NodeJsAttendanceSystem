@@ -33,10 +33,8 @@ export default{
             UserDataService.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
-                // this.$auth.setToken(response.data);
                 localStorage.setItem("user", token);
                 this.$router.push('/users')
-                this.$forceUpdate();
             })
             .catch(error => 
             {

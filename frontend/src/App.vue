@@ -17,26 +17,10 @@ export default {
       loggedIn: localStorage.getItem("user")
     }
   },
-  
   components: {
       LoginVue,
       Index
     },
-    methods: { 
-    // getUserDetails() 
-    //   {
-    //     // get token from localstorage
-    //     let token = localStorage.getItem("user");
-    //     if (token) 
-    //     {
-    //       return true;
-    //     }
-
-    //     return false;
-    // }
-
-    
-  },
   mounted() {
       if (this.loggedIn) 
       {
