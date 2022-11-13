@@ -1,4 +1,4 @@
-let Auth = require("../auth/hash");
+let Auth = require("../auth/auth");
 let UserController = require("../controllers/user.controller");
 let User = require("../models/user.model");
 
@@ -11,10 +11,13 @@ exports.login = (req, res) => {
     User.findById(req.body.Id).then(data =>
         {
             console.log(data);
-            if (data) {
+            if (data.Password) {
                 if (Auth.verifyPassword(req.body.Password, data.Password)) {
-                    //to do - generate token
-                    res.send({ message: "Login successful" });
+                    var token = Auth.generateToken(req.body.Id);
+                    var response = {
+                        Token: token,
+                    }
+                    res.json(JSON.stringify(response));
                 }
                 else {
                     res.status(401).send({ message: "Incorrect password" });
@@ -31,4 +34,8 @@ exports.login = (req, res) => {
             });
         });
 
+}
+exports.verfiyToken = (req, res) => {
+    var result = Auth.verifyToken(req);
+    res.status(result.Status).send(result.Message);
 }
