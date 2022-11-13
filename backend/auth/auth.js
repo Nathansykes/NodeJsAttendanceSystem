@@ -18,7 +18,7 @@ exports.verifyPassword = (password, dbHash) => {
 
 exports.generateToken = (userId) => {
     try {
-        var token = jwt.sign({ Id: userId }, '6987beea-c26c-4193-b4d7-a27ed1ee4069', { expiresIn: '100d' }); // to do - use env variables
+        var token = jwt.sign({ Id: userId }, '6987beea-c26c-4193-b4d7-a27ed1ee4069'); // to do - use env variables
         return token;
     }
     catch (error) {
