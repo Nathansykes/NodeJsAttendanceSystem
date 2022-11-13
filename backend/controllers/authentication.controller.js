@@ -1,5 +1,5 @@
 let Auth = require("../authentication");
-let UserController = require("../controllers/user.controller");
+let UserController = require("./user.controller");
 let User = require("../models/user.model");
 
 exports.login = (req, res) => {
