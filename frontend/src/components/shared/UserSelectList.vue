@@ -1,6 +1,6 @@
 <template>
     <select class="form-select" @change="selectUserType">
-        <option v-for="userType in userTypes" :key="userType.id" :value="userType.id">{{userType.name}}</option>
+        <option v-for="userType in userTypes" :key="userType.Id" :value="userType.Id">{{userType.Name}}</option>
     </select>
 </template>
 

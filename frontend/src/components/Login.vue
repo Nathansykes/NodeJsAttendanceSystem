@@ -1,78 +1,56 @@
 <template>
-    <div id="app">
-
+    <div id="login">
+        <body>
+            <header>
+                <h1>Login Portal</h1>
+            </header>
+            <main>
+                <div id="login_form" class="form_class">
+                    <div class="form_div">
+                        <!-- form action '/' refreshes the page -->
+                        <form action="/">
+                            <label>Login:</label>
+                            <input v-model="userId" class="field_class" name="Id" type="text" placeholder="Username" autofocus>
+                            <label>Password:</label>
+                            <input v-model="userPassword" id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
+                            <input class="submit_class" type="submit" @click="login()"/>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </body>
     </div>
-<body>
-    <header>
-        <h1>Login Portal</h1>
-    </header>
-    <main>
-        <div id="login_form" class = "form_class">
-        <!-- <form id="login_form" class="form_class">  -->
-            <div class="form_div">
-                <label>Login:</label>
-                <input class="field_class" name="Id" type="text" placeholder="Username" autofocus>
-                <label>Password:</label>
-                <input id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
-                <button class="submit_class" type="submit" form="login_form" @click="login()">Submit</button>
-            </div>
-            <div class="info_div">
-                <p>Need to register? <a href="">Click Me!</a></p>
-            </div>
-        <!-- </form> -->
-    </div>
-    </main>
-
-</body>
-
 </template>
 <script>
-
-// document.getElementsByClassName('submit-class').addEventListener('click', login());
-
 import UserDataService from '../services/user.data.service';
-
 
 export default{
     
     name:"app",
     methods: {
-        login()  {
-            
-            let UserName = "111111111111"
-            let Password = "testpassword"
-            let data = {
-                    Id:UserName,
-                    Password:Password
-                }
-            UserDataService.login(data)
-            console.log(data)
-            .then(res =>{
-            console.log(res)
+        login() 
+        {            
+            UserDataService.login({Id: this.userId, Password : this.userPassword}).then(response => 
+            {
+                var token = (JSON.parse(response.data)).Token;
+                // this.$auth.setToken(response.data);
+                localStorage.setItem("user", token);
+                this.$router.push('/users')
+                this.$forceUpdate();
             })
-            
+            .catch(error => 
+            {
+                console.log(error);
+            });
         }
-        
     }
-    
 }
-
-
-
-
-
-
-
-
 </script>
 
 <style>
 * {
     padding: 0px;
     margin: 0px;
-}
-body {
-    background-color: rgb(10, 139, 232);
 }
 header {
     background-color: black;

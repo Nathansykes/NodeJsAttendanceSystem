@@ -3,11 +3,15 @@ import http from "../http-common";
 class UserDataService {
 
     getAll(userType) {
-      return http.get("/users", { params : {UserType : userType}});
+        return http.get("/users", { params : {UserType : userType}});
     }
 
     get(id) {
         return http.get(`/users/id=${id}`)
+    }
+
+    login(data) {
+        return http.post("/login", data);
     }
 
     create(data) {
