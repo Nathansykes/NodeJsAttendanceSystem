@@ -33,7 +33,7 @@ function Authenticate(req, res, next){
 
 var app = express();
 
-app.use(Authenticate);
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -41,18 +41,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors());
-
+app.use(Authenticate);
 app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
 app.use('/', authRouter);
-
-
-// adding cors module
-app.use(cors());
 
 
 //Database connection code
