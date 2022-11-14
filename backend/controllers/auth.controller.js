@@ -1,4 +1,4 @@
-let Auth = require("../auth/auth");
+let Auth = require("../authentication");
 let UserController = require("../controllers/user.controller");
 let User = require("../models/user.model");
 
