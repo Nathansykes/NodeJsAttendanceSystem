@@ -11,7 +11,8 @@ chai.use(chaiHttp);
 describe('GET /modules', () => {
     it('it should GET all the modules', (done) => {
         chai.request(server)
-        .get('/modules')
+        .get('/modules')        
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -45,6 +46,7 @@ describe('POST /modules', () => {
     it('it should POST an module ', (done) => {        
         chai.request(server)
             .post('/modules')
+            .auth(token, {type: 'bearer'})
             .send(module)
             .end((err, res) => {
                 const returnedModule = (Module)(JSON.parse(res.body));
@@ -68,6 +70,7 @@ describe('GET /modules', () => {
     it('it should GET module', (done) => {
         chai.request(server)
         .get(`/modules/${moduleId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -99,6 +102,7 @@ describe('PUT /modules', () => {
     it('it should PUT an module ', (done) => {        
         chai.request(server)
             .put(`/modules/${moduleId}`)
+            .auth(token, {type: 'bearer'})
             .send(module)
             .end((err, res) => {
                 console.log(res.body);
@@ -122,6 +126,7 @@ describe('DELETE /modules', () => {
     it('it should DELETE module', (done) => {
         chai.request(server)
         .delete(`/modules/${moduleId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             done();

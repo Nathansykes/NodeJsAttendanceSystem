@@ -12,6 +12,7 @@ describe('GET /courses', () => {
     it('it should GET all the courses', (done) => {
         chai.request(server)
         .get('/courses')
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -45,6 +46,7 @@ describe('POST /courses', () => {
     it('it should POST an course ', (done) => {        
         chai.request(server)
             .post('/courses')
+            .auth(token, {type: 'bearer'})
             .send(course)
             .end((err, res) => {
                 const returnedCourse = (Course)(JSON.parse(res.body));
@@ -66,6 +68,7 @@ describe('GET /courses', () => {
     it('it should GET course', (done) => {
         chai.request(server)
         .get(`/courses/${courseId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
@@ -97,6 +100,7 @@ describe('PUT /courses', () => {
     it('it should PUT an course ', (done) => {        
         chai.request(server)
             .put(`/courses/${courseId}`)
+            .auth(token, {type: 'bearer'})
             .send(course)
             .end((err, res) => {
                 console.log(res.body);
@@ -120,6 +124,7 @@ describe('DELETE /courses', () => {
     it('it should DELETE course', (done) => {
         chai.request(server)
         .delete(`/courses/${courseId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             done();
