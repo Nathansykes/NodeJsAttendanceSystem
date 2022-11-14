@@ -7,45 +7,55 @@
         <h1>Login Portal</h1>
     </header>
     <main>
-        <form id="login_form" class="form_class" action="" method="post">
+        <div id="login_form" class = "form_class">
+        <!-- <form id="login_form" class="form_class">  -->
             <div class="form_div">
                 <label>Login:</label>
-                <input class="field_class" name="Id" type="text" placeholder="Username?? Duhh" autofocus>
+                <input class="field_class" name="Id" type="text" placeholder="Username" autofocus>
                 <label>Password:</label>
-                <input id="pass" class="field_class" name="Password" type="password" placeholder="Password here ya mess">
-                <button class="submit_class" type="submit" form="login_form" onclick="">Submit</button>
+                <input id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
+                <button class="submit_class" type="submit" form="login_form" @click="login()">Submit</button>
             </div>
             <div class="info_div">
                 <p>Need to register? <a href="">Click Me!</a></p>
             </div>
-        </form>
+        <!-- </form> -->
+    </div>
     </main>
 
 </body>
 
 </template>
 <script>
-import UserDataService from '@/services/user.data.service';
 
-// import router from '@/router';
+// document.getElementsByClassName('submit-class').addEventListener('click', login());
 
-// export default{
-//     name:"app",
-//     methods: {
-//         login: (e) => {
-//             let UserName = "111111111111"
-//             let Password = "testpassword"
-//             let login = () => {
-//                 let data = {
-//                     UserName:UserName,
-//                     Password:Password
-//                 }
-                
-//             }
-//         }
-//     }
-// }
+import UserDataService from '../services/user.data.service';
 
+
+export default{
+    
+    name:"app",
+    methods: {
+        login()  {
+            
+            let UserName = "111111111111"
+            let Password = "testpassword"
+            let data = {
+                    Id:UserName,
+                    Password:Password
+                }
+            UserDataService.login(data)
+            console.log(data)
+            .then(res =>{
+            console.log(res)
+            })
+            
+        }
+        
+    }
+    
+}
 
 
 
