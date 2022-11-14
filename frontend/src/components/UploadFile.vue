@@ -2,7 +2,6 @@
     <div id="upload">
         <body>
             <h3>CSV Upload</h3>
-            <br />
             <form>
                 <input name="UserFile" type="file" @change="handleFileUpload">
                 <button type="button" class="btn btn-primary" @click="submitFile">Upload</button>
