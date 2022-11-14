@@ -5,7 +5,7 @@ let Session = require('../models/session.model')
 
 let tutorSchema = new Schema(
     {
-        Session: {type: mongoose.Schema.Types.ObjectId, ref : Session.modelName}
+        Sessions: [{type: mongoose.Schema.Types.ObjectId, ref : Session.modelName}]
     }, options);
 
 module.exports = tutorSchema;

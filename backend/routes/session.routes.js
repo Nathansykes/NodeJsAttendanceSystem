@@ -7,7 +7,7 @@ var sessionController = require('../controllers/session.controller');
 // Create a new session
 router.post("/sessions/", sessionController.create);
  
-// Retrieve all session
+// Retrieve all sessions
 router.get("/sessions/", sessionController.findAll);
  
 // Retrieve a single session with id
@@ -19,7 +19,7 @@ router.put("/sessions/:id", sessionController.update);
 // Delete a session with id
 router.delete("/sessions/:id", sessionController.delete);
 
-/* GET session listing. */
+/* GET sessions listing. */
 router.get('/', function(req, res, next) {
   res.send('sessions');
 });

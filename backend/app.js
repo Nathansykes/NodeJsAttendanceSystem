@@ -49,7 +49,7 @@ app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
 app.use('/', sessionRouter);
-
+app.use('/', authRouter);
 
 //Database connection code
 const db = require("./models");

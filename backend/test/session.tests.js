@@ -7,10 +7,27 @@ let Session = require('../models/session.model');
 
 chai.use(chaiHttp);
 
-let sessionId = "12345678";
+var sessionId = "session12345";
 let students = [321321321321, 123123123123]
-let location = 'charlesStreet';
-let dateTime = new Date(11-10-2022);
+let location = 'Charles Street';
+let dateTime = "11-10-2022";
+
+//Testing GET /sessions
+describe('GET /sessions', () => {
+    it('it should GET all the sessions', (done) => {
+        chai.request(server)
+        .get('/sessions')        
+        .auth(token, {type: 'bearer'})
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('string');
+            res.body.length.should.not.be.eql(0);
+            done();
+        });
+    });
+});
+//Finished GET /sessions
+
 //Testing POST /sessions - positive test
 describe('POST /sessions', () => {
     let session;
@@ -19,11 +36,11 @@ describe('POST /sessions', () => {
         Session.find({})
         .then(data => {
             session = {
-                _Id: sessionId,
+                Id: sessionId,
                 Students: students,
                 Location: location,
                 DateAndTime: dateTime,
-            }; 
+            };
             done();
         })
         .catch(err => {
@@ -34,11 +51,15 @@ describe('POST /sessions', () => {
     it('it should POST an session ', (done) => {        
         chai.request(server)
             .post('/sessions')
+            .auth(token, {type: 'bearer'})
             .send(session)
             .end((err, res) => {
+                console.log(session);
+                console.log(res.body);
                 const returnedSession = (Session)(JSON.parse(res.body));
 
                 res.should.have.status(200);
+                returnedSession.should.have.property('_id');
                 returnedSession.should.have.property('Students');
                 returnedSession.should.have.property('Location');
                 returnedSession.should.have.property('DateAndTime');
@@ -47,34 +68,44 @@ describe('POST /sessions', () => {
                 done();
             });
         });
-});
+    });
+//Finished POST
 
-//Testing GET /users
+//Testing GET /sessions - positive test
 describe('GET /sessions', () => {
-    it('it should GET all the sessions', (done) => {
+    it('it should GET session', (done) => {
         chai.request(server)
-        .get('/sessions')
+        .get(`/sessions/${sessionId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
+
+            const returnedSession = (Session)(JSON.parse(res.body));
+
+            returnedSession.Location.should.eql(location);
+            returnedSession.DateAndTime.should.eql(new Date(dateTime));
             done();
         });
     });
 });
-//Finished GET /users
+//Testing GET /sessions - positive test
 
-//Testing PUT /users - positive test
-describe('PUT /users', () => {
+let updateLocation = "Owen";
+let updateDateTime = "12-21-2022";
+//Testing PUT /sessions - positive test
+describe('PUT /sessions', () => {
     let session;
-    let updateLocation = "Owen";
 
     before(function(done) {
         Session.find({})
         .then(data => {
             session = {
+                Students: students,
+                DateAndTime: updateDateTime,
                 Location: updateLocation,
-            }; 
+            };
             done();
         })
         .catch(err => {
@@ -82,18 +113,23 @@ describe('PUT /users', () => {
         });
     });
     
-    it('it should PUT an session ', (done) => {        
+    it('it should POST an session ', (done) => {        
         chai.request(server)
             .put(`/sessions/${sessionId}`)
+            .auth(token, {type: 'bearer'})
             .send(session)
             .end((err, res) => {
                 const returnedSession = (Session)(JSON.parse(res.body));
 
+                res.should.have.status(200);
+
+                console.log(res.body);
                 console.log(returnedSession);
 
-                res.should.have.status(200);
-                returnedUser.FirstName.should.not.eql(location);
-                returnedUser.FirstName.should.eql(updateLocation);
+                returnedSession.Location.should.not.eql(location);
+                returnedSession.Location.should.eql(updateLocation); 
+                returnedSession.DateAndTime.should.not.eql(new Date(dateTime));
+                returnedSession.DateAndTime.should.eql(new Date(updateDateTime));
                 
                 done();
             });
@@ -101,11 +137,12 @@ describe('PUT /users', () => {
     });
 //Testing PUT /sessions - positive test
 
-//Testing DELETE /users - positive test
+//Testing DELETE /sessions - positive test
 describe('DELETE /sessions', () => {
     it('it should DELETE session', (done) => {
         chai.request(server)
-        .delete(`/users/${sessionId}`)
+        .delete(`/sessions/${sessionId}`)
+        .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
             done();
