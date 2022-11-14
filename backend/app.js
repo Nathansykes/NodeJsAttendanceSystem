@@ -14,7 +14,7 @@ var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
-var authRouter = require('./routes/auth.routes');
+var authRouter = require('./routes/authentication.routes');
 
 function Authenticate(req, res, next){
   if (req.path.toLowerCase() == '/login') {
