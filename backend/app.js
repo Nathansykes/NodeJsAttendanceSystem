@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var Auth = require("./authentication");
 
 var bodyParser = require("body-parser");
 var cors = require('cors');
@@ -13,12 +14,26 @@ var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
+var authRouter = require('./routes/authentication.routes');
+
+function Authenticate(req, res, next){
+  if (req.path.toLowerCase() == '/login') {
+    next();
+    return;
+  }
+  var result = Auth.verifyToken(req);
+  if (result.Status == 200)
+  {
+    next();
+  }
+  else{
+    res.status(result.Status).send({ message: result.Message });
+  }
+}
 
 var app = express();
 
-// not needed in backend
-// app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'jade');
+app.use(Authenticate);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -33,6 +48,9 @@ app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
+app.use('/', authRouter);
+
+
 // adding cors module
 app.use(cors());
 
