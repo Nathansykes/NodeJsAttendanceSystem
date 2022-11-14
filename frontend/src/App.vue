@@ -9,12 +9,13 @@
 
 import LoginVue from './components/Login.vue';
 import Index from './components/SecureIndex.vue';
+import httpCommonService from "./services/http-common.data.service";
 
 export default {
   name: "app",
   data() {
     return {
-      loggedIn: localStorage.getItem("user")
+      loggedIn: httpCommonService.getCookie("access_token")
     }
   },
   components: {

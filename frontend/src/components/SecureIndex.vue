@@ -25,13 +25,16 @@
   </template>
   
   <script>
+
+  import httpCommonService from "../services/http-common.data.service";
+
   export default {
     name: "app",
     methods : 
     {
       Logout() 
       {
-        localStorage.removeItem("user");
+        httpCommonService.deleteCookie("access_token");
         this.$router.push("/");
       }
     }
