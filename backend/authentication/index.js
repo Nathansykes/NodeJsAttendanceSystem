@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
+var ApplicationUser = require("../../shared/ApplicationUser");
 
 exports.createHash = async (password) => {
     try {
@@ -16,9 +17,15 @@ exports.verifyPassword = (password, dbHash) => {
     return bcrypt.compare(password, dbHash);
 }
 
-exports.generateToken = (userId) => {
+exports.generateToken = (data) => {
     try {
-        var token = jwt.sign({ Id: userId }, '6987beea-c26c-4193-b4d7-a27ed1ee4069'); // to do - use env variables
+        var applicationUser = new ApplicationUser(
+            data._id,
+            data.FirstName,
+            data.LastName,
+            data.UserType
+        );
+        var token = jwt.sign(applicationUser, '6987beea-c26c-4193-b4d7-a27ed1ee4069'); // to do - use env variables
         return token;
     }
     catch (error) {
@@ -63,4 +70,12 @@ function tokenIsValid(token) {
     catch (error) {
         return false
     }
+}
+
+exports.GetApplicationUser = (token) => {
+    var result = jwt.verify(token, '6987beea-c26c-4193-b4d7-a27ed1ee4069');
+    if (result) {
+        return result;
+    }
+    return null;
 }

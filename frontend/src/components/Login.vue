@@ -23,6 +23,7 @@
 </template>
 <script>
 import Authentication from '../services/authentication.data.service';
+import CommonDataService from '../services/http-common.data.service';
 
 export default{
     
@@ -33,7 +34,7 @@ export default{
             Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
-                document.cookie=`access_token=${token}`;
+                CommonDataService.setCookie('ApplicationUser', token);
                 this.$router.push('/users')
             })
             .catch(error => 

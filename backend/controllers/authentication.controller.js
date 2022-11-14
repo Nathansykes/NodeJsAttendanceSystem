@@ -13,7 +13,7 @@ exports.login = (req, res) => {
             console.log(data);
             if (data.Password) {
                 if (Auth.verifyPassword(req.body.Password, data.Password)) {
-                    var token = Auth.generateToken(req.body.Id);
+                    var token = Auth.generateToken(data);
                     var response = {
                         Token: token,
                     }

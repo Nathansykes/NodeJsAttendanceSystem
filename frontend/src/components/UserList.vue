@@ -1,4 +1,7 @@
 <template>
+
+<button @click="testUser" >Test</button>
+
     <div class="list row">
       <div class="col-md-8">
         <div class="input-group mb-3">
@@ -53,6 +56,7 @@
 <script>
   import UserDataService from "../services/user.data.service";
   import UserSelectList from "./shared/UserSelectList.vue";
+  import CommonDataService from '../services/http-common.data.service';
   
   export default {
     name: "users-list",
@@ -69,6 +73,10 @@
       };
     },
     methods: {
+      testUser() {
+        var user = CommonDataService.ApplicationUser();
+        console.log(user);
+      },
       retrieveUsers() {
         UserDataService.getAll(UserSelectList.selectedUserType)
           .then(response => 
