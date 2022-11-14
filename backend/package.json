@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./server.js",
-    "test": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test/results/test-results.xml --timeout 5000 --exit"
+    "test-pipeline": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test/results/test-results.xml --timeout 5000 --exit",
+    "test": "mocha --timeout 5000 --exit"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
