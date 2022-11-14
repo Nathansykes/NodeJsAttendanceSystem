@@ -22,7 +22,7 @@
     </div>
 </template>
 <script>
-import UserDataService from '../services/user.data.service';
+import Authentication from '../services/authentication.data.service';
 
 export default{
     
@@ -30,10 +30,10 @@ export default{
     methods: {
         login() 
         {            
-            UserDataService.login({Id: this.userId, Password : this.userPassword}).then(response => 
+            Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
-                localStorage.setItem("user", token);
+                document.cookie=`access_token=${token}`;
                 this.$router.push('/users')
             })
             .catch(error => 
