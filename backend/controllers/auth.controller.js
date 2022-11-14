@@ -1,14 +1,16 @@
-let Auth = require("../auth");
+let Auth = require("../auth/hash");
 let UserController = require("../controllers/user.controller");
+let User = require("../models/user.model");
 
 exports.login = (req, res) => {
-    if (!req.body.Email || !req.body.Password) {
+    if (!req.body.Id || !req.body.Password) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
 
-    UserController.findOne(req.body.Email)
-        .then(data => {
+    User.findOne({ Id : req.body.Id }).then(data =>
+        {
+            console.log(data);
             if (data) {
                 if (Auth.verifyPassword(req.body.Password, data.Password)) {
                     //to do - generate token
