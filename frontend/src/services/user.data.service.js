@@ -3,7 +3,7 @@ import http from "../http-common";
 class UserDataService {
 
     getAll(userType) {
-      return http.get("/users", { params : {UserType : userType}});
+        return http.get("/users", { params : {UserType : userType}});
     }
 
     get(id) {

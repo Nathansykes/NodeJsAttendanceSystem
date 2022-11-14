@@ -1,28 +1,37 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/users" class="nav-link">Users</router-link>
-        </li>
-
-        <li class="nav-item">
-          <router-link to="/add-user" class="nav-link">Add</router-link>
-        </li>
-
-      </div>
-    </nav>
-
-    <div class="container mt-3">
-      <h2>Attendance</h2>
-      <router-view />
-    </div>
+    <LoginVue v-if="!loggedIn"/>
+    <Index v-if="loggedIn"/>
   </div>
 </template>
 
 <script>
+
+import LoginVue from './components/Login.vue';
+import Index from './components/SecureIndex.vue';
+import httpCommonService from "./services/http-common.data.service";
+
 export default {
-  name: "app"
+  name: "app",
+  data() {
+    return {
+      loggedIn: httpCommonService.getCookie("access_token")
+    }
+  },
+  components: {
+      LoginVue,
+      Index
+    },
+  mounted() {
+      if (this.loggedIn) 
+      {
+        this.$router.push('/users')
+      }
+      else 
+      {
+        this.$router.push('/login')
+      }
+    }
 };
 </script>
 
@@ -33,6 +42,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

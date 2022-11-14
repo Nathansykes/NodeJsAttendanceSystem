@@ -65,7 +65,7 @@
         currentUser: null,
         currentIndex: -1,
         name: "",
-        selectedUserType: ''
+        selectedUserType: '',
       };
     },
     methods: {
@@ -74,11 +74,11 @@
           .then(response => 
           {
             const users = JSON.parse(response.data);
-
             this.users = users;
           })
-          .catch(e => {
-            console.log(e);
+          .catch(error => 
+          {
+            console.log(error);
           });
       },
   
