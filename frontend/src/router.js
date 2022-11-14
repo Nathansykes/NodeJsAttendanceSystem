@@ -6,6 +6,12 @@ const routes = [
         alias: "/users",
         name: "users",
         component: () => import("./components/UserList.vue")
+    },
+    {
+        path:"/",
+        alias:"/upload",
+        name:"upload",
+        component: () => import("./components/UploadFile.vue")
     }
 ];
 
