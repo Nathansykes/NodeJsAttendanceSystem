@@ -10,10 +10,6 @@ class UserDataService {
         return http.get(`/users/id=${id}`)
     }
 
-    login(data) {
-        return http.post("/login", data);
-    }
-
     create(data) {
         return http.post("/users", data);
     }
