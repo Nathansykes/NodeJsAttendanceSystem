@@ -73,9 +73,7 @@
         UserDataService.getAll(UserSelectList.selectedUserType)
           .then(response => 
           {
-            console.log(response);
             const users = JSON.parse(response.data);
-
             this.users = users;
           })
           .catch(error => 
