@@ -65,7 +65,7 @@
         currentUser: null,
         currentIndex: -1,
         name: "",
-        selectedUserType: ''
+        selectedUserType: '',
       };
     },
     methods: {
@@ -73,12 +73,14 @@
         UserDataService.getAll(UserSelectList.selectedUserType)
           .then(response => 
           {
+            console.log(response);
             const users = JSON.parse(response.data);
 
             this.users = users;
           })
-          .catch(e => {
-            console.log(e);
+          .catch(error => 
+          {
+            console.log(error);
           });
       },
   
