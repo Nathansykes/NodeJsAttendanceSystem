@@ -61,7 +61,7 @@ describe('POST /courses', () => {
             });
         });
     });
-//Finished POST /petshop/pets
+//Finished POST
 
 //Testing GET /courses - positive test
 describe('GET /courses', () => {
