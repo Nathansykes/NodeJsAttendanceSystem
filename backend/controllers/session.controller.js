@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 const Session = require("../models/session.model");
 
 exports.create = (req, res) => {
+    console.log("1st Breakpoint")
     if (!req.body.Location) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
@@ -45,10 +46,10 @@ function createSession(body, res)
   try 
   {
     var session = {
-      _id: mongoose.Types.ObjectId(body.Id),
-      Student: body.Student,
+      //_id: mongoose.Types.ObjectId(body.Id),
+      Students: body.Students,
       Location: body.Location,
-      LastName: body.Time,
+      Time: body.Time,
     }
   }
   catch (error) 
