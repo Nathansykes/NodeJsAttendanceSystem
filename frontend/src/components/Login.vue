@@ -16,6 +16,7 @@
                             <input class="submit_class" type="submit" @click="login()"/>
                         </form>
                     </div>
+                    <p v-if=errorMessage>{{errorMessage}}</p>
                 </div>
             </main>
         </body>
@@ -27,9 +28,15 @@ import Authentication from '../services/authentication.data.service';
 export default{
     
     name:"app",
+    data(){
+        return{
+            errorMessage: "",
+        }
+    },
     methods: {
         login() 
-        {            
+        {
+            
             Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
@@ -38,6 +45,10 @@ export default{
             })
             .catch(error => 
             {
+                if(error.response.status == 401)
+                {
+                    this.errorMessage = error.response.data.message;
+                }
                 console.log(error);
             });
         }

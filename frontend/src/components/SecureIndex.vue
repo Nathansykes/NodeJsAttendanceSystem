@@ -2,7 +2,7 @@
   <div id="index">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="#">Attendance Register</a>
+        <a class="navbar-brand" href="#">{{this.title}}</a>
         <div class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link to="/users" class="nav-link">Users</router-link>
@@ -46,6 +46,11 @@ import httpCommonService from "../services/http-common.data.service";
 
 export default {
   name: "app",
+  data(){
+        return{
+            title: document.title,
+        }
+    },
   methods:
   {
     Logout() {
