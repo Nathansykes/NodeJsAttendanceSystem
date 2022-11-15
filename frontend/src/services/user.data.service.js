@@ -10,6 +10,9 @@ class UserDataService {
         return http.get(`/users/id=${id}`)
     }
 
+    getAttendance(id){
+        return http.get(`/attendance/id=${id}`)
+    }
     create(data) {
         return http.post("/users", data);
     }
