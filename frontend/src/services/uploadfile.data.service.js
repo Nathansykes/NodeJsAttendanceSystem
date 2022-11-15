@@ -1,10 +1,13 @@
-import http from "../http-common";
+import http from "../http/http-form-data";
+import * as FormData  from 'form-data'
 
-class UserDataService {
+class UploadFileDataService {
     uploadUserFile(file) {
         console.log(file)
-        return http.post("/fileimport/users", { FileList: file });
+        let formData = new FormData();
+        formData.append('UserFile', file);
+        return http.post("/fileimport/users", formData);
     }
 }
 
-export default new UserDataService();
+export default new UploadFileDataService();

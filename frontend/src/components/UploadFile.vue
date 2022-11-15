@@ -1,18 +1,13 @@
 <template>
     <div id="upload">
         <body>
-            <header>CSV Upload</header>
-            <main>
-                <form>
-                    <label>Select File</label>
-                    <input name="UserFile" type="file" @change="handleFileUpload">
-                    <button type="button" @click="submitFile">Upload</button>
-                </form>
-
-            </main>
-
+            <h3>CSV Upload</h3>
+            <br />
+            <form>
+                <input name="UserFile" type="file" @change="handleFileUpload">
+                <button type="button" class="btn btn-primary" @click="submitFile">Upload</button>
+            </form>
         </body>
-
     </div>
 
 
@@ -37,10 +32,10 @@ export default {
         submitFile() {
             UploadFileService.uploadUserFile(this.file).then(response => {
                 console.log(response);
-            })            
-          .catch(e => {
-            console.log(e); 
-          });
+            })
+                .catch(e => {
+                    console.log(e);
+                });
         }
     }
 }
