@@ -29,8 +29,8 @@ exports.importUsers = (req, res) => {
                 users.forEach(user => {
                     user.save()
                         .then(data => {
-                            count++;
                         });
+                    count++;
                 });
                 res.send({ message: `File uploaded successfully. ${count} users added to the database.` });
             }
