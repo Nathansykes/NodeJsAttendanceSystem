@@ -8,6 +8,12 @@ const routes = [
         component: () => import("./components/UserList.vue")
     },
     {
+        path:"/",
+        alias:"/upload",
+        name:"upload",
+        component: () => import("./components/UploadFile.vue")
+    },
+    {
         path: "/",
         alias: "/login",
         name: "Login Page",
