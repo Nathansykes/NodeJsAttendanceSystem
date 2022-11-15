@@ -63,10 +63,11 @@ async function createUserFromBody(body, res) {
     var userType = parseInt(body.UserType);
   } // check userType is able to be parsed
 
-  return await this.createUser(data, userType);
+  return await createUser(data, userType);
 }
 
-exports.createUser = async (data, userType) => {
+async function createUser(data, userType)
+{
   var errorMessage = `User could not be created: ${userType} is not a valid UserType.`;
 
   var user;
@@ -93,6 +94,7 @@ exports.createUser = async (data, userType) => {
   }
   return user;
 }
+exports.createUser = createUser;
 
 // Find all users matching query
 exports.find = (req, res) =>
