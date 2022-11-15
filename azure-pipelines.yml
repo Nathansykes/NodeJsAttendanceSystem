@@ -24,7 +24,7 @@ steps:
   inputs:
     command: 'custom'
     workingDir: '$(Build.SourcesDirectory)/backend'
-    customCommand: 'run test pipeline -- --connection  mongodb+srv://pipelines:Ypb0SpLHKZ4C5hFA@cluster0.j8rtm4p.mongodb.net/test'
+    customCommand: 'run test-pipeline -- --connection  mongodb+srv://pipelines:Ypb0SpLHKZ4C5hFA@cluster0.j8rtm4p.mongodb.net/test'
 
 - task: PublishTestResults@2
   displayName: 'Publish Unit Test Results'
