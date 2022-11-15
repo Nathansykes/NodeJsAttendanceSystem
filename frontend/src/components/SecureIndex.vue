@@ -1,59 +1,68 @@
 <template>
-    <div id="index">
-      <nav class="navbar navbar-expand navbar-dark bg-dark">
-        <div class="navbar-nav mr-auto">
+  <div id="index">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">{{this.title}}</a>
+        <div class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link to="/users" class="nav-link">Users</router-link>
           </li>
-  
+
           <li class="nav-item">
             <router-link to="/add-user" class="nav-link">Add</router-link>
           </li>
-  
-          <form action="/" class="nav-item">
-            <input type="submit" to="/login" class="nav-link" value="Logout" @click="Logout()"/>
-          </form>
-  
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Upload File
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <router-link to="/upload" class="dropdown-item">Users</router-link>
+              </li>
+            </ul>
+          </li>
+
         </div>
-      </nav>
-  
-      <div class="container mt-3">
-        <h2>Attendance</h2>
-        <router-view />
+        <div class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <form action="/">
+              <input type="submit" to="/login" class="nav-link" value="Logout" @click="Logout()" />
+            </form>
+          </li>
+        </div>
       </div>
+    </nav>
+    <div class="container mt-3">
+      <router-view />
     </div>
-  </template>
+  </div>
+</template>
   
-  <script>
+<script>
 
-  import httpCommonService from "../services/http-common.data.service";
+import httpCommonService from "../services/http-common.data.service";
 
-  export default {
-    name: "app",
-    methods : 
-    {
-      Logout() 
-      {
-        httpCommonService.deleteCookie("access_token");
-        this.$router.push("/");
-      }
+export default {
+  name: "app",
+  data(){
+        return{
+            title: document.title,
+        }
+    },
+  methods:
+  {
+    Logout() {
+      httpCommonService.deleteCookie("access_token");
+      this.$router.push("/");
     }
-  };
-  </script>
+  },
+  computed: {
+    currentRoute() {
+      return this.$route.name;
+    }
+  }
+};
+</script>
   
-  <style>
-  #index {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-  #nav-item button, input[type="submit"], input[type="reset"] {
-    background: none;
-    border: none;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-  }
-  </style>

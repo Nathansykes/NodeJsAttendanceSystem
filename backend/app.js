@@ -7,6 +7,7 @@ var Auth = require("./authentication");
 
 var bodyParser = require("body-parser");
 var cors = require('cors');
+var fileupload = require("express-fileupload");
 
 
 var indexRouter = require('./routes/index');
@@ -16,6 +17,7 @@ var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
 var sessionRouter = require('./routes/session.routes');
 var authRouter = require('./routes/authentication.routes');
+var fileuploadRouter = require('./routes/fileupload.routes');
 
 function Authenticate(req, res, next){
   if (req.path.toLowerCase() == '/login') {
@@ -35,6 +37,7 @@ function Authenticate(req, res, next){
 var app = express();
 
 app.use(cors());
+app.use(fileupload());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -50,6 +53,7 @@ app.use('/', courseRouter);
 app.use('/', attendanceRouter);
 app.use('/', sessionRouter);
 app.use('/', authRouter);
+app.use('/', fileuploadRouter);
 
 //Database connection code
 const db = require("./models");

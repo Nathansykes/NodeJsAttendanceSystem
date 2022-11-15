@@ -8,6 +8,12 @@ const routes = [
         component: () => import("./components/UserList.vue")
     },
     {
+        path:"/",
+        alias:"/upload",
+        name:"upload",
+        component: () => import("./components/UploadFile.vue")
+    },
+    {
         path: "/",
         alias: "/login",
         name: "Login Page",
@@ -23,7 +29,8 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
+    linkActiveClass: "active"
 });
 
 export default router;
