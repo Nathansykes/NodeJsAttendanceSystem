@@ -14,6 +14,7 @@ var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');
 var courseRouter = require('./routes/course.routes');
 var attendanceRouter = require('./routes/attendanceRecord.routes');
+var sessionRouter = require('./routes/session.routes');
 var authRouter = require('./routes/authentication.routes');
 
 function Authenticate(req, res, next){
@@ -47,7 +48,7 @@ app.use('/', usersRouter);
 app.use('/', moduleRouter);
 app.use('/', courseRouter);
 app.use('/', attendanceRouter);
-app.use('/', authRouter);
+app.use('/', sessionRouter);
 
 
 //Database connection code

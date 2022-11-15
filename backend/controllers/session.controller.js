@@ -49,7 +49,7 @@ function createSession(body, res)
       //_id: mongoose.Types.ObjectId(body.Id),
       Students: body.Students,
       Location: body.Location,
-      Time: body.Time,
+      DateAndTime: body.DateAndTime,
     }
   }
   catch (error) 

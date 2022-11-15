@@ -4,7 +4,7 @@ var router = express.Router();
 //Require controller
 var sessionController = require('../controllers/session.controller');
  
-// Create a new module
+// Create a new session
 router.post("/sessions/", sessionController.create);
  
 // Retrieve all session
