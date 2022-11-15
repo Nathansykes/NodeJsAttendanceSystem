@@ -6,7 +6,7 @@
                 <form>
                     <label>Select File</label>
                     <input name="UserFile" type="file" @change="handleFileUpload">
-                    <button type="submit" @click="submitFile">Upload</button>
+                    <button type="button" @click="submitFile">Upload</button>
                 </form>
 
             </main>
@@ -34,8 +34,13 @@ export default {
         handleFileUpload(event) {
             this.file = event.target.files[0];
         },
-        uploadFile() {
-            UploadFileService.uploadUserFile(this.file)
+        submitFile() {
+            UploadFileService.uploadUserFile(this.file).then(response => {
+                console.log(response);
+            })            
+          .catch(e => {
+            console.log(e); 
+          });
         }
     }
 }
