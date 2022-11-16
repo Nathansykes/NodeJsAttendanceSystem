@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 exports.CreateObjectId = function (id) {
-    if (parseInt(id) == "NaN") {
+    if (isNaN(parseInt(id))) {
         throw "Id is not a valid number.";
     }
     if (id.length > 24) {
