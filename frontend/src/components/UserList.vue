@@ -23,7 +23,7 @@
             :key="index"
             @click="setActiveUser(user, index)"
           >
-            {{ user._id }}
+            {{ parseInt(user._id) }}
             <br/>
             {{ user.FirstName + " " + user.LastName }}
           </li>
@@ -34,7 +34,7 @@
         <div v-if="currentUser">
           <h4>User</h4>
           <div>
-            <label><strong>Id:</strong></label> {{ currentUser._id }}
+            <label><strong>Id:</strong></label> {{ parseInt(currentUser._id) }}
           </div>
           <div>
             <label><strong>Name:</strong></label> {{ currentUser.FirstName + " " + currentUser.LastName }}

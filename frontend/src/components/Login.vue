@@ -7,13 +7,13 @@
             <main>
                 <div id="login_form" class="form_class">
                     <div class="form_div">
-                        <!-- form action '/' refreshes the page -->
-                        <form action="/">
+                        <i>Id: 1000, Password: password</i>
+                        <form>
                             <label>Login:</label>
-                            <input v-model="userId" class="field_class" name="Id" type="text" placeholder="Username" autofocus>
+                            <input v-model="userId" class="field_class" name="Id" type="text" placeholder="Id" autofocus>
                             <label>Password:</label>
                             <input v-model="userPassword" id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
-                            <input class="submit_class" type="submit" @click="login()"/>
+                            <button class="submit_class" type="button" @click="login()">Login</button>
                         </form>
                     </div>
                     <p v-if=errorMessage>{{errorMessage}}</p>
@@ -36,12 +36,12 @@ export default{
     methods: {
         login() 
         {
-            
             Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
                 document.cookie=`access_token=${token}`;
                 this.$router.push('/users')
+                window.location.href= '/';
             })
             .catch(error => 
             {

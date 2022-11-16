@@ -7,6 +7,7 @@ const ModuleLeader = require("../models/moduleLeader.model");
 const CourseLeader = require("../models/courseLeader.model");
 const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
+const Generic = require("../generic/functions");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -40,14 +41,11 @@ exports.create = async (req, res) => {
 
 async function createUserFromBody(body, res) {
   var user;
-  
-
   var passwordHash = await Auth.createHash(body.Password);
-  
   try 
   {
     var data = {
-      _id: mongoose.Types.ObjectId(body.Id),
+      _id: Generic.CreateObjectId(body.Id),
       AccessLevel: body.AccessLevel,
       FirstName: body.FirstName,
       LastName: body.LastName,
@@ -134,7 +132,7 @@ exports.find = (req, res) =>
 // Find a single User with an id
 exports.findOne = (req, res) => {
 
-  const id = req.params.id;
+  const id = req.params.id.toString().padStart(24, '0');
 
   User.findById(id).then(data =>
     {
@@ -145,10 +143,9 @@ exports.findOne = (req, res) => {
 // Update a User by the id in the request
 exports.update = (req, res) => {
 
-  const id = req.params.id;
+  const id = req.params.id.toString().padStart(24, '0');
   
   var updateData = {
-    AccessLevel: req.body.AccessLevel,
     FirstName: req.body.FirstName,
     LastName: req.body.LastName,
   }
