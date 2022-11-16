@@ -26,7 +26,7 @@ describe('GET /users', () => {
 });
 //Finished GET /users
 
-var userId = "b90214006714";
+var userId = "290214006714";
 var userName = "Ben";
 //Testing POST /users - positive test
 //TODO: Update to cover all UserTypes.
