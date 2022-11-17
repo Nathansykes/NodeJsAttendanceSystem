@@ -11,8 +11,8 @@ chai.use(chaiHttp);
 global.token = undefined;
 describe('POST /login', () => {
     var login = {
-        Id: "111111111111",
-        Password: "testpassword"    
+        Id: "1000",
+        Password: "password"    
     }; 
     it('it should login an user ', (done) => {        
         chai.request(server)

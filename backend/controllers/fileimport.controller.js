@@ -4,6 +4,7 @@ const User = require("../models/user.model");
 const UserController = require("../controllers/user.controller");
 const Constants = require("../../shared/constants").Constants;
 const UserTypes = require("../../shared/usertypes");
+const Generic = require("../generic/functions");
 
 const { parse } = require('csv-parse');
 
@@ -24,7 +25,14 @@ exports.importUsers = (req, res) => {
                     res.status(400).send({ message: "Invalid data in file.", result: result });
                     return;
                 }
-                var users = await Promise.all(data.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
+                var userData = data.map(x => ({
+                        _id: Generic.CreateObjectId(x.Id),
+                        UserType: x.UserType,
+                        FirstName: x.FirstName,
+                        LastName: x.LastName,
+                        Password: x.Password,
+                }));
+                var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
                 var count = 0;
                 users.forEach(user => {
                     user.save()
@@ -53,7 +61,7 @@ function validateUserData(fileData) {
         IsValid: false,
     };
     fileData.forEach(user => {
-        if (!user.Id || user.Id.length != 12) {
+        if (!user.Id || isNaN(parseInt(user.Id))) {
             result.InvalidIdCount++;
         }
         if (!user.FirstName) {

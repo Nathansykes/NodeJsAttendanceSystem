@@ -8,7 +8,7 @@ exports.login = (req, res) => {
         return;
     }
 
-    User.findById(req.body.Id).then(data =>
+    User.findById(req.body.Id.toString().padStart(24, '0')).then(data =>
         {
             console.log(data);
             if (data.Password) {
