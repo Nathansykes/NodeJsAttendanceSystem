@@ -15,6 +15,7 @@ export default {
       return this.model[this.index]?.children && this.model[this.index]?.children.length
     }
   },
+  emits: ['selectedModel'],
   methods: {
     toggle() 
     {
@@ -26,6 +27,7 @@ export default {
     setSelectedIndex(index) 
     {
       this.index = index;
+      this.$emit('selectedModel', this.model[this.index]);
       this.toggle();
     }
   }
@@ -41,7 +43,7 @@ export default {
         </span>
       </li>
       <ul v-show="isOpen[index]" v-if="hasChildren">
-        <TreeItem :model="item.children"/>
+        <TreeItem :model="item.children" @selectedModel="(value) => this.$emit('selectedModel', value)"/>
       </ul>
     </ul>
   </div>

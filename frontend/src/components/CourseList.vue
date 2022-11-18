@@ -15,20 +15,15 @@
       </div>
       <div class="col-md-6">
         <h4>Courses List</h4>
-          <TreeItem :model="courses"/>
-
+        <TreeItem :model="treeViewData" @selectedModel="(value) => setActiveModel(value)"/>
       </div>
       <div class="col-md-6">
-        <div v-if="currentCourse">
-          <h4>Course</h4>
-          <div>
-            <label><strong>Id:</strong></label> {{ currentCourse._id }}
+        <h4>Details</h4>
+        <div v-if="currentModel">
+          <div v-for="(property) in currentModelProperties"
+            :key="property">
+            <label><strong>{{property.key}}:</strong></label>{{property.value}}
           </div>
-          <div>
-            <label><strong>Title:</strong></label> {{ currentCourse.Title }}
-          </div>
-  
-          <router-link :to="'/courses/' + currentCourse._id" class="badge badge-warning">Edit</router-link>
         </div>
         <div v-else>
           <br />
@@ -39,9 +34,8 @@
   </template>
   
 <script>
-  import CourseDataService from "../services/course.data.service";
-  import ModuleDataService from "../services/module.data.service";
-  import SessionDataService from "../services/session.data.sevice";
+  // TODO: Make a master data service routes file
+  import ModelDataService from "../services/models.data.service";
   import TreeItem from './shared/TreeItem.vue'
   
   export default {
@@ -51,15 +45,17 @@
     },
     data() {
       return {
-        courses: [],
-        currentCourse: null,
+        models: [],
+        treeViewData: [],
+        currentModel: null,
+        currentModelProperties: [],
         currentIndex: -1,
         title: "",
       };
     },
     methods: {
       retrieveCourses() {
-        CourseDataService.getAll()
+        ModelDataService.CourseDataService.getAll()
           .then(response => 
           {
             const data = JSON.parse(response.data);
@@ -68,13 +64,14 @@
             {
               var course = 
               {
+                id : data[i]._id,
                 name : data[i].Title,
-                children : this.createTreeViewData(ModuleDataService.get, data[i].Modules, "Modules"),
+                children : this.createTreeViewData(ModelDataService.ModuleDataService.get, data[i].Modules, "Modules"),
               }
 
-              this.courses.push(course);
+              this.treeViewData.push(course);
+              this.models.push(data[i]);
             }
-            console.log(this.courses);
           })
           .catch(error => 
           {
@@ -84,7 +81,7 @@
 
       createTreeViewData(getData, ids, type) 
       {
-        const collection = [];
+        const treeViewData = [];
 
         getData(ids).then(response => 
         {
@@ -98,7 +95,7 @@
           switch(type) 
           {
             case "Sessions":
-              getData = SessionDataService.get;
+              getData = ModelDataService.SessionDataService.get;
               break;
               default:
                 break;
@@ -113,14 +110,17 @@
           {
             let item = 
             {
+              id : data[i]._id,
               name : data[i].Title,
-              children : this.createTreeViewData(SessionDataService.get, this.GetPropertyValue(data[i], "Sessions")),
+              children : this.createTreeViewData(ModelDataService.SessionDataService.get, this.GetPropertyValue(data[i], "Sessions")),
             };
-            collection.push(item);
+
+            treeViewData.push(item);
+            this.models.push(data[i]);
           }
         })
         
-        return collection;
+        return treeViewData;
       },
 
       GetPropertyValue(obj1, dataToRetrieve) 
@@ -131,6 +131,24 @@
             return o && o[k]; // get inner property if `o` is defined else get `o` and return
           }, obj1) // set initial value as object
       },
+
+      GetProperties(obj) 
+      {
+        var properties = [];
+        var values = [];
+        var dictionary = [];
+        
+        for(var key in obj) 
+        {
+            if(Object.prototype.hasOwnProperty.call(obj, key) && typeof obj[key] !== 'function') 
+            {
+                properties.push(key);
+                values.push(this.GetPropertyValue(obj, key));
+                dictionary.push( { key : key, value : this.GetPropertyValue(obj, key) });
+            }
+        }
+        return dictionary;
+      },
   
       refreshList() {
         this.retrieveCourses();
@@ -138,13 +156,15 @@
         this.currentIndex = -1;
       },
   
-      setActiveCourse(course, index) {
-        this.currentCourse = course;
-        this.currentIndex = course ? index : -1;
+      setActiveModel(model) 
+      {
+        this.currentModel = this.models.find(x => x._id === model.id);
+        this.currentIndex = this.models.indexOf(this.currentModel);
+        this.currentModelProperties = this.GetProperties(this.currentModel);
       },
       
       searchName() {
-        CourseDataService.findByName(this.title)
+        ModelDataService.CourseDataService.findByName(this.title)
           .then(response => 
           {
             const courses = JSON.parse(response.data);
