@@ -33,16 +33,18 @@ export default {
 </script>
 
 <template>
-  <ul class="list-group">
-    <li v-for="(model, index) in model" :key="index"
-      class="list-group-item"
-      @click="setSelectedIndex(index)">
-        {{ model.name }}
-        <ul v-show="isOpen[index]" v-if="hasChildren">
-          <TreeItem :model="model.children"/>
-        </ul>
-    </li>
-  </ul>
+  <div>
+    <ul class="list-group" v-for="(item, index) in model" :key="index">
+      <li class="list-group-item">
+        <span @click="setSelectedIndex(index)">
+          {{ item.name }}
+        </span>
+      </li>
+      <ul v-show="isOpen[index]" v-if="hasChildren">
+        <TreeItem :model="item.children"/>
+      </ul>
+    </ul>
+  </div>
 </template>
 
 <style>
