@@ -69,11 +69,15 @@ exports.findAll = (req, res) => {
 // Find a single Module with an id
 exports.findOne = (req, res) => {
 
-  const id = req.params.id;
+  const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Module.findById(id).then(data =>
+  Module.find({_id: {$in: ids}}).then(data =>
   {
     res.json(JSON.stringify(data));
+  })
+  .catch(error => 
+  {
+    res.send({message : error});
   });
 };
 
