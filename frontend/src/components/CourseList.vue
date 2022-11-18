@@ -86,6 +86,7 @@
 
               this.courses.push(course);
             }
+            console.log(this.courses);
           })
           .catch(error => 
           {
@@ -100,12 +101,12 @@
         getData(ids).then(response => 
         {
           let data = JSON.parse(response.data);
-          
+
           if (!data) 
           {
             return;
           }
-          
+
           // switch(type) 
           // {
           //   case "Modules":
@@ -114,6 +115,11 @@
           //     default:
           //       break;
           // }
+
+          if (!Array.isArray(data)) 
+          {
+            data = [data];
+          }
   
           for (let i = 0; i < data.length; i++) 
           {

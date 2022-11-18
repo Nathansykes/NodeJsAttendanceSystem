@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "../http/http-form-data";
 
 class CourseDataService {
 
@@ -7,7 +7,7 @@ class CourseDataService {
     }
 
     get(id) {
-        return http.get(`/courses/id=${id}`)
+        return http.get(`/courses/${id}`)
     }
 
     login(data) {

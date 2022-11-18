@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "../http/http-form-data";
 
 class ModuleDataService {
 
@@ -8,10 +8,6 @@ class ModuleDataService {
 
     get(id) {
         return http.get(`/modules/${id}`);
-    }
-
-    login(data) {
-        return http.post("/login", data);
     }
 
     create(data) {
