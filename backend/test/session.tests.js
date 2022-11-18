@@ -86,11 +86,15 @@ describe('GET /sessions', () => {
 
             console.log(res.body);
 
-            const returnedSession = (Session)(JSON.parse(res.body));
-            console.log(returnedSession);
+            const returnedSessions = (JSON.parse(res.body));
 
-            returnedSession.Location.should.eql(location);
-            returnedSession.DateAndTime.should.eql(new Date(dateTime));
+            returnedSessions.forEach(session => 
+            {
+                session.Location.should.eql(location);
+                var date = new Date(session.DateAndTime).getUTCDate();
+                date.should.eql(new Date(dateTime).getUTCDate());
+            });
+
             done();
         });
     });
