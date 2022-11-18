@@ -41,6 +41,7 @@ function createSession(body, res)
   {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
+      Title: body.Title,
       Location: body.Location,
       DateAndTime: new Date(body.DateAndTime),
       Students: body.Students,
@@ -67,12 +68,16 @@ exports.findAll = (req, res) => {
 // Find a single Session with an id
 exports.findOne = (req, res) => {
 
-    const id = req.params.id;
-  
-    Session.findById(id).then(data =>
-    {
-      res.json(JSON.stringify(data));
-    });
+  const ids = (req.params.id).replace(/ /g, '').split(",");
+
+  Session.find({_id: {$in: ids}}).then(data =>
+  {
+    res.json(JSON.stringify(data));
+  })
+  .catch(error => 
+  {
+    res.send({message : error});
+  });
 };
   
 // Update a Session by the id in the request
@@ -81,6 +86,7 @@ exports.update = (req, res) => {
   const id = req.params.id;
 
   var updateData = {
+      Title: req.body.Title,
       Location: req.body.Location,
       DateAndTime: new Date(req.body.DateAndTime),
       Students: req.body.Students,

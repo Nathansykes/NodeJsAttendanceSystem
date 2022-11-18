@@ -1,4 +1,4 @@
-import http from "../http/http-form-data";
+import http from "../http/http-form-encoded";
 
 class CourseDataService {
 
@@ -8,10 +8,6 @@ class CourseDataService {
 
     get(id) {
         return http.get(`/courses/${id}`)
-    }
-
-    login(data) {
-        return http.post("/login", data);
     }
 
     create(data) {

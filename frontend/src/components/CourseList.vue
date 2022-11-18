@@ -41,6 +41,7 @@
 <script>
   import CourseDataService from "../services/course.data.service";
   import ModuleDataService from "../services/module.data.service";
+  import SessionDataService from "../services/session.data.sevice";
   import TreeItem from './shared/TreeItem.vue'
   
   export default {
@@ -68,7 +69,7 @@
               var course = 
               {
                 name : data[i].Title,
-                children : this.createTreeViewData(ModuleDataService.get, data[i].Modules),
+                children : this.createTreeViewData(ModuleDataService.get, data[i].Modules, "Modules"),
               }
 
               this.courses.push(course);
@@ -81,7 +82,7 @@
           });
       },
 
-      createTreeViewData(getData, ids) 
+      createTreeViewData(getData, ids, type) 
       {
         const collection = [];
 
@@ -94,14 +95,14 @@
             return;
           }
 
-          // switch(type) 
-          // {
-          //   case "Modules":
-          //     getData = CourseDataService.get;
-          //     break;
-          //     default:
-          //       break;
-          // }
+          switch(type) 
+          {
+            case "Sessions":
+              getData = SessionDataService.get;
+              break;
+              default:
+                break;
+          }
 
           if (!Array.isArray(data)) 
           {
@@ -113,13 +114,22 @@
             let item = 
             {
               name : data[i].Title,
-              children : [],
+              children : this.createTreeViewData(SessionDataService.get, this.GetPropertyValue(data[i], "Sessions")),
             };
             collection.push(item);
           }
         })
         
         return collection;
+      },
+
+      GetPropertyValue(obj1, dataToRetrieve) 
+      {
+        return dataToRetrieve
+          .split('.') // split string based on `.`
+          .reduce(function(o, k) {
+            return o && o[k]; // get inner property if `o` is defined else get `o` and return
+          }, obj1) // set initial value as object
       },
   
       refreshList() {

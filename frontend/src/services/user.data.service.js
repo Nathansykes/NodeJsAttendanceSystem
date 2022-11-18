@@ -7,7 +7,7 @@ class UserDataService {
     }
 
     get(id) {
-        return http.get(`/users/id=${id}`)
+        return http.get(`/users/${id}`)
     }
 
     create(data) {

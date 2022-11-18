@@ -37,6 +37,7 @@ describe('POST /sessions', () => {
         .then(data => {
             session = {
                 Id: sessionId,
+                Title: "SAD - Lecture",
                 Students: students,
                 Location: location,
                 DateAndTime: dateTime,
@@ -60,6 +61,7 @@ describe('POST /sessions', () => {
 
                 res.should.have.status(200);
                 returnedSession.should.have.property('_id');
+                returnedSession.should.have.property('Title');
                 returnedSession.should.have.property('Students');
                 returnedSession.should.have.property('Location');
                 returnedSession.should.have.property('DateAndTime');
@@ -82,7 +84,10 @@ describe('GET /sessions', () => {
             res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
 
+            console.log(res.body);
+
             const returnedSession = (Session)(JSON.parse(res.body));
+            console.log(returnedSession);
 
             returnedSession.Location.should.eql(location);
             returnedSession.DateAndTime.should.eql(new Date(dateTime));

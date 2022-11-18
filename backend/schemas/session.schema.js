@@ -4,6 +4,7 @@ let Student = require('../models/student.model');
 
 let sessionSchema = new Schema(
     {
+        Title : String,
         Students : [{ type : mongoose.Schema.Types.ObjectId, ref : Student.modelName, "default" : [] }],
         Location: String,
         DateAndTime: Date

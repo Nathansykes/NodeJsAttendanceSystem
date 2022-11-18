@@ -44,7 +44,7 @@ function createModule(body, res)
       Title: body.Title,
       ModuleLeader: body.ModuleLeader,
       Tutors: body.Tutors,
-      Groups: body.Groups,
+      Sessions: body.Sessions,
       Students: body.Students,
     }
     module = new Module(data);
@@ -89,7 +89,7 @@ const id = req.params.id;
 var updateData = {
     Title: req.body.Title,
     ModuleLeader: req.body.ModuleLeader,
-    Groups : req.body.Modules,
+    Sessions : req.body.Sessions,
     Staff : req.body.Staff,
     Students : req.body.Students,
 }
