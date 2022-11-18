@@ -2,40 +2,46 @@
 export default {
   name: 'TreeItem', // necessary for self-reference
   props: {
-    model: Object
+    model: []
   },
   data() {
     return {
-      isOpen: false
+      isOpen: [],
+      index: -1
     }
   },
   computed: {
     hasChildren() {
-      return this.model.children && this.model.children.length
+      return this.model[this.index]?.children && this.model[this.index]?.children.length
     }
   },
   methods: {
-    toggle() {
-      if (this.hasChildren) {
-        this.isOpen = !this.isOpen
+    toggle() 
+    {
+      if (this.hasChildren) 
+      {
+        this.isOpen[this.index] = !this.isOpen[this.index]
       }
     },
+    setSelectedIndex(index) 
+    {
+      this.index = index;
+      this.toggle();
+    }
   }
 }
 </script>
 
 <template>
   <ul class="list-group">
-    <li
+    <li v-for="(model, index) in model" :key="index"
       class="list-group-item"
-      @click="toggle">
+      @click="setSelectedIndex(index)">
         {{ model.name }}
+        <ul v-show="isOpen[index]" v-if="hasChildren">
+          <TreeItem :model="model.children"/>
+        </ul>
     </li>
-    <ul v-show="isOpen" v-if="hasChildren">
-      <ul v-for="(model, index) in model.children" :key="index">
-        <TreeItem :model="model"/>
-      </ul>
-    </ul>
   </ul>
 </template>
 

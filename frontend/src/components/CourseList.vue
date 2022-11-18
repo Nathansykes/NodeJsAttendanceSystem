@@ -15,21 +15,8 @@
       </div>
       <div class="col-md-6">
         <h4>Courses List</h4>
-        <ul class="list-group" v-for="(course, index) in courses"
-            :key="index">
-          <TreeItem :model="course"/>
-          <!-- <li class="list-group-item"
-            :class="{ active: index == currentIndex }"
-            v-for="(course, index) in courses"
-            :key="index"
-            @click="setActiveCourse(course, index)"
-          >
-            {{ course._id }}
-            <br/>
-            {{ course.Title }}
-          </li> -->
-        </ul>
-  
+          <TreeItem :model="courses"/>
+
       </div>
       <div class="col-md-6">
         <div v-if="currentCourse">
