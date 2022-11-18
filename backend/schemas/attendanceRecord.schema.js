@@ -6,8 +6,7 @@ let attendanceSchema = new Schema(
     {
         SessionID: {type : mongoose.Schema.Types.ObjectId, ref : "Session"},
         Student: {type : mongoose.Schema.Types.ObjectId, ref : Student.modelName},
-        Attendance: Boolean,
-        Late: Boolean,
+        Attendance: Number,
     });
 
 module.exports = attendanceSchema;
