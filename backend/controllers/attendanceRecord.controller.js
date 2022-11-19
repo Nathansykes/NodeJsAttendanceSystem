@@ -15,7 +15,7 @@ exports.create = (req, res) => {
         .then(data => {
           var successMessage = `Attendance saved in the database: ${data}`;
           console.log(successMessage);
-          res.send({ message: successMessage });
+          res.json(JSON.stringify(data));
         })
         .catch(err => {
           res.status(500).send({
@@ -35,10 +35,8 @@ function createAttendance(body, res)
   {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
-      SessionID: body.SessionID,
       Student: body.Student,
       Attendance: body.Attendance,
-      Late: body.Late
     }
     var attendance = new Attendance(data);
   }
@@ -70,12 +68,47 @@ exports.findOne = (req, res) => {
     })
 };
  
-// Update a Attendance by the id in the request
+// Update a AttendanceRecord by the id in the request
 exports.update = (req, res) => {
- 
+
+  const id = req.params.id;
+
+  var updateData = {
+      Student: req.body.Student,
+      Attendance : req.body.Attendance,
+  }
+
+  Attendance.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
+    {
+        if (data)
+        {
+            console.log("Updated AttendanceRecord : ", data);
+            res.json(JSON.stringify(data));
+        }
+        else
+        {
+            console.log(err)
+            res.send({message : err});
+        };
+    });
 };
- 
-// Delete a Attendance with the specified id in the request
+
+// Delete a AttendanceRecord with the specified id in the request
 exports.delete = (req, res) => {
- 
+
+  const id = req.params.id;
+
+  Attendance.findByIdAndDelete(id).then(data => 
+    {
+      if (data) 
+      {
+        const message = `AttendanceRecord deleted: ${data}`;
+        console.log(message)
+        res.send({message : message});
+      }
+      else 
+      {
+          res.send({message : `Error. No attendancerecord matches the Id: ${id}`})
+      }
+    });
 };
