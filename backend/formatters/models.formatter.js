@@ -2,71 +2,42 @@ class ModelFormatter
 {
     formatCourse(data) 
     {
-        var modules = [];
-    
-        data.Modules.forEach(module => 
-        {
-            modules.push(this.formatModule(module));
-        });
-    
-        var model = {
+        return {
             Id: data._id,
             Title: data.Title,
             CourseLeader: data.CourseLeader ?? "n/a",
-            Modules : modules,
+            Modules : data.Modules.map(module => this.formatModule(module)),
           }
-    
-        return model;
     }
     
     formatModule(data) 
-    {
-        var sessions = [];
-    
-        data.Sessions.forEach(session => 
-        {
-            sessions.push(this.formatSession(session));
-        });
-    
-        var model = {
+    {    
+        return {
             Id: data._id,
             Title: data.Title,
             ModuleLeader: data.ModuleLeader ?? "n/a",
-            Sessions : sessions,
+            Sessions : data.Sessions.map(session => this.formatSession(session)),
         }
-    
-        return model
     }
     
     formatSession(data) 
-    {
-        var students = [];
-    
-        data.Students.forEach(student => 
-        {
-            students.push(this.formatStudent(student));
-        });
-    
-        var model = {
+    {    
+        return {
             Id: data._id,
             Title: data.Title,
             Location: data.Location,
             DateAndTime: new Date(data.DateAndTime),
-            Students: students,
+            Students: data.Students.map(student => this.formatStudent(student)),
         }
-    
-        return model;
     }
     
     formatStudent(data) 
     {
-        var model = {
+        return {
             Id: data.Id,
             FirstName: data.FirstName,
             LastName: data.LastName,
         }
-    
-        return model;
     }
 }
 
