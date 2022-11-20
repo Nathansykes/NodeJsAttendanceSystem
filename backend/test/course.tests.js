@@ -15,7 +15,6 @@ describe('GET /courses', () => {
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
             done();
         });
@@ -71,8 +70,13 @@ describe('GET /courses', () => {
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
+
+            const returnedCourse = JSON.parse(res.body);
+            returnedCourse.should.have.property('_id');
+            returnedCourse.should.have.property('Title');
+            returnedCourse.should.have.property('CourseLeader');
+            returnedCourse.should.have.property('Modules');
             done();
         });
     });

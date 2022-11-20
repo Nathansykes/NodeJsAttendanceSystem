@@ -1,6 +1,7 @@
 const db = require("../models");
 var mongoose = require('mongoose');
 const Course = require("../models/course.model");
+const ModelFormater = require("../formatters/models.formatter");
  
 // Create and Save a new Course
 exports.create = (req, res) => {
@@ -58,10 +59,27 @@ function createCourse(body, res)
  
 // Retrieve all Courses from the database.
 exports.findAll = (req, res) => {
-  Course.find().then(data => 
+  Course.find().populate({ 
+    path: 'Modules',
+    populate: {
+      path: 'Sessions',
+      model: 'Session',
+      populate: {
+        path: 'Students',
+        model: 'Student',
+      }
+    } 
+ })
+ .then(data => 
+  {
+    let courses = [];
+    data.forEach(course => 
     {
-      res.json(JSON.stringify(data));
+      courses.push(ModelFormater.formatCourse(course));
     });
+    res.send(courses);
+
+  });
 };
  
 // Find a single Course with an id

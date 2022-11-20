@@ -24,6 +24,12 @@ const routes = [
         alias: "/secure",
         name: "Secure Index",
         component: () => import("./components/SecureIndex.vue")
+    },
+    {
+        path: "/",
+        alias: "/courses",
+        name: "courses",
+        component: () => import("./components/CourseList.vue")
     }
 ];
 

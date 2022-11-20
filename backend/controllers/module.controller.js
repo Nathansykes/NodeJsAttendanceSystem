@@ -44,7 +44,7 @@ function createModule(body, res)
       Title: body.Title,
       ModuleLeader: body.ModuleLeader,
       Tutors: body.Tutors,
-      Groups: body.Groups,
+      Sessions: body.Sessions,
       Students: body.Students,
     }
     module = new Module(data);
@@ -69,11 +69,15 @@ exports.findAll = (req, res) => {
 // Find a single Module with an id
 exports.findOne = (req, res) => {
 
-  const id = req.params.id;
+  const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Module.findById(id).then(data =>
+  Module.find({_id: {$in: ids}}).then(data =>
   {
     res.json(JSON.stringify(data));
+  })
+  .catch(error => 
+  {
+    res.send({message : error});
   });
 };
 
@@ -85,7 +89,7 @@ const id = req.params.id;
 var updateData = {
     Title: req.body.Title,
     ModuleLeader: req.body.ModuleLeader,
-    Groups : req.body.Modules,
+    Sessions : req.body.Sessions,
     Staff : req.body.Staff,
     Students : req.body.Students,
 }
