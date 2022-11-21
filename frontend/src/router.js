@@ -32,7 +32,7 @@ const routes = [
         component: () => import("./components/CourseList.vue")
     },
     {
-        path: "/",
+        path: "/attendance/:id",
         alias: "/attendance",
         name: "Attendance View",
         component: () => import("./components/AttendanceView.vue")

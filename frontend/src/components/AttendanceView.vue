@@ -1,53 +1,69 @@
 <template>
     <div id="attendance">
         <body>
-            <header>View Attendance</header>
+            <h1>View Attendance</h1>
         </body>
-            <main>
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Absent/Late/Present</th>
-                        <th>Lesson</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <input type="number" min="0" max="2">
-                        <td></td>
-                    </tr>
-                </table>
-            </main>
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Mark</th>
+            </tr>
+            <tr v-for="(student, index) in students" :key="index">
+                <td>
+                    {{ student.FirstName + " " + student.LastName }}
+                </td>
+                <td>
+                    <UserMarkAttendance @selectedMark="updateMark(value, index)"/>
+                </td>
+            </tr>
+        </table>
+        <button>Submit</button>
     </div>
 </template>
 
 <script>
 
-import { response } from 'express';
-import UserDataService from '../services/user.data.service';
 import UserMarkAttendance from './shared/UserMarkAttendance.vue';
 
 export default {
-    name: student-list,
     components: {
         UserMarkAttendance
     },
-
-    data(){
-        
+    data() {
+      return {
+        session: null,
+        students: [],
+        attedances: [],
+        selectedMark: '',
+      };
     },
     methods:{
         retrieveUsers(){
-            UserDataService.getAll(UserMarkAttendance.selectedMark)
-            .then(response =>{
-                const marks = JSON.parse(response.data);
-                this.marks = marks;
-            })
-            .catch(e =>{
-                console.log(e);
-            });
-        }
-    }
+            console.log(`Session ID : ${this.$route.params.id}`);
+        },
+        updateMark(value, index)
+        {
+            this.selectedMark = value; 
+            this.markAttedance(index)
+        },
+        markAttedance(index) 
+        {   
+            var student = this.students[index];
+            this.attedances[index] =  
+            {
+                Student: student,
+                Date: this.session.DateAndTime,
+                Attedance: this.selectedMark,
+            }
+        },
+        save() 
+        {
 
+        }
+    },
+    mounted() {
+      this.retrieveUsers();
+    }
 }
 
 </script>
