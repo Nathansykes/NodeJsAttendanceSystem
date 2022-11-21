@@ -1,14 +1,4 @@
-import axios from "axios";
-import httpCommonDataService from "../services/http-common.data.service";
-
-var http = axios.create({
-  baseURL: "http://localhost:3000/",
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Authorization': `Bearer ${httpCommonDataService.getCookie("access_token")}`
-  }
-});
+import http from "../http/http-form-json";
 
 class AttendanceDataService {
 

@@ -50,7 +50,7 @@ describe('POST /attendanceRecords', () => {
         chai.request(server)
             .post('/attendanceRecords')
             .auth(token, {type: 'bearer'})
-            .send(attendanceRecord)
+            .send([attendanceRecord])
             .end((err, res) => {
                 const returnedattendanceRecord = (AttendanceRecord)(JSON.parse(res.body));
 
