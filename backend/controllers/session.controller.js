@@ -1,6 +1,7 @@
 const db = require("../models");
 var mongoose = require('mongoose');
 const Session = require("../models/session.model");
+const Formatter = require("../formatters/models.formatter");
  
 // Create and Save a new Session
 exports.create = (req, res) => {
@@ -45,6 +46,7 @@ function createSession(body, res)
       Location: body.Location,
       DateAndTime: new Date(body.DateAndTime),
       Students: body.Students,
+      AttendanceRecords: body.AttendanceRecords,
     }
     session = new Session(data);
   }
@@ -70,14 +72,15 @@ exports.findOne = (req, res) => {
 
   const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Session.find({_id: {$in: ids}}).then(data =>
-  {
-    res.json(JSON.stringify(data));
-  })
-  .catch(error => 
-  {
-    res.send({message : error});
-  });
+  Session.find({_id: {$in: ids}}).populate("Students").populate("AttendanceRecords")
+  .then(data =>
+    {
+      res.send(data.map(item => Formatter.formatSession(item)));
+    })
+    .catch(error => 
+    {
+      res.send({message : error});
+    });
 };
   
 // Update a Session by the id in the request
@@ -88,8 +91,20 @@ exports.update = (req, res) => {
   var updateData = {
       Title: req.body.Title,
       Location: req.body.Location,
-      DateAndTime: new Date(req.body.DateAndTime),
       Students: req.body.Students,
+      AttendanceRecords: req.body.AttendanceRecords,
+  }
+
+  if (req.body.DateAndTime) 
+  {
+    try 
+    {
+      updateData.DateAndTime = new Date(req.body.DateAndTime); 
+    }
+    catch (error)
+    {
+      res.send({ message: error });
+    }
   }
 
   Session.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  

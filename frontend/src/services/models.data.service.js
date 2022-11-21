@@ -4,6 +4,7 @@ import CourseDataService from "./course.data.service";
 import ModuleDataService from "./module.data.service";
 import SessionDataService from "./session.data.sevice";
 import UploadFileDataService from "./uploadfile.data.service";
+import AttendanceDataService from "./attendance.data.service";
 
 class ModelDataService 
 {
@@ -13,6 +14,7 @@ class ModelDataService
     ModuleDataService = ModuleDataService;
     SessionDataService = SessionDataService;
     UploadFileDataService = UploadFileDataService;
+    AttendanceDataService = AttendanceDataService;
 }
 
 export default new ModelDataService();

@@ -1,46 +1,39 @@
 const db = require("../models");
 var mongoose = require('mongoose');
 let Attendance = require("../models/attendanceRecord.model");
- 
+
 // Create and Save a new Attendance
 exports.create = (req, res) => {
+
+      var data = req.body;
+      var modelData = data.map(model => createAttendance(model, res));
       
-      // Create a Attendance model object
-      const attendance = createAttendance(req.body, res);
-      
-      // Save Attendance in the database
-      try {
-        attendance
-        .save()
-        .then(data => {
-          var successMessage = `Attendance saved in the database: ${data}`;
-          console.log(successMessage);
-          res.json(JSON.stringify(data));
-        })
-        .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while creating the Attendance."
-          });
+      Attendance.insertMany(modelData)
+      .then(data => {
+        var successMessage = `Attendance saved in the database: ${data}`;
+        console.log(successMessage);
+        res.json(JSON.stringify(data));
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Attendance."
         });
-        return;
-      } catch (error) {
-        console.log(error);
-      }
+      });
 };
 
 function createAttendance(body, res)
 {
-  try 
+  try
   {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
-      Student: body.Student,
+      Student: mongoose.Types.ObjectId(body.Student.Id),
       Attendance: body.Attendance,
     }
     var attendance = new Attendance(data);
   }
-  catch (error) 
+  catch (error)
   {
     console.log(error);
     res.send({ message : error.toString()});
@@ -48,27 +41,27 @@ function createAttendance(body, res)
 
   return attendance;
 }
- 
+
 // Retrieve all Attendances from the database.
 exports.findAll = (req, res) => {
-  Attendance.find().then(data => 
+  Attendance.find().then(data =>
     {
       res.json(JSON.stringify(data));
     });
 };
- 
+
 // Find a single Attendance with an id
 exports.findOne = (req, res) => {
 
   const id = req.query.id;
 
-  Attendance.findOne({ Id : id }).then(data => 
+  Attendance.findOne({ Id : id }).then(data =>
     {
       res.json(JSON.stringify(data));
     })
 };
  
-// Update a AttendanceRecord by the id in the request
+// Update a Attendance by the id in the request
 exports.update = (req, res) => {
 
   const id = req.params.id;
@@ -92,8 +85,8 @@ exports.update = (req, res) => {
         };
     });
 };
-
-// Delete a AttendanceRecord with the specified id in the request
+ 
+// Delete a Attendance with the specified id in the request
 exports.delete = (req, res) => {
 
   const id = req.params.id;

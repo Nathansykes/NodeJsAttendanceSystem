@@ -1,29 +1,35 @@
 <template>
     <div id="attendance">
-        <body>
-            <h1>View Attendance</h1>
+        <body v-if="session">
+            <h2> {{session.Title + " " + session.Date}} </h2>
         </body>
-        <table>
+        <table style="width:75%">
             <tr>
                 <th>Student</th>
-                <th>Mark</th>
+                <th>Attendance</th>
             </tr>
             <tr v-for="(student, index) in students" :key="index">
                 <td>
                     {{ student.FirstName + " " + student.LastName }}
                 </td>
                 <td>
-                    <UserMarkAttendance @selectedMark="updateMark(value, index)"/>
+                    <UserMarkAttendance :value="this.attendances[index].Attendance" @selectMark="(value) => updateMark(value, index)"/>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button @click="save()">Submit</button>
                 </td>
             </tr>
         </table>
-        <button>Submit</button>
     </div>
 </template>
 
 <script>
 
 import UserMarkAttendance from './shared/UserMarkAttendance.vue';
+import ModelDataService from '../services/models.data.service';
 
 export default {
     components: {
@@ -32,33 +38,88 @@ export default {
     data() {
       return {
         session: null,
+        sessionId: null,
         students: [],
-        attedances: [],
+        attendances: [],
         selectedMark: '',
       };
     },
     methods:{
         retrieveUsers(){
-            console.log(`Session ID : ${this.$route.params.id}`);
+            this.sessionId = this.$route.params.id;
+            ModelDataService.SessionDataService.get(this.sessionId).then(response => 
+            {
+                response.data[0].AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
+                this.session = response.data[0];
+                this.students = response.data[0].Students;
+                this.attendances = response.data[0].AttendanceRecords;
+            });
         },
         updateMark(value, index)
         {
-            this.selectedMark = value; 
+            this.attendances[index].Attendance = value; 
             this.markAttedance(index)
         },
         markAttedance(index) 
         {   
             var student = this.students[index];
-            this.attedances[index] =  
+            this.attendances[index] =  
             {
+                Id : this.attendances[index].Id,
                 Student: student,
-                Date: this.session.DateAndTime,
-                Attedance: this.selectedMark,
+                Attendance: this.attendances[index].Attendance,
             }
         },
         save() 
         {
+            // try and get attendance data first
+            if (this.session.AttendanceRecords !== [] && this.session.AttendanceRecords !== undefined) 
+            {
+                this.attendances.map(attendance => 
+                {
+                    var updateData = {
+                        Attendance : parseInt(attendance.Attendance)
+                    };
 
+                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify(updateData)).then(response => 
+                    {
+                        console.log(response);
+                    })
+                    .catch(error => 
+                    {
+                        console.log(error);
+                    });
+                })
+
+                this.$router.go("/courses");
+            }
+            // else try and create
+            else
+            {
+                ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(this.attendances))).then(response => 
+                {
+                    const data = JSON.parse(response.data);
+                    const attendanceIds = data.map(attendance => attendance._id);
+                    let updatedSessionData = 
+                    {
+                        AttendanceRecords: attendanceIds,
+                    };
+        
+                    console.log(updatedSessionData);
+                    ModelDataService.SessionDataService.update(this.sessionId, updatedSessionData).then(response => 
+                    {
+                        if (response) 
+                        {
+                            this.$router.go("/courses");
+                        }
+                    })
+                    .catch(error => 
+                    {
+                        console.log(error);
+                    });
+                });
+
+            }
         }
     },
     mounted() {
