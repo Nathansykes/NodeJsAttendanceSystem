@@ -5,9 +5,9 @@ const Student = require("../models/student.model");
 const AcademicAdvisor = require("../models/advisor.model");
 const ModuleLeader = require("../models/moduleLeader.model");
 const CourseLeader = require("../models/courseLeader.model");
+const Tutor = require("../models/tutor.model");
 const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
-const Tutor = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
 
 // Create and Save a new User
@@ -83,6 +83,9 @@ async function createUser(data, userType)
         break;
       case UserTypes.CourseLeader.Id:
         user = new CourseLeader(data);
+        break;
+      case UserTypes.Tutor.Id:
+        user = new Tutor(data);
         break;
       default:
         throw errorMessage;
