@@ -96,6 +96,17 @@
       searchName() {
         const names = this.name.split(" ");       
 
+        // if (this.name == null){
+        //   UserDataService.findByName(this.selectedUserType,names[0], names[1])
+        //   .then(response =>{
+        //     const users = JSON.parse(response.data);
+        //     this.users = users;
+        //     this.setActiveUser(null);
+        //   })
+        //   .catch(e => {
+        //     console.log(e);
+        //   });
+        // }
         UserDataService.findByName(this.selectedUserType, names[0], names[1])
           .then(response => 
           {

@@ -24,6 +24,9 @@ class UserDataService {
 
     findByName(userType, firstName, lastName) {
         return http.get("/users", {params : { UserType: userType, firstname : firstName, lastname : lastName}});
+    }
+    findByType(userType){
+        return http.get("/users", {params : {UserType: userType}})
     }  
 }
 
