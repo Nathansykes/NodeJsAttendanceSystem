@@ -103,6 +103,7 @@ main {
 .list-group-item+.list-group-item.active{
     border-top: black solid 2px;
     color: white;
+    margin-top:5%;
 }
 .list-group-item{
     border:black 2px solid;
@@ -118,6 +119,10 @@ main {
     border:black solid 2px;
     color: white;
     font-weight: bold;
+    margin: 5%;
+    padding:5%;
+    margin-top: 5%;
+    
 }
 .info_div {
     text-align: center;
