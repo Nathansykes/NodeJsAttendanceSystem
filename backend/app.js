@@ -14,9 +14,8 @@ if(process.env.BOILER == 'true'){
   async function run() {
     console.log("Running boilerplate");
     boilerplate = require("./boilerplate");
-    await boilerplate.run();
+    await boilerplate.runNathan();
     console.log("Boilerplate complete");
-    process.exit(1);  
   }
   run();  
 }

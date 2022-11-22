@@ -9,7 +9,7 @@ const Session = require("./models/session.model");
 const Module = require("./models/module.model");
 const Course = require("./models/course.model");
 
-exports.run = async function () {
+exports.runNathan = async function () {
 
     var studentId = (await Student.find())[0].id;
     var sessionId = (await Session.find())[0].id;
