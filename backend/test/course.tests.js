@@ -73,7 +73,7 @@ describe('GET /courses', () => {
             res.body.length.should.not.be.eql(0);
 
             const returnedCourse = JSON.parse(res.body);
-            returnedCourse.should.have.property('_id');
+            returnedCourse.should.have.property('Id');
             returnedCourse.should.have.property('Title');
             returnedCourse.should.have.property('CourseLeader');
             returnedCourse.should.have.property('Modules');
@@ -107,11 +107,7 @@ describe('PUT /courses', () => {
             .auth(token, {type: 'bearer'})
             .send(course)
             .end((err, res) => {
-                console.log(res.body);
                 const returnedCourse = (Course)(JSON.parse(res.body));
-                console.log(returnedCourse);
-
-                console.log(returnedCourse);
 
                 res.should.have.status(200);
                 returnedCourse.Title.should.not.eql(courseTitle);

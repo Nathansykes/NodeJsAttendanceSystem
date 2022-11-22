@@ -4,6 +4,9 @@
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="title"/>
+            <select class="form-select" @change="filterTypeChange($event)">
+              <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.Name}}</option>
+            </select>
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
               @click="searchName"
@@ -35,6 +38,7 @@
   
 <script>
   import ModelDataService from "../services/models.data.service";
+  import ModelTypes from '../../../shared/modelTypes';
   import TreeItem from './shared/TreeItem.vue'
   
   export default {
@@ -50,40 +54,60 @@
         currentModelProperties: [],
         currentIndex: -1,
         title: "",
+        modelTypes: ModelTypes,
       };
     },
     methods: {
+      filterTypeChange(event) 
+      {
+        switch (event.target.value) 
+          {
+            case ModelTypes.Course.Id.toString():
+              this.retrieveCourses();
+              break;
+            case ModelTypes.Module.Id.toString():
+              this.retrieveModules();
+              break;
+            case ModelTypes.Session.Id.toString():
+              this.retrieveSessions();
+              break;
+            case ModelTypes.User.Id.toString():
+              this.retrieveUsers();
+              break;
+              default:
+                break;
+          }
+      },
+
       retrieveCourses() {
         ModelDataService.CourseDataService.getAll()
-          .then(response => 
-          {
-            const data = response.data;
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Course))
+          .catch(error => console.log(error));
+      },
 
-            for (var i = 0; i < data.length; i++) 
-            {
-              var course = 
-              {
-                id : data[i].Id,
-                name : data[i].Title,
-                routerLink : `Courses/${data[i].Id}`,
-                children : this.createTreeViewData(data[i].Modules, "Modules"),
-              }
+      retrieveModules() {
+        ModelDataService.ModuleDataService.getAll()
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Module))
+          .catch(error => console.log(error));
+      },
 
-              this.treeViewData.push(course);
-              this.models.push(data[i]);
-            }
-          })
-          .catch(error => 
-          {
-            console.log(error);
-          });
+      retrieveSessions() {
+        ModelDataService.SessionDataService.getAll()
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Session))
+          .catch(error => console.log(error));
+      },
+
+      retrieveUsers() {
+        ModelDataService.UserDataService.getAll()
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.User))
+          .catch(error => console.log(error));
       },
 
       createTreeViewData(model, type) 
       {
           const treeViewData = [];
 
-          if (!model) 
+          if (!model || !type) 
           {
             return;
           }
@@ -98,28 +122,35 @@
 
           switch (type) 
           {
-            case "Modules":
-              childType = "Sessions";
+            case ModelTypes.Course:
+              childType = ModelTypes.Module;
               break;
-            case "Sessions":
-              childType = "Students";
+            case ModelTypes.Module:
+              childType = ModelTypes.Session;
               break;
-            case "Students":
-              childType = ""
+            case ModelTypes.Session:
+              childType = ModelTypes.User;
+              break;
+            case ModelTypes.User:
+              childType = undefined;
               break;
               default:
                 break;
           }
-  
+
           for (let i = 0; i < model.length; i++) 
           {
             let item = 
             {
               id : model[i].Id,
               name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
-              routerLink : `${type}/${model[i].Id}`,
-              children : this.createTreeViewData(this.GetPropertyValue(model[i], childType), childType),
+              routerLink : `${type.Name}/${model[i].Id}`,
             };
+            
+            if (childType) 
+            {
+              item.children = this.createTreeViewData(this.GetPropertyValue(model[i], childType.Name), childType);
+            }
 
             treeViewData.push(item);
             this.models.push(model[i]);
@@ -130,6 +161,8 @@
 
       GetPropertyValue(obj1, dataToRetrieve) 
       {
+        if (!dataToRetrieve) { return; }
+
         return dataToRetrieve
           .split('.') // split string based on `.`
           .reduce(function(o, k) {

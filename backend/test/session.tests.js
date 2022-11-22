@@ -83,7 +83,7 @@ describe('GET /sessions', () => {
             res.should.have.status(200);
             res.body.length.should.not.be.eql(0);
 
-            const returnedSessions = res.body;
+            const returnedSessions = JSON.parse(res.body);
 
             returnedSessions.forEach(session => 
             {

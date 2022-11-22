@@ -27,7 +27,7 @@ class ModelFormatter
             Title: data.Title,
             Location: data.Location,
             DateAndTime: new Date(data.DateAndTime),
-            Students: data.Students.map(student => this.formatStudent(student)),
+            Students: data.Students.map(student => this.formatUser(student)),
             AttendanceRecords: data.AttendanceRecords.map(attendance => this.formatAttendance(attendance))
         }
     }
@@ -36,17 +36,18 @@ class ModelFormatter
     {
         return {
             Id: data._id,
-            Student: this.formatStudent(data.Student),
+            Student: this.formatUser(data.Student),
             Attendance: data.Attendance,
         }
     }
     
-    formatStudent(data) 
+    formatUser(data) 
     {
         return {
             Id: data._id,
             FirstName: data.FirstName,
             LastName: data.LastName,
+            Type: data.__t,
         }
     }
 }
