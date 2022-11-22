@@ -15,7 +15,6 @@
 node_modules
 /dist
 
-
 # local env files
 .env.local
 .env.*.local
@@ -37,6 +36,9 @@ pnpm-debug.log*
 
 # Config Files
 backend/config/db.config.js
+
+#local testing files
+backend/boilerplate.js
 
 # Test Results
 backend/test/results/
