@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
+const UserTypes = require("../../shared/usertypes");
 
 exports.createHash = async (password) => {
     try {
@@ -16,9 +17,18 @@ exports.verifyPassword = (password, dbHash) => {
     return bcrypt.compare(password, dbHash);
 }
 
-exports.generateToken = (userId) => {
+function createApplicationUser(user) {
+    return {
+        Id: user._id,
+        Type: UserTypes.GetUserTypeByModelName(user.__t).Id,
+        Name: user.FirstName + " " + user.LastName,
+    }
+}
+
+exports.generateToken = (user) => {
+    var ApplicationUser = createApplicationUser(user);
     try {
-        var token = jwt.sign({ Id: userId }, process.env.TOKEN_SECRET);
+        var token = jwt.sign(ApplicationUser, process.env.TOKEN_SECRET);
         return token;
     }
     catch (error) {
@@ -31,7 +41,7 @@ exports.verifyToken = (req) => {
         Status: 0,
         Message: ""
     }
-    
+
     if (requestHasToken(req)) {
         var token = req.headers['authorization'].split(' ')[1];
         if (tokenIsValid(token)) {
@@ -43,6 +53,15 @@ exports.verifyToken = (req) => {
     response.Status = 401;
     response.Message = "Token invalid or not provided";
     return response;
+}
+
+exports.getApplicationUser = (req) => {
+    var ApplicationUser;
+    if (requestHasToken(req)) {
+        var token = req.headers['authorization'].split(' ')[1];
+        ApplicationUser = jwt.verify(token, process.env.TOKEN_SECRET);
+    }
+    return ApplicationUser;
 }
 
 function requestHasToken(req) {
