@@ -38,8 +38,8 @@ export default {
   <div>
     <ul class="list-group" v-for="(item, index) in model" :key="index">
       <li class="list-group-item">
-        <span @click="setSelectedIndex(index)">
-          >
+        <span class="clickable" @click="setSelectedIndex(index)">
+          <i class="fa-solid fa-plus"></i>
         </span>
         <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
       </li>

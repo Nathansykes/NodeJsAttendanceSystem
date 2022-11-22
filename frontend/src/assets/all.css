@@ -108,3 +108,7 @@ input[type="reset"] {
     max-width: 750px;
     margin: auto;
 }
+
+.clickable {
+    cursor: pointer;
+}
