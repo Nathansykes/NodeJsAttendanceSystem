@@ -16,10 +16,14 @@ exports.run = async function() {
     var moduleId = (await Module.find())[0].id;
     
     Module.findOne({ _id: moduleId }).populate('Sessions').then(data => {
-        var sessions = data.Sessions;
-        var sessionIds = sessions.map(x => x._id);
+        var sessionIds = data.Sessions.map(x => x._id);
+
         Attendance.find({ SessionID: { $in: sessionIds } }).populate('Student').then(data => {
-            var result= data.map(x => ({ Student: x.Student.FirstName + ' '+ x.Student.LastName, Attendance: x.Attendance, Late: x.Late }));
+            var result= data.map(x => ({ 
+                Student: x.Student.FirstName + ' '+ x.Student.LastName, 
+                Attendance: x.Attendance, 
+                Late: x.Late 
+            }));
             console.log(result);
         });
         
@@ -33,7 +37,7 @@ exports.run = async function() {
     //     Late: false
     // });
     // attendance.save();
-    
+
     // console.log(session);
     // console.log(student); 
 }
