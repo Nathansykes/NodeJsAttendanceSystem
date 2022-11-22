@@ -1,6 +1,9 @@
 <template>
+    <head>
+        <link rel="stylesheet" href="../../assets/all.css">
+    </head>
     <select class="form-select" @change="selectUserType">
-        <option v-for="userType in userTypes" :key="userType.Id" :value="userType.Id">{{userType.Name}}</option>
+        <option class="form-info" v-for="userType in userTypes" :key="userType.Id" :value="userType.Id">{{userType.Name}}</option>
     </select>
 </template>
 

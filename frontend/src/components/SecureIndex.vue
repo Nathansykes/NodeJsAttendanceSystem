@@ -38,7 +38,7 @@
         </div>
       </div>
     </nav>
-    <div class="container mt-3">
+    <div class="container">
       <router-view />
     </div>
   </div>

@@ -1,7 +1,12 @@
 <template>
+  <head>
+        <link rel="stylesheet" href="../assets/all.css">
+    </head>
+    <div id="user-list-container">
     <div class="list row">
-      <div class="col-md-8">
-        <div class="input-group mb-3">
+      <div class="col-md-12">
+        <div id="search-box-container">
+        <div class="input-group mb-3" id="user-search-box">
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="name"/>
             <UserSelectList @selectUserType="(value) => this.selectedUserType = value"/>
@@ -13,7 +18,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      </div>
+      <div class="col-md-5" id="list-group-parent">
         <h4>Users List</h4>
         <ul class="list-group">
           <li class="list-group-item"
@@ -29,8 +35,10 @@
         </ul>
   
       </div>
-      <div class="col-md-6">
+      <div class="col-md-2"></div>
+      <div class="col-md-5" id="list-user-info">
         <div v-if="currentUser">
+          <div id="user-info-box">
           <h4>User</h4>
           <div>
             <label><strong>Id:</strong></label> {{ parseInt(currentUser._id) }}
@@ -41,12 +49,14 @@
   
           <router-link :to="'/users/' + currentUser._id" class="badge badge-warning">Edit</router-link>
         </div>
+      </div>
         <div v-else>
           <br />
           <p>Please click on an User...</p>
         </div>
       </div>
     </div>
+  </div>
   </template>
   
 <script>
