@@ -7,8 +7,7 @@
             <UserSelectList @selectUserType="(value) => this.selectedUserType = value"/>
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
-              @click="searchName"
-            >
+              @click="searchName">
               Search
             </button>
           </div>

@@ -10,6 +10,9 @@ class UserDataService {
         return http.get(`/users/${id}`)
     }
 
+    getAttendance(id){
+        return http.get(`/attendance/id=${id}`)
+    }
     create(data) {
         return http.post("/users", data);
     }
@@ -24,7 +27,7 @@ class UserDataService {
 
     findByName(userType, firstName, lastName) {
         return http.get("/users", {params : { UserType: userType, firstname : firstName, lastname : lastName}});
-    }  
+    }
 }
 
 export default new UserDataService();

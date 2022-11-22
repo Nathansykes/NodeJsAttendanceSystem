@@ -65,6 +65,7 @@
               {
                 id : data[i].Id,
                 name : data[i].Title,
+                routerLink : `Courses/${data[i].Id}`,
                 children : this.createTreeViewData(data[i].Modules, "Modules"),
               }
 
@@ -104,7 +105,7 @@
               childType = "Students";
               break;
             case "Students":
-              childType = null;
+              childType = ""
               break;
               default:
                 break;
@@ -115,7 +116,8 @@
             let item = 
             {
               id : model[i].Id,
-              name : model[i].Title,
+              name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
+              routerLink : `${type}/${model[i].Id}`,
               children : this.createTreeViewData(this.GetPropertyValue(model[i], childType), childType),
             };
 

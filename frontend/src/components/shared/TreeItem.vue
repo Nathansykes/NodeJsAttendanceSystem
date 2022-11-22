@@ -39,8 +39,9 @@ export default {
     <ul class="list-group" v-for="(item, index) in model" :key="index">
       <li class="list-group-item">
         <span @click="setSelectedIndex(index)">
-          {{ item.name }}
+          >
         </span>
+        <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
       </li>
       <ul v-show="isOpen[index]" v-if="hasChildren">
         <TreeItem :model="item.children" @selectedModel="(value) => this.$emit('selectedModel', value)"/>

@@ -64,10 +64,14 @@ exports.findAll = (req, res) => {
     populate: {
       path: 'Sessions',
       model: 'Session',
-      populate: {
+      populate: [{
         path: 'Students',
         model: 'Student',
-      }
+      },
+      {
+        path: 'AttendanceRecords',
+        model: 'AttendanceRecord',
+      }]
     } 
  })
  .then(data => 

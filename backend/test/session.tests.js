@@ -81,12 +81,9 @@ describe('GET /sessions', () => {
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
 
-            console.log(res.body);
-
-            const returnedSessions = (JSON.parse(res.body));
+            const returnedSessions = res.body;
 
             returnedSessions.forEach(session => 
             {

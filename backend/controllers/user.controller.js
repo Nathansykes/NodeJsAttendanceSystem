@@ -5,6 +5,7 @@ const Student = require("../models/student.model");
 const AcademicAdvisor = require("../models/advisor.model");
 const ModuleLeader = require("../models/moduleLeader.model");
 const CourseLeader = require("../models/courseLeader.model");
+const Tutor = require("../models/tutor.model");
 const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
@@ -83,6 +84,9 @@ async function createUser(data, userType)
       case UserTypes.CourseLeader.Id:
         user = new CourseLeader(data);
         break;
+      case UserTypes.Tutor.Id:
+        user = new Tutor(data);
+        break;
       default:
         throw errorMessage;
     }
@@ -111,6 +115,30 @@ exports.find = (req, res) =>
   {
     case UserTypes.Student.Id:
       Student.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+    case UserTypes.Tutor.Id:
+      Tutor.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+      case UserTypes.AcademicAdvisor.Id:
+      AcademicAdvisor.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+      case UserTypes.CourseLeader.Id:
+      CourseLeader.find(filter).then(data =>
+        {
+          res.json(JSON.stringify(data));
+        });
+      break;
+      case UserTypes.ModuleLeader.Id:
+      ModuleLeader.find(filter).then(data =>
         {
           res.json(JSON.stringify(data));
         });
