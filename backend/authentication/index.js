@@ -18,9 +18,10 @@ exports.verifyPassword = (password, dbHash) => {
 }
 
 function createApplicationUser(user) {
+    var userType = UserTypes.GetUserTypeByModelName(user.__t);
     return {
         Id: user._id,
-        Type: UserTypes.GetUserTypeByModelName(user.__t).Id,
+        Type: userType.Id,
         Name: user.FirstName + " " + user.LastName,
     }
 }

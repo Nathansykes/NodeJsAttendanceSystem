@@ -14,16 +14,19 @@ function GetUserTypeById(id) {
         if (UserTypes[key].Id == id) {
             userType = UserTypes[key];
         }
-    })
+    });
+    return userType;
 }
 function GetUserTypeByModelName(modelName) {
     var userType;
     var keys = Object.keys(UserTypes);
     keys.forEach(key => {
         if (UserTypes[key].ModelName == modelName) {
+            console.log(UserTypes[key]);
             userType = UserTypes[key];
         }
-    })
+    });
+    return userType;
 }
 
 
