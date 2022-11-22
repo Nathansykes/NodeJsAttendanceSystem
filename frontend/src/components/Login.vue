@@ -45,7 +45,7 @@ export default{
             })
             .catch(error => 
             {
-                if(error.response.status == 401)
+                if(error.response?.status == 401)
                 {
                     this.errorMessage = error.response.data.message;
                 }

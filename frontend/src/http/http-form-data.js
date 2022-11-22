@@ -2,7 +2,7 @@ import axios from "axios";
 import httpCommonDataService from "../services/http-common.data.service";
 
 export default axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: process.env.VUE_APP_API_BACKEND_URL,
   headers: {
     'Content-Type': 'multipart/form-data',
     'Access-Control-Allow-Origin': '*',
