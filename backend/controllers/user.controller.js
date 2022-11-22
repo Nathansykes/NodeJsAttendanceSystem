@@ -9,6 +9,7 @@ const Tutor = require("../models/tutor.model");
 const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
+const Formatter = require("../formatters/models.formatter")
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -116,31 +117,31 @@ exports.find = (req, res) =>
     case UserTypes.Student.Id:
       Student.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
     case UserTypes.Tutor.Id:
       Tutor.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
       case UserTypes.AcademicAdvisor.Id:
       AcademicAdvisor.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
       case UserTypes.CourseLeader.Id:
       CourseLeader.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
       case UserTypes.ModuleLeader.Id:
       ModuleLeader.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
     case UserTypes.All.Id:
@@ -148,7 +149,7 @@ exports.find = (req, res) =>
     case null:
       User.find(filter).then(data =>
         {
-          res.json(JSON.stringify(data));
+        res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
     default:
@@ -164,7 +165,7 @@ exports.findOne = (req, res) => {
 
   User.findById(id).then(data =>
     {
-      res.json(JSON.stringify(data));
+      res.json(JSON.stringify(Formatter.formatUser(data)));
     });
 };
 

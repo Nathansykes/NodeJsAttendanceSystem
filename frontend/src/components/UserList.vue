@@ -22,7 +22,7 @@
             :key="index"
             @click="setActiveUser(user, index)"
           >
-            {{ parseInt(user._id) }}
+            {{ parseInt(user.Id) }}
             <br/>
             {{ user.FirstName + " " + user.LastName }}
           </li>
@@ -39,7 +39,7 @@
             <label><strong>Name:</strong></label> {{ currentUser.FirstName + " " + currentUser.LastName }}
           </div>
   
-          <router-link :to="'/users/' + currentUser._id" class="badge badge-warning">Edit</router-link>
+          <router-link :to="'/users/' + currentUser.Id" class="badge badge-warning">Edit</router-link>
         </div>
         <div v-else>
           <br />

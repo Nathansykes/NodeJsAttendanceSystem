@@ -105,11 +105,7 @@ describe('PUT /modules', () => {
             .auth(token, {type: 'bearer'})
             .send(module)
             .end((err, res) => {
-                console.log(res.body);
                 const returnedModule = (Module)(JSON.parse(res.body));
-                console.log(returnedModule);
-
-                console.log(returnedModule);
 
                 res.should.have.status(200);
                 returnedModule.Title.should.not.eql(moduleTitle);

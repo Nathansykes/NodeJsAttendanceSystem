@@ -89,7 +89,7 @@ exports.findOne = (req, res) => {
   
     Course.findById(id).then(data =>
     {
-      res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));
+      res.json(JSON.stringify(Formatter.formatCourse(data)));
     });
 };
   
