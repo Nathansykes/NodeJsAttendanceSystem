@@ -28,6 +28,10 @@
             </ul>
           </li>
 
+          <li class="nav-item">
+            <router-link to="/reporting" class="nav-link">Reporting</router-link>
+          </li>
+
         </div>
         <div class="navbar-nav mr-auto">
           <li class="nav-item">

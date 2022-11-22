@@ -25,6 +25,18 @@
                 "uriFormat": "http://localhost:8080",
                 "action": "openExternally"
               }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Boilerplate",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "env": {
+                "BOILER": "true",
+            },
+            "program": "${workspaceFolder}\\backend\\server.js",
         }
     ],
     "compounds": [
