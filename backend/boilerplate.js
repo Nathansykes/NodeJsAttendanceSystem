@@ -7,37 +7,81 @@ const AcademicAdvisor = require("./models/advisor.model");
 const CourseLeader = require("./models/courseLeader.model");
 const Session = require("./models/session.model");
 const Module = require("./models/module.model");
+const Course = require("./models/course.model");
 
-exports.run = async function() {
+exports.run = async function () {
     console.log("Running boilerplate");
 
-    var student = (await Student.find())[2].id;
-    var session = (await Session.find())[0].id;
+    var studentId = (await Student.find())[2].id;
+    var sessionId = (await Session.find())[0].id;
     var moduleId = (await Module.find())[0].id;
-    
-    Module.findOne({ _id: moduleId }).populate('Sessions').then(data => {
-        var sessionIds = data.Sessions.map(x => x._id);
+    var courseId = (await Course.find())[0].Course;
 
-        Attendance.find({ SessionID: { $in: sessionIds } }).populate('Student').then(data => {
-            var result= data.map(x => ({ 
-                Student: x.Student.FirstName + ' '+ x.Student.LastName, 
-                Attendance: x.Attendance, 
-                Late: x.Late 
-            }));
-            console.log(result);
+    var student = await Student.findOne({ _id: studentId });
+
+    var records;
+    var reportType;
+
+    if ((moduleId) && (!courseId)) {
+        var module = await (Module.findOne({ _id: moduleId }).populate({
+            path: 'Sessions',
+            populate: {
+                path: 'AttendanceRecords',
+                model: 'AttendanceRecord',
+                match: { Student: studentId }
+            }
+        }));
+        reportType = "Attendance for student across all sessions in module: " + module.Name;
+
+        module.Sessions.forEach(s => {
+            s.AttendanceRecords.forEach(a => {
+                records.push({
+                    Session: s.Title,
+                    Date: s.DateAndTime,
+                    Attendance: a.Attendance,
+                    Late: a.Late
+                });
+            });
+        })
+    }
+    else if (courseId) {
+        var course = await (Course.findOne({ _id: courseId }).populate({
+            path: 'Modules',
+            populate: {
+                path: 'Sessions',
+                populate: {
+                    path: 'AttendanceRecords',
+                    model: 'AttendanceRecord',
+                    match: { Student: studentId }
+                }
+            }
+        }));
+        reportType = "Attendance for student across all modules in course: " + course.Title;
+
+        course.Modules.forEach(m => {
+            m.Sessions.forEach(s => {
+                if (s.populated('AttendanceRecords')) {
+                    s.AttendanceRecords.forEach(a => {
+                        records.push({
+                            Module: m.Title,
+                            Session: s.Title,
+                            Date: s.DateAndTime,
+                            Attendance: a.Attendance,
+                            Late: a.Late
+                        });
+                    });
+                }
+            });
         });
-        
-    });
+    }
+
+    var returnObject = {
+        StudentName: student.FirstName + ' ' + student.LastName,
+        StudentId: studentId,
+        ReportType: reportType,
+        Records: records
+    }
     
+    console.log(returnObject);
 
-    // attendance = new Attendance({
-    //     SessionID: session,
-    //     Student: student,
-    //     Attendance: true,
-    //     Late: false
-    // });
-    // attendance.save();
-
-    // console.log(session);
-    // console.log(student); 
 }
