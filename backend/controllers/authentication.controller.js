@@ -8,22 +8,30 @@ exports.login = async (req, res) => {
         return;
     }
 
-    var user = await User.findById(req.body.Id.toString().padStart(24, '0'));
-    if (user) {
-        var result = await Auth.verifyPassword(req.body.Password, user.Password)
-        if (result == true) {
-            var token = Auth.generateToken(user);
-            var response = {
-                Token: token,
+    try {
+        var user = await User.findById(req.body.Id.toString().padStart(24, '0'));
+        if (user) {
+            var result = await Auth.verifyPassword(req.body.Password, user.Password)
+            if (result == true) {
+                var token = Auth.generateToken(user);
+                var response = {
+                    Token: token,
+                }
+                res.json(JSON.stringify(response));
             }
-            res.json(JSON.stringify(response));
+            else {
+                res.status(401).send({ message: "Incorrect password" });
+            }
         }
         else {
-            res.status(401).send({ message: "Incorrect password" });
+            res.status(401).send({ message: "User not found" });
         }
     }
-    else {
-        res.status(401).send({ message: "User not found" });
+    catch (error) {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving the User."
+        });
     }
 }
 exports.verfiyToken = (req, res) => {
