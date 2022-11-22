@@ -9,9 +9,17 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 var fileupload = require("express-fileupload");
 
-var boilerplate = require('./boilerplate');
-boilerplate.run();
 
+if(process.env.BOILER == 'true'){
+  async function run() {
+    console.log("Running boilerplate");
+    boilerplate = require("./boilerplate");
+    await boilerplate.run();
+    console.log("Boilerplate complete");
+    process.exit(1);  
+  }
+  run();  
+}
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user.routes');
 var moduleRouter = require('./routes/module.routes');

@@ -10,12 +10,11 @@ const Module = require("./models/module.model");
 const Course = require("./models/course.model");
 
 exports.run = async function () {
-    console.log("Running boilerplate");
 
-    var studentId = (await Student.find())[2].id;
+    var studentId = (await Student.find())[0].id;
     var sessionId = (await Session.find())[0].id;
-    var moduleId = (await Module.find())[0].id;
-    var courseId = (await Course.find())[0].Course;
+    var moduleId = (await Module.find())[1].id;
+    var courseId = (await Course.find())[1].id;
 
     var student = await Student.findOne({ _id: studentId });
 
@@ -31,7 +30,7 @@ exports.run = async function () {
                 match: { Student: studentId }
             }
         }));
-        reportType = "Attendance for student across all sessions in module: " + module.Name;
+        reportType = "Attendance for student across all sessions in module: " + module.Title;
 
         module.Sessions.forEach(s => {
             s.AttendanceRecords.forEach(a => {
@@ -51,12 +50,13 @@ exports.run = async function () {
                 path: 'Sessions',
                 populate: {
                     path: 'AttendanceRecords',
-                    model: 'AttendanceRecord',
-                    match: { Student: studentId }
+                    model: 'AttendanceRecord'
                 }
             }
         }));
         reportType = "Attendance for student across all modules in course: " + course.Title;
+
+        console.log(course);
 
         course.Modules.forEach(m => {
             m.Sessions.forEach(s => {

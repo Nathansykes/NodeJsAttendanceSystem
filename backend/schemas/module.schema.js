@@ -4,7 +4,6 @@ let Schema =  mongoose.Schema;
 const Tutor = require("../models/tutor.model");
 const Session = require("../models/session.model");
 const Student = require("../models/student.model");
-const Session = require("../models/session.model");
 
 let moduleSchema = new Schema(
     {
