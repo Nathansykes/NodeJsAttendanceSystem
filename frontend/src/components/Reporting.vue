@@ -31,6 +31,7 @@
                 </div>
             </div>
             <div v-if="this.Report?.Records">
+                <br />
                 <h4>{{ this.Report.ReportType }}</h4>
                 <hr />
                 <table class="table">
