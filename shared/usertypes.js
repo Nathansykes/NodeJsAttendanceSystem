@@ -22,7 +22,6 @@ function GetUserTypeByModelName(modelName) {
     var keys = Object.keys(UserTypes);
     keys.forEach(key => {
         if (UserTypes[key].ModelName == modelName) {
-            console.log(UserTypes[key]);
             userType = UserTypes[key];
         }
     });
