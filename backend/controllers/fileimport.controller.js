@@ -5,6 +5,7 @@ const UserController = require("../controllers/user.controller");
 const Constants = require("../../shared/constants").Constants;
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
+const Auth = require("../authentication");
 
 const { parse } = require('csv-parse');
 
@@ -25,13 +26,13 @@ exports.importUsers = (req, res) => {
                     res.status(400).send({ message: "Invalid data in file.", result: result });
                     return;
                 }
-                var userData = data.map(x => ({
+                var userData = await Promise.all(data.map(async x => ({
                         _id: Generic.CreateObjectId(x.Id),
                         UserType: x.UserType,
                         FirstName: x.FirstName,
                         LastName: x.LastName,
-                        Password: x.Password,
-                }));
+                        Password: await Auth.createHash(await x.Password),
+                })));
                 var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
                 var count = 0;
                 users.forEach(user => {
