@@ -1,5 +1,4 @@
 const db = require("../models");
-var mongoose = require('mongoose');
 let Attendance = require("../models/attendanceRecord.model");
 
 // Create and Save a new Attendance

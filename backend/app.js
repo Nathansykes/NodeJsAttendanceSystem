@@ -9,6 +9,8 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 var fileupload = require("express-fileupload");
 
+var boilerplate = require('./boilerplate');
+boilerplate.run();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user.routes');
