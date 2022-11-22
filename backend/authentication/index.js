@@ -18,7 +18,7 @@ exports.verifyPassword = (password, dbHash) => {
 
 exports.generateToken = (userId) => {
     try {
-        var token = jwt.sign({ Id: userId }, '6987beea-c26c-4193-b4d7-a27ed1ee4069'); // to do - use env variables
+        var token = jwt.sign({ Id: userId }, process.env.TOKEN_SECRET);
         return token;
     }
     catch (error) {
@@ -55,7 +55,7 @@ function requestHasToken(req) {
 
 function tokenIsValid(token) {
     try {
-        var result = jwt.verify(token, '6987beea-c26c-4193-b4d7-a27ed1ee4069');
+        var result = jwt.verify(token, process.env.TOKEN_SECRET);
         if (result) {
             return true;
         }

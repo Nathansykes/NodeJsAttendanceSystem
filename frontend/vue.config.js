@@ -5,11 +5,11 @@ module.exports = defineConfig({
 
 module.exports = {
   chainWebpack: config => {
-      config
-          .plugin('html')
-          .tap(args => {
-              args[0].title = "Attendance Register";
-              return args;
-          })
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = "Attendance Register";
+        return args;
+      })
   }
 }
