@@ -49,10 +49,11 @@ export default {
             this.sessionId = this.$route.params.id;
             ModelDataService.SessionDataService.get(this.sessionId).then(response => 
             {
-                response.data[0].AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
-                this.session = response.data[0];
-                this.students = response.data[0].Students;
-                this.attendances = response.data[0].AttendanceRecords;
+                var data = JSON.parse(response.data)
+                data[0].AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
+                this.session = data[0];
+                this.students = data[0].Students;
+                this.attendances = data[0].AttendanceRecords;
             });
         },
         updateMark(value, index)

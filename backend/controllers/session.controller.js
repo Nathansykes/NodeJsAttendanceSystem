@@ -58,12 +58,21 @@ function createSession(body, res)
 
   return session;
 }
- 
+
+var populateArgs = [{
+  path: 'Students',
+  model: 'Student',
+},
+{
+  path: 'AttendanceRecords',
+  model: 'AttendanceRecord',
+}];
+
 // Retrieve all Sessions from the database.
 exports.findAll = (req, res) => {
-  Session.find().then(data => 
+  Session.find().populate(populateArgs).then(data => 
     {
-      res.json(JSON.stringify(data));
+      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     });
 };
  
@@ -72,10 +81,10 @@ exports.findOne = (req, res) => {
 
   const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Session.find({_id: {$in: ids}}).populate("Students").populate("AttendanceRecords")
+  Session.find({_id: {$in: ids}}).populate(populateArgs)
   .then(data =>
     {
-      res.send(data.map(item => Formatter.formatSession(item)));
+      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     })
     .catch(error => 
     {
