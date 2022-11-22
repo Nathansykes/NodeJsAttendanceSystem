@@ -157,9 +157,8 @@ exports.GetAttendanceForModule = async (req, res) => {
     Records: records
   }
 
-  if (records.length > 0) {
-    res.json(JSON.stringify(returnObject));
-  }
+  res.json(JSON.stringify(returnObject));
+  
 }
 
 exports.GetAttendanceForCourse = async (req, res) => {

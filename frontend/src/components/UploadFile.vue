@@ -1,6 +1,5 @@
 <template>
     <div id="upload">
-
         <body>
             <h3>CSV Upload</h3>
             <form>

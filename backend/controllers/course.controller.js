@@ -81,7 +81,7 @@ exports.findAll = (req, res) => {
     {
       courses.push(ModelFormater.formatCourse(course));
     });
-    res.send(courses);
+    res.json(JSON.stringify(courses));
 
   });
 };
