@@ -4,7 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var Auth = require("./authentication");
-var dotenv = require('dotenv');
+
+require('dotenv').config();
 
 
 var bodyParser = require("body-parser");
@@ -40,7 +41,6 @@ var app = express();
 
 app.use(cors());
 app.use(fileupload());
-app.use(dotenv.config());
 
 app.use(logger('dev'));
 app.use(express.json());
