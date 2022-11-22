@@ -12,6 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\server.js",
+            "envFile": "${workspaceFolder}\\backend\\.env",
         },
         {
             "type": "node-terminal",
