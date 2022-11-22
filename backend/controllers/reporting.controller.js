@@ -6,7 +6,7 @@ const Course = require("../models/course.model");
 const Student = require("../models/student.model");
 
 exports.GetAttendanceForStudent = async (req, res) => {
-  var studentId = req.query.StudentId?.padLeft(24, '0');
+  var studentId = req.query.StudentId?.toString()?.padStart(24, '0');
   var moduleId = req.query.ModuleId;
   var courseId = req.query.CourseId;
   if (!studentId) {
@@ -15,10 +15,10 @@ exports.GetAttendanceForStudent = async (req, res) => {
   }
   var student = await Student.findOne({ _id: studentId });
 
-  var records;
+  var records = [];
   var reportType;
 
-  if ((moduleId) && (!courseId)) {
+  if (moduleId) {
     var module = await (Module.findOne({ _id: moduleId }).populate({
       path: 'Sessions',
       populate: {
@@ -62,13 +62,46 @@ exports.GetAttendanceForStudent = async (req, res) => {
               Module: m.Title,
               Session: s.Title,
               Date: s.DateAndTime,
-              Attendance: a.Attendance,
-              Late: a.Late
+              AttendanceMark: a.Attendance
             });
           });
         }
       });
     });
+  }
+  else {
+
+    var courses= await (Course.find().populate({
+      path: 'Modules',
+      populate: {
+        path: 'Sessions',
+        populate: {
+          path: 'AttendanceRecords',
+          model: 'AttendanceRecord',
+          match: { Student: studentId }
+        }
+      }
+    }));
+
+    console.log(courses);
+    courses.forEach(c => {
+      c.Modules.forEach(m => {
+        m.Sessions.forEach(s => {
+          if (s.AttendanceRecords.length > 0) {
+            s.AttendanceRecords.forEach(a => {
+              records.push({
+                Course: c.Title,
+                Module: m.Title,
+                Session: s.Title,
+                Date: s.DateAndTime,
+                AttendanceMark: a.Attendance
+              });
+            });
+          }
+        });
+      });
+    });
+    reportType = "All attendance for student";
   }
 
   var returnObject = {
@@ -77,10 +110,9 @@ exports.GetAttendanceForStudent = async (req, res) => {
     ReportType: reportType,
     Records: records
   }
+  console.log(returnObject);
 
-  if (records.length > 0) {
-    res.json(JSON.stringify(returnObject));
-  }
+  res.json(JSON.stringify(returnObject));  
 }
 
 exports.GetAttendanceForModule = async (req, res) => {
@@ -90,7 +122,7 @@ exports.GetAttendanceForModule = async (req, res) => {
     return;
   }
 
-  var records;
+  var records = [];
   var reportType;
 
   var module = await (Module.findOne({ _id: moduleId }).populate({
@@ -137,7 +169,7 @@ exports.GetAttendanceForCourse = async (req, res) => {
     return;
   }
 
-  var records;
+  var records =[];
   var reportType;
 
   var course = await (Course.findOne({ _id: courseId }).populate({
@@ -166,8 +198,7 @@ exports.GetAttendanceForCourse = async (req, res) => {
           Module: m.Title,
           Session: s.Title,
           Date: s.DateAndTime,
-          Attendance: a.Attendance,
-          Late: a.Late
+          AttendanceMark: a.Attendance,
         });
       });
     });
@@ -178,7 +209,7 @@ exports.GetAttendanceForCourse = async (req, res) => {
     Records: records
   }
 
-  if (records.length > 0) {
-    res.json(JSON.stringify(returnObject));
-  }
+  
+  res.json(JSON.stringify(returnObject));
+  
 }

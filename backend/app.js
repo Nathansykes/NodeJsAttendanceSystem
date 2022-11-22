@@ -27,6 +27,7 @@ var attendanceRouter = require('./routes/attendanceRecord.routes');
 var sessionRouter = require('./routes/session.routes');
 var authRouter = require('./routes/authentication.routes');
 var fileuploadRouter = require('./routes/fileupload.routes');
+var reportingRouter = require('./routes/reporting.routes');
 
 function Authenticate(req, res, next){
   if (req.path.toLowerCase() == '/login') {
@@ -63,6 +64,7 @@ app.use('/', attendanceRouter);
 app.use('/', sessionRouter);
 app.use('/', authRouter);
 app.use('/', fileuploadRouter);
+app.use('/', reportingRouter);
 
 //Database connection code
 const db = require("./models");
