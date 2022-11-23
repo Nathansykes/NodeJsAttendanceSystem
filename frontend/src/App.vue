@@ -23,6 +23,9 @@ export default {
       Index
     },
   mounted() {
+      var fontAwesome = document.createElement('script')
+      fontAwesome.setAttribute('src', 'https://kit.fontawesome.com/93c807bff0.js')
+      document.head.appendChild(fontAwesome)
       if (this.loggedIn) 
       {
         this.$router.push('/home')
