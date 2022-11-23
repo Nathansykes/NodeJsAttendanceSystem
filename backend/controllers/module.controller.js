@@ -74,7 +74,13 @@ var populateArgs = {
 
 // Retrieve all Modules from the database.
 exports.findAll = (req, res) => {
-  Module.find().populate(populateArgs).then(data => 
+
+  var filter = {};
+  if (req.query.Title){
+    filter.Title = req.query.Title;
+  }
+
+  Module.find(filter).populate(populateArgs).then(data => 
     {
       res.json(JSON.stringify(data.map(module => Formatter.formatModule(module))));
     });

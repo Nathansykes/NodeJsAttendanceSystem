@@ -25,7 +25,7 @@ export default {
   mounted() {
       if (this.loggedIn) 
       {
-        this.$router.push('/users')
+        this.$router.push('/home')
       }
       else 
       {

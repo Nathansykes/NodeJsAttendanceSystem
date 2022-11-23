@@ -75,7 +75,13 @@ var populateArgs = {
  
 // Retrieve all Courses from the database.
 exports.findAll = (req, res) => {
-  Course.find().populate(populateArgs)
+
+  var filter = {};
+  if (req.query.Title){
+    filter.Title = req.query.Title;
+  }
+
+  Course.find(filter).populate(populateArgs)
  .then(data => 
   {
     res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));

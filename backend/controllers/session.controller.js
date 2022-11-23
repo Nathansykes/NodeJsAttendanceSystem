@@ -70,7 +70,13 @@ var populateArgs = [{
 
 // Retrieve all Sessions from the database.
 exports.findAll = (req, res) => {
-  Session.find().populate(populateArgs).then(data => 
+
+  var filter = {};
+  if (req.query.Title){
+    filter.Title = req.query.Title;
+  }
+
+  Session.find(filter).populate(populateArgs).then(data => 
     {
       res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     });

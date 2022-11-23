@@ -1,12 +1,13 @@
 <template>
     <div class="list row">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
-            v-model="title"/>
+            v-model="name"/>
             <select class="form-select" @change="filterTypeChange($event)">
               <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.Name}}</option>
             </select>
+            <UserSelectList v-if="isUsersSelected()" @selectUserType="(value) => updateUserType(value)"/>
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
               @click="searchName"
@@ -39,12 +40,14 @@
 <script>
   import ModelDataService from "../services/models.data.service";
   import ModelTypes from '../../../shared/modelTypes';
+  import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
   
   export default {
     name: "courses-list",
     components: {
-      TreeItem
+      TreeItem,
+      UserSelectList
     },
     data() {
       return {
@@ -53,14 +56,17 @@
         currentModel: null,
         currentModelProperties: [],
         currentIndex: -1,
-        title: "",
+        name: "",
         modelTypes: ModelTypes,
+        selectedModelType: null,
+        selectedUserType: null,
       };
     },
     methods: {
       filterTypeChange(event) 
       {
-        switch (event.target.value) 
+        this.selectedModelType = event.target.value;
+        switch (this.selectedModelType) 
           {
             case ModelTypes.Course.Id.toString():
               this.retrieveCourses();
@@ -79,28 +85,41 @@
           }
       },
 
+      updateUserType(value) 
+      {
+        this.selectedUserType = value;
+        console.log(this.selectedUserType);
+        this.retrieveUsers();
+      },
+
       retrieveCourses() {
-        ModelDataService.CourseDataService.getAll()
+        ModelDataService.CourseDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Course))
           .catch(error => console.log(error));
       },
 
       retrieveModules() {
-        ModelDataService.ModuleDataService.getAll()
+        ModelDataService.ModuleDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Module))
           .catch(error => console.log(error));
       },
 
       retrieveSessions() {
-        ModelDataService.SessionDataService.getAll()
+        ModelDataService.SessionDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Session))
           .catch(error => console.log(error));
       },
 
       retrieveUsers() {
-        ModelDataService.UserDataService.getAll()
+        const names = this.name.split(" ");       
+        ModelDataService.UserDataService.findByName(this.selectedUserType, names[0], names[1])
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.User))
           .catch(error => console.log(error));
+      },
+
+      isUsersSelected() 
+      {
+        return this.selectedModelType === ModelTypes.User.Id.toString();
       },
 
       createTreeViewData(model, type) 
@@ -206,17 +225,24 @@
       },
       
       searchName() {
-        ModelDataService.CourseDataService.findByName(this.title)
-          .then(response => 
+
+        switch (this.selectedModelType) 
           {
-            const courses = JSON.parse(response.data);
-            this.courses = courses;
-            this.setActiveCourse(null);
-          })
-          .catch(error => 
-          {
-            console.log(error);
-          });
+            case ModelTypes.Course.Id.toString():
+              this.retrieveCourses();
+              break;
+            case ModelTypes.Module.Id.toString():
+              this.retrieveModules();
+              break;
+            case ModelTypes.Session.Id.toString():
+              this.retrieveSessions();
+              break;
+            case ModelTypes.User.Id.toString():
+              this.retrieveUsers();
+              break;
+              default:
+                break;
+          }
       }
     },
     mounted() {
