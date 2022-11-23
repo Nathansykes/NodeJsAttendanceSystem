@@ -10,7 +10,7 @@
             <UserSelectList v-if="isUsersSelected()" @selectUserType="(value) => updateUserType(value)"/>
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
-              @click="searchName"
+              @click="refresh"
             >
               Search
             </button>
@@ -66,6 +66,11 @@
       filterTypeChange(event) 
       {
         this.selectedModelType = event.target.value;
+        this.refresh();
+      },
+
+      refresh() 
+      {
         switch (this.selectedModelType) 
           {
             case ModelTypes.Course.Id.toString():
@@ -223,27 +228,6 @@
         this.currentIndex = this.models.indexOf(this.currentModel);
         this.currentModelProperties = this.GetProperties(this.currentModel);
       },
-      
-      searchName() {
-
-        switch (this.selectedModelType) 
-          {
-            case ModelTypes.Course.Id.toString():
-              this.retrieveCourses();
-              break;
-            case ModelTypes.Module.Id.toString():
-              this.retrieveModules();
-              break;
-            case ModelTypes.Session.Id.toString():
-              this.retrieveSessions();
-              break;
-            case ModelTypes.User.Id.toString():
-              this.retrieveUsers();
-              break;
-              default:
-                break;
-          }
-      }
     },
     mounted() {
       this.retrieveCourses();
