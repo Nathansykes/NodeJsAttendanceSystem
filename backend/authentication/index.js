@@ -17,6 +17,22 @@ exports.verifyPassword = (password, dbHash) => {
     return bcrypt.compare(password, dbHash);
 }
 
+
+// if the user type in the token is below the allowed user type, return 403
+exports.AllowedUserType = (AllowedUserTypeId) => {
+    return (req, res, next) => {
+        var ApplicationUser = this.getApplicationUser(req);
+        if (ApplicationUser) {
+            if (AllowedUserTypeId >= ApplicationUser.UserTypeId) {
+                next();
+                return;
+            }
+        }
+        res.status(403).send("Forbidden");
+        return;
+    }
+}
+
 function createApplicationUser(user) {
     var userType = UserTypes.GetUserTypeByModelName(user.__t);
     return {
@@ -58,11 +74,16 @@ exports.verifyToken = (req) => {
 
 exports.getApplicationUser = (req) => {
     var ApplicationUser;
-    if (requestHasToken(req)) {
-        var token = req.headers['authorization'].split(' ')[1];
-        ApplicationUser = jwt.verify(token, process.env.TOKEN_SECRET);
+    try {
+        if (requestHasToken(req)) {
+            var token = req.headers['authorization'].split(' ')[1];
+            ApplicationUser = jwt.verify(token, process.env.TOKEN_SECRET);
+        }
+        return ApplicationUser;
     }
-    return ApplicationUser;
+    catch {
+        return null;
+    }
 }
 
 function requestHasToken(req) {

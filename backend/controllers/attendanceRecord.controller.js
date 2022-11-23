@@ -1,6 +1,8 @@
 const db = require("../models");
 var mongoose = require('mongoose');
 let Attendance = require("../models/attendanceRecord.model");
+var Auth = require('../authentication')
+var UserTypes = require('../../shared/usertypes');
 
 // Create and Save a new Attendance
 exports.create = (req, res) => {
@@ -44,7 +46,13 @@ function createAttendance(body, res)
 
 // Retrieve all Attendances from the database.
 exports.findAll = (req, res) => {
-  Attendance.find().then(data =>
+  var filter;
+  var applicationUser = Auth.getApplicationUser(req);
+  if(applicationUser.UserTypeId == UserTypes.Student.Id){
+    filter= { Student : applicationUser.Id };// only get attendance records for the current student, if they are a student
+  }
+
+  Attendance.find(filter).then(data =>
     {
       res.json(JSON.stringify(data));
     });
@@ -54,8 +62,13 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
 
   const id = req.query.id;
+  var filter;
+  var applicationUser = Auth.getApplicationUser(req);
+  if(applicationUser.UserTypeId == UserTypes.Student.Id){
+    filter= { Student : applicationUser.Id };
+  }
 
-  Attendance.findOne({ Id : id }).then(data =>
+  Attendance.findOne(filter).then(data =>
     {
       res.json(JSON.stringify(data));
     })
