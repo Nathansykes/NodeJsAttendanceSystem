@@ -4,13 +4,6 @@
       <div class="container">
         <a class="navbar-brand" href="#">{{this.title}}</a>
         <div class="navbar-nav me-auto">
-          <li class="nav-item">
-            <router-link to="/users" class="nav-link">Users</router-link>
-          </li>
-
-          <li class="nav-item">
-            <router-link to="/courses" class="nav-link">Courses</router-link>
-          </li>
 
           <li class="nav-item">
             <router-link to="/attendance" class="nav-link">Attendance</router-link>
