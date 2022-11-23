@@ -37,7 +37,7 @@ function createApplicationUser(user) {
     var userType = UserTypes.GetUserTypeByModelName(user.__t);
     return {
         Id: user._id,
-        Type: userType.Id,
+        UserTypeId: userType.Id,
         Name: user.FirstName + " " + user.LastName,
     }
 }

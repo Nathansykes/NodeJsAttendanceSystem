@@ -16,9 +16,12 @@ exports.GetAttendanceForStudent = async (req, res) => {
     return;
   }
 
-  if(studentId != Auth.getApplicationUser(req).Id){
-    res.status(403).send("Cannot get attendance for another student");
-    return;
+  var applicationUser = Auth.getApplicationUser(req)
+  if(applicationUser.UserTypeId == UserTypes.Student.Id){
+    if(studentId != applicationUser.Id){
+      res.status(403).send("Cannot get attendance for another student");
+      return;
+    }
   }
 
   var student = await Student.findOne({ _id: studentId });
