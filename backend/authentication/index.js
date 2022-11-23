@@ -23,7 +23,7 @@ exports.AllowedUserType = (AllowedUserTypeId) => {
     return (req, res, next) => {
         var ApplicationUser = this.getApplicationUser(req);
         if (ApplicationUser) {
-            if (AllowedUserTypeId >= ApplicationUser.UserTypeId) {
+            if (AllowedUserTypeId <= ApplicationUser.UserTypeId) {
                 next();
                 return;
             }
