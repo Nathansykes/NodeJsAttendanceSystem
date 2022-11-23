@@ -4,6 +4,8 @@ const Attendance = require("../models/attendanceRecord.model");
 const Module = require("../models/module.model");
 const Course = require("../models/course.model");
 const Student = require("../models/student.model");
+var Auth = require('../authentication')
+var UserTypes = require('../../shared/usertypes');
 
 exports.GetAttendanceForStudent = async (req, res) => {
   var studentId = req.query.StudentId?.toString()?.padStart(24, '0');
@@ -13,6 +15,15 @@ exports.GetAttendanceForStudent = async (req, res) => {
     res.status(400).send("StudentId is required");
     return;
   }
+
+  var applicationUser = Auth.getApplicationUser(req)
+  if(applicationUser.UserTypeId == UserTypes.Student.Id){
+    if(studentId != applicationUser.Id){
+      res.status(403).send("Cannot get attendance for another student");
+      return;
+    }
+  }
+
   var student = await Student.findOne({ _id: studentId });
 
   var records = [];
