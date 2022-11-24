@@ -1,4 +1,6 @@
 <script>
+import 'bootstrap';
+
 export default {
   name: 'TreeItem', // necessary for self-reference
   props: {
@@ -10,26 +12,25 @@ export default {
       index: -1
     }
   },
-  computed: {
-    hasChildren() {
-      return this.model[this.index]?.children && this.model[this.index]?.children.length
-    }
-  },
   emits: ['selectedModel'],
   methods: {
-    toggle() 
+    toggle(item, index) 
     {
-      if (this.hasChildren) 
+      if (this.hasChildren(item)) 
       {
         this.isOpen[this.index] = !this.isOpen[this.index]
       }
+      this.setSelectedIndex(index);
     },
     setSelectedIndex(index) 
     {
       this.index = index;
       this.$emit('selectedModel', this.model[this.index]);
-      this.toggle();
-    }
+      this.toggle(this.model[this.index]);
+    },
+    hasChildren(item) {
+      return item.children && item.children.length
+    },
   }
 }
 </script>
@@ -37,23 +38,18 @@ export default {
 <template>
   <div>
     <ul class="list-group" v-for="(item, index) in model" :key="index">
-      <li class="list-group-item">
-        <span class="clickable" @click="setSelectedIndex(index)">
-          <i class="fa-solid fa-plus"></i>
+      <li class="list-group-item list-group-item-action" @click="toggle(item, index)">
+        <span class="clickable" v-if="hasChildren(item)" style="display:inline-block">
+          <i class="fa-solid fa-plus" v-if="!isOpen[index]"></i>
+          <i class="fa-solid fa-minus" v-if="isOpen[index]"></i>
         </span>
-        <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
+        <ul style="display:inline-block">
+          <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
+        </ul>
       </li>
-      <ul v-show="isOpen[index]" v-if="hasChildren">
+      <ul v-show="isOpen[index]" v-if="hasChildren(item)">
         <TreeItem :model="item.children" @selectedModel="(value) => this.$emit('selectedModel', value)"/>
       </ul>
     </ul>
   </div>
 </template>
-
-<style>
-  .list {
-    text-align: left;
-    max-width: 750px;
-    margin: auto;
-  }
-</style>
