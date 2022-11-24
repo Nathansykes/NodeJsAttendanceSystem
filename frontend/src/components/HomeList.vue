@@ -18,20 +18,17 @@
         </div>
       </div>
       <div class="col-md-6">
-        <h4>Courses List</h4>
         <TreeItem :model="treeViewData" @selectedModel="(value) => setActiveModel(value)"/>
       </div>
       <div class="col-md-6">
-        <h4>Details</h4>
-        <div v-if="currentModel">
-          <div v-for="(property) in currentModelProperties"
-            :key="property">
-            <label><strong>{{property.key}}: </strong></label> {{property.value}}
+        <div v-if="currentModel" class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+          <div class="card-header">Details</div>
+          <div class="card-body">
+              <div v-for="(property) in currentModelProperties"
+                :key="property">
+                <label class="form-label mt-4">{{property.key}}: </label> {{property.value}}
+              </div>
           </div>
-        </div>
-        <div v-else>
-          <br />
-          <p>Please click on an Course...</p>
         </div>
       </div>
     </div>
