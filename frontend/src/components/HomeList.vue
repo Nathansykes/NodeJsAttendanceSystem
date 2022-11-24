@@ -39,6 +39,7 @@
   import ModelTypes from '../../../shared/modelTypes';
   import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
+  import ObjectHelper from "@/helpers/object.helper";
   
   export default {
     name: "courses-list",
@@ -170,7 +171,7 @@
             
             if (childType) 
             {
-              item.children = this.createTreeViewData(this.GetPropertyValue(model[i], childType.Name), childType);
+              item.children = this.createTreeViewData(ObjectHelper.GetPropertyValue(model[i], childType.Name), childType);
             }
 
             treeViewData.push(item);
@@ -178,39 +179,6 @@
           }
         
         return treeViewData;
-      },
-
-      GetPropertyValue(obj1, dataToRetrieve) 
-      {
-        if (!dataToRetrieve) { return; }
-
-        return dataToRetrieve
-          .split('.') // split string based on `.`
-          .reduce(function(o, k) {
-            return o && o[k]; // get inner property if `o` is defined else get `o` and return
-          }, obj1) // set initial value as object
-      },
-
-      GetProperties(obj) 
-      {
-        var dictionary = [];
-        
-        for(var key in obj) 
-        {
-            if(Object.prototype.hasOwnProperty.call(obj, key) && typeof obj[key] !== 'function' && !Array.isArray(obj[key])) 
-            {
-                if (key !== "Id" && key !== "__v")
-                {
-                  if (key === "DateAndTime") 
-                  {
-                    var date = new Date(obj[key]);
-                    obj[key] = date.toLocaleString("en-GB");
-                  }
-                  dictionary.push( { key : key, value : obj[key] });
-                }
-            }
-        }
-        return dictionary.sort();
       },
   
       refreshList() {
@@ -223,7 +191,7 @@
       {
         this.currentModel = this.models.find(x => x.Id === model.id);
         this.currentIndex = this.models.indexOf(this.currentModel);
-        this.currentModelProperties = this.GetProperties(this.currentModel);
+        this.currentModelProperties = ObjectHelper.GetProperties(this.currentModel);
       },
     },
     mounted() {
