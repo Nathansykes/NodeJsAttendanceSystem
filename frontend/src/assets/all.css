@@ -180,4 +180,5 @@ input[type="reset"] {
 .list {
     text-align: left;
     margin: auto;
+    max-width: 1200px;
 }

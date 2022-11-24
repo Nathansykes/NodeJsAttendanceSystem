@@ -1,6 +1,7 @@
 <template>
     <div class="list row">
-      <div class="col-md-8">
+      <div class="col-md-12">
+        <div id="search-box-container">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="title"/>
@@ -12,6 +13,7 @@
             </button>
           </div>
         </div>
+      </div>
       </div>
       <div class="col-md-6">
         <h4>Courses List</h4>
@@ -192,10 +194,3 @@
   };
 </script>
   
-<style>
-  .list {
-    text-align: left;
-    max-width: 750px;
-    margin: auto;
-  }
-</style>
