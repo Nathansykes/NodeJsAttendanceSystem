@@ -7,7 +7,7 @@
                 <label class="form-label mt-4">{{property.key}}</label> 
                 <input class="form-control" v-model="property.value"/>
             </div>
-            <a class="btn btn-primary" @click="save">Submit</a>
+            <button type="submit" style="margin-top: 5%;" class="btn btn-primary" @click="save">Submit</button>
         </fieldset>
     </form>
 </template>
