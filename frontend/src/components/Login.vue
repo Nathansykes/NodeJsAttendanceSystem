@@ -40,8 +40,8 @@ export default{
             {
                 var token = (JSON.parse(response.data)).Token;
                 document.cookie=`access_token=${token}`;
-                this.$router.push('/users')
-                window.location.href= '/users';
+                this.$router.push('/home')
+                window.location.href= '/home';
             })
             .catch(error => 
             {
