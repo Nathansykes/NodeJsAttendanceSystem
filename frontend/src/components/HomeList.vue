@@ -26,7 +26,11 @@
           <div class="card-body">
               <div v-for="(property) in currentModelProperties"
                 :key="property">
-                <label class="form-label mt-4">{{property.key}}: </label> {{property.value}}
+                <label v-if="property.key === 'DateAndTime'" class="form-label mt-4">Date: {{property.value}}</label>
+                <label v-else class="form-label mt-4">{{property.key}}: {{property.value}}</label>
+              </div>
+              <div>
+                <router-link :to="`/attendance/${currentModel.Id}`" class="btn btn-light" v-if="currentModel.Type.Name === 'Sessions'">Attendance</router-link>
               </div>
           </div>
         </div>
@@ -109,7 +113,7 @@
 
       retrieveSessions() {
         ModelDataService.SessionDataService.findByName(this.name)
-          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Session))
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data)), ModelTypes.Session)
           .catch(error => console.log(error));
       },
 
@@ -162,6 +166,8 @@
 
           for (let i = 0; i < model.length; i++) 
           {
+            model[i].Type = type;
+
             let item = 
             {
               id : model[i].Id,

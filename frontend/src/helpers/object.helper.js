@@ -19,12 +19,12 @@ class ObjectHelper
         {
             if(Object.prototype.hasOwnProperty.call(obj, key) && typeof obj[key] !== 'function' && !Array.isArray(obj[key])) 
             {
-                if (key !== "Id" && key !== "__v")
+                if (key !== "Id" && key !== "__v" && key !== "Type")
                 {
                   if (key === "DateAndTime") 
                   {
                     var date = new Date(obj[key]);
-                    obj[key] = date.toLocaleString("en-GB");
+                    obj[key] = date.toISOString().slice(0,16)
                   }
                   dictionary.push( { key : key, value : obj[key] });
                 }

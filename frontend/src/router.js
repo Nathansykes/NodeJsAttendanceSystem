@@ -26,8 +26,8 @@ const routes = [
         component: () => import("./components/HomeList.vue")
     },
     {
-        path: "/sessions/:id",
-        alias: "/sessions",
+        path: "/attendance/:id",
+        alias: "/attendance",
         name: "Attendance View",
         component: () => import("./components/AttendanceView.vue")
     },
@@ -36,6 +36,24 @@ const routes = [
         alias: "/courses",
         name: "Course View",
         component: () => import("./components/CourseView.vue")
+    },
+    {
+        path: "/modules/:id",
+        alias: "/modules",
+        name: "Module View",
+        component: () => import("./components/ModuleView.vue")
+    },
+    {
+        path: "/sessions/:id",
+        alias: "/sessions",
+        name: "Session View",
+        component: () => import("./components/SessionView.vue")
+    },
+    {
+        path: "/users/:id",
+        alias: "/users",
+        name: "User View",
+        component: () => import("./components/UserView.vue")
     },
     {
         path: "/",
