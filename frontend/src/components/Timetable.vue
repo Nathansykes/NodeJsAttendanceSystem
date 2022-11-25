@@ -28,16 +28,9 @@ export default {
       try {
         //Get cookie - access_token
         var cookie = httpCommonDataService.getCookie("access_token");
-        console.log("here");
         sessionsService.getSessionByCookie(cookie).then((response) => {
-          // console.log("here");
-          // console.log(response.data);
-          // console.log(JSON.parse(response.data));
           let sessions = JSON.parse(response.data);
-          console.log("sessions");
-          console.log(sessions);
           sessions.map((session) => {
-            //let event = new Event("Title", session.Location, session.DateAndTime);
             let event = {
               title: session.Title ?? "N/A",
               start: session.DateAndTime,
@@ -45,7 +38,6 @@ export default {
             };
             this.calendarOptions.events.push(event);
           });
-          console.log(this.calendarOptions.events);
         });
       } catch (error) {
         console.log(error);
