@@ -7,6 +7,8 @@ const Student = require("../models/student.model");
 var Auth = require('../authentication')
 var UserTypes = require('../../shared/usertypes');
 
+var GenericFunctions = require('../../shared/functions');  
+
 exports.GetAttendanceForStudent = async (req, res) => {
   var studentId = req.query.StudentId?.toString()?.padStart(24, '0');
   var moduleId = req.query.ModuleId;
@@ -25,6 +27,7 @@ exports.GetAttendanceForStudent = async (req, res) => {
   }
 
   var student = await Student.findOne({ _id: studentId });
+  var studentNameAndId = `${parseInt(studentId)} - ${student.FirstName} ${student.LastName}`;
 
   var records = [];
   var reportType;
@@ -38,15 +41,15 @@ exports.GetAttendanceForStudent = async (req, res) => {
         match: { Student: studentId }
       }
     }));
-    reportType = "Attendance for student across all sessions in module: " + module.Name;
+
+    reportType = `Attendance for Student: ${studentNameAndId} across all sessions in Module: ${module.Title}`;
 
     module.Sessions.forEach(s => {
       s.AttendanceRecords.forEach(a => {
         records.push({
           Session: s.Title,
-          Date: s.DateAndTime,
-          Attendance: a.Attendance,
-          Late: a.Late
+          Date: new Date(s.DateAndTime).toLocaleDateString(),
+          Attendance: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name,
         });
       });
     })
@@ -63,7 +66,7 @@ exports.GetAttendanceForStudent = async (req, res) => {
         }
       }
     }));
-    reportType = "Attendance for student across all modules in course: " + course.Title;
+    reportType = `Attendance for Student: ${studentNameAndId} across all modules in Course: ${course.Title}`;
 
     course.Modules.forEach(m => {
       m.Sessions.forEach(s => {
@@ -72,8 +75,8 @@ exports.GetAttendanceForStudent = async (req, res) => {
             records.push({
               Module: m.Title,
               Session: s.Title,
-              Date: s.DateAndTime,
-              AttendanceMark: a.Attendance
+              Date: new Date(s.DateAndTime).toLocaleDateString(),
+              AttendanceMark: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name
             });
           });
         }
@@ -100,24 +103,23 @@ exports.GetAttendanceForStudent = async (req, res) => {
         m.Sessions.forEach(s => {
           if (s.AttendanceRecords.length > 0) {
             s.AttendanceRecords.forEach(a => {
+              console.log(s.DateAndTime);
               records.push({
                 Course: c.Title,
                 Module: m.Title,
                 Session: s.Title,
-                Date: s.DateAndTime,
-                AttendanceMark: a.Attendance
+                Date: new Date(s.DateAndTime).toLocaleDateString(),
+                AttendanceMark: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name
               });
             });
           }
         });
       });
     });
-    reportType = "All attendance for student";
+    reportType = `All attendance for Student: ${studentNameAndId}`;
   }
 
   var returnObject = {
-    StudentName: student.FirstName + ' ' + student.LastName,
-    StudentId: studentId,
     ReportType: reportType,
     Records: records
   }
@@ -154,11 +156,10 @@ exports.GetAttendanceForModule = async (req, res) => {
     s.AttendanceRecords.forEach(a => {
       records.push({
         StudentName: a.Student.FirstName + ' ' + a.Student.LastName,
-        StudentID: a.Student._id,
+        StudentID: parseInt(a.Student._id),
         Session: s.Title,
-        Date: s.DateAndTime,
-        Attendance: a.Attendance,
-        Late: a.Late
+        Date: new Date(s.DateAndTime).toLocaleDateString(),
+        Attendance: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name,
       });
     });
   });
@@ -204,11 +205,11 @@ exports.GetAttendanceForCourse = async (req, res) => {
       s.AttendanceRecords.forEach(a => {
         records.push({
           StudentName: a.Student.FirstName + ' ' + a.Student.LastName,
-          StudentID: a.Student._id,
+          StudentID: parseInt(a.Student._id),
           Module: m.Title,
           Session: s.Title,
-          Date: s.DateAndTime,
-          AttendanceMark: a.Attendance,
+          Date: new Date(s.DateAndTime).toLocaleDateString(),
+          AttendanceMark: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name,
         });
       });
     });

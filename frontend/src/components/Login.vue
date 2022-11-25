@@ -41,7 +41,7 @@ export default{
                 var token = (JSON.parse(response.data)).Token;
                 document.cookie=`access_token=${token}`;
                 this.$router.push('/users')
-                window.location.href= '/';
+                window.location.href= '/users';
             })
             .catch(error => 
             {

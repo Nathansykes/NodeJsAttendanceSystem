@@ -7,30 +7,33 @@
             <div class="row">
                 <div class=col-md-3>
                     <select class="form-select" @change="selectStudent">
-                        <option value="" selected >Select Student</option>
-                        <option v-for="student in this.Students" :key="student.Id" :value="student.Id">{{ student.Id }} - {{student.Name}}</option>
+                        <option value="" selected>Select Student</option>
+                        <option v-for="student in this.Students" :key="student.Id" :value="student.Id">{{ student.Id }}
+                            - {{ student.Name }}</option>
                     </select>
                 </div>
                 <div class=col-md-3>
                     <select class="form-select" @change="selectCourse">
-                        <option value="" selected >Select Course</option>
-                        <option v-for="course in this.Courses" :key="course.Id" :value="course.Id">{{ course.Name }}</option>
+                        <option value="" selected="selected">Select Course</option>
+                        <option v-for="course in this.Courses" :key="course.Id" :value="course.Id">{{ course.Name }}
+                        </option>
                     </select>
                 </div>
-                <div class=col-md-3 v-if="courseId != null">
+                <div class=col-md-3 v-if="this.Modules?.length > 0">
                     <select class="form-select" @change="selectModule">
-                        <option value="" selected >Select Module</option>
-                        <option v-for="module in this.Modules" :key="module.Id" :value="module.Id">{{ module.Name }}</option>
+                        <option value="" selected>Select Module</option>
+                        <option v-for="module in this.Modules" :key="module.Id" :value="module.Id">{{ module.Name }}
+                        </option>
                     </select>
                 </div>
-                <div class="col-md-3" v-else> 
+                <div class="col-md-3" v-else>
                     <i>Please Select a course before selecting a module</i>
                 </div>
                 <div class=col-md-3>
                     <button type="button" class="btn btn-primary" @click="GetReport">Get Report</button>
                 </div>
             </div>
-            <div v-if="this.Report?.Records">
+            <div v-if="this.ReportReturned">
                 <br />
                 <h4>{{ this.Report.ReportType }}</h4>
                 <hr />
@@ -46,7 +49,10 @@
                         </tr>
                     </tbody>
                 </table>
-
+            </div>
+            <div v-else>
+                <br />
+                <p>No Data available, please search again</p>
             </div>
 
         </body>
@@ -73,49 +79,66 @@ export default {
             Modules: [],
             Courses: [],
             Report: {},
+            ReportReturned: false,
         }
     },
     methods: {
         GetReport() {
-            if(this.studentId){
-                ReportingDataService.getStudentReport(this.studentId, this.courseId, this.moduleId)
+            if (this.studentId) {
+                ReportingDataService.getStudentReport(this.studentId, this.moduleId, this.courseId)
                     .then(response => {
-                        console.log(response)
-                        this.Report = JSON.parse(response.data)
+                        this.setReport(response.data);
                     })
                     .catch(e => {
                         console.log(e);
                     });
             }
-            else if (this.moduleId){
+            else if (this.moduleId) {
                 ReportingDataService.getModuleReport(this.moduleId)
                     .then(response => {
-                        this.Report = JSON.parse(response.data);
+                        this.setReport(response.data);
                     })
                     .catch(e => {
                         console.log(e);
                     });
             }
-            else if (this.courseId){
+            else if (this.courseId) {
                 ReportingDataService.getCourseReport(this.courseId)
                     .then(response => {
-                        this.Report = JSON.parse(response.data);
+                        this.setReport(response.data);
                     })
                     .catch(e => {
                         console.log(e);
                     });
-            } 
-            else{
+            }
+            else {
+                this.setReport(null);
                 return;
-            }         
+            }
+        },
+        setReport(data) {
+            if (!data) {
+                this.ReportReturned = false;
+                return;
+            }
+            this.Report = JSON.parse(data);
+            if (this.Report?.Records?.length > 0) {
+                this.ReportReturned = true;
+            }
+            else {
+                this.ReportReturned = false;
+            }
         },
         selectStudent(event) {
             this.studentId = event.target.value;
         },
         selectCourse(event) {
-            console.log(event.target);
             this.courseId = event.target.value;
-            this.PopulateModules(this.courseId);
+            if(this.courseId){
+                this.PopulateModules();
+            }
+            this.moduleId = null;
+            this.Modules = null;
         },
         selectModule(event) {
             this.moduleId = event.target.value;
@@ -125,7 +148,7 @@ export default {
                 .then(response => {
                     var data = JSON.parse(response.data);
                     this.Students = data.map(x => ({
-                        Id: parseInt(x._id),
+                        Id: parseInt(x.Id),
                         Name: x.FirstName + ' ' + x.LastName,
                     }));
                 })
@@ -150,8 +173,7 @@ export default {
             ModelDataService.CourseDataService.getAll()
                 .then(response => {
                     var data = JSON.parse(response.data);
-                    console.log(data);
-                    var modules = data.find(x => x.Id == this.courseId).Modules;
+                    var modules = (data.find(x => x.Id == this.courseId)).Modules;
                     this.Modules = modules.map(x => ({
                         Id: x.Id,
                         Name: x.Title,
