@@ -1,29 +1,27 @@
 <script>
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import httpCommonDataService from '@/services/http-common.data.service'
-import sessionsService from '@/services/session.data.service'
-import eventDataService from '@/services/event.data.service'
+import FullCalendar from "@fullcalendar/vue3";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import httpCommonDataService from "@/services/http-common.data.service";
+import sessionsService from "@/services/session.data.service";
 
 export default {
   name: "app",
   components: {
-    FullCalendar // make the FullCalendar tag available
+    FullCalendar, // make the FullCalendar tag available
   },
   data() {
     return {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
-        initialView: 'timeGridWeek',
+        initialView: "timeGridWeek",
         editable: true,
         selectable: true,
         weekends: false,
-        events: []
+        events: [],
       },
-
-    }
+    };
   },
   methods: {
     populateCalendar() {
@@ -31,19 +29,22 @@ export default {
         //Get cookie - access_token
         var cookie = httpCommonDataService.getCookie("access_token");
         console.log("here");
-        sessionsService.getSessionByCookie(cookie).then(response => 
-        {
+        sessionsService.getSessionByCookie(cookie).then((response) => {
           // console.log("here");
           // console.log(response.data);
           // console.log(JSON.parse(response.data));
           let sessions = JSON.parse(response.data);
-          console.log("sessions")
+          console.log("sessions");
           console.log(sessions);
-          sessions.map(session => {
-              //let event = new Event("Title", session.Location, session.DateAndTime);
-              let event = {title: session.Title ?? "N/A", start: session.DateAndTime, extendedProps: {location: session.Location}};
-              this.calendarOptions.events.push(event);
-          })
+          sessions.map((session) => {
+            //let event = new Event("Title", session.Location, session.DateAndTime);
+            let event = {
+              title: session.Title ?? "N/A",
+              start: session.DateAndTime,
+              extendedProps: { location: session.Location },
+            };
+            this.calendarOptions.events.push(event);
+          });
           console.log(this.calendarOptions.events);
         });
       } catch (error) {
@@ -51,32 +52,33 @@ export default {
       }
     },
     getAllSessions(userId) {
-      let sessions = sessionsService.getAll()
-      .then(response => {
-        const data = JSON.parse(response.data);
-        sessions = data;
-        this.getAllUserSessions(sessions, userId);
-      }).catch(error => {
-        console.log(error);
-      })
+      let sessions = sessionsService
+        .getAll()
+        .then((response) => {
+          const data = JSON.parse(response.data);
+          sessions = data;
+          this.getAllUserSessions(sessions, userId);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getAllUserSessions(sessions, userId) {
-      sessions.map(session => {
-        session.Students.map(student => {
-          if (parseInt(student.Id) == parseInt(userId))
-          {
+      sessions.map((session) => {
+        session.Students.map((student) => {
+          if (parseInt(student.Id) == parseInt(userId)) {
             this.studentSessions.push(session);
           }
-        })
-      })
-    }
+        });
+      });
+    },
   },
-  mounted(){
+  mounted() {
     this.populateCalendar();
-  }
-}
+  },
+};
 </script>
 
 <template>
-    <FullCalendar :options="calendarOptions" />
+  <FullCalendar :options="calendarOptions" />
 </template>

@@ -4,44 +4,41 @@ const Session = require("../models/session.model");
 const Formatter = require("../formatters/models.formatter");
 const Decoder = require("../services/cookie.service");
 const jwt_decode = require('jwt-decode')
- 
+
 // Create and Save a new Session
 exports.create = (req, res) => {
 
-    // Create a Session model object
-    const session = createSession(req.body, res);
-    
-    console.log(session);
-    // Save Session in the database
-    try {
-        session
-        .save()
-        .then(data => {
-            var successMessage = `Session saved in the database: ${data}`;
-            console.log(successMessage);
-            res.json(JSON.stringify(data));
-        })
-        .catch(err => {
-            res.status(500).send({
-            message:
-                err.message || "Some error occurred while creating the Session."
-            });
+  // Create a Session model object
+  const session = createSession(req.body, res);
+
+  console.log(session);
+  // Save Session in the database
+  try {
+    session
+      .save()
+      .then(data => {
+        var successMessage = `Session saved in the database: ${data}`;
+        console.log(successMessage);
+        res.json(JSON.stringify(data));
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Session."
         });
-        return;
-    } 
-    catch (error) 
-    {
-        console.log(error);
-    }
+      });
+    return;
+  }
+  catch (error) {
+    console.log(error);
+  }
 };
 
-function createSession(body, res)
-{
+function createSession(body, res) {
   console.log("trying to create a session");
   var session;
 
-  try 
-  {
+  try {
     var data = {
       _id: mongoose.Types.ObjectId(body.Id),
       Title: body.Title,
@@ -52,10 +49,9 @@ function createSession(body, res)
     }
     session = new Session(data);
   }
-  catch (error) 
-  {
+  catch (error) {
     console.log(error);
-    res.send({ message : error.toString()});
+    res.send({ message: error.toString() });
   }
 
   return session;
@@ -73,84 +69,71 @@ var populateArgs = [{
 // Retrieve all Sessions from the database.
 exports.findAll = (req, res) => {
 
-  if (req.query.Cookie)
-  {
-    var userId = Decoder.decodeCookie(req.query.Cookie).Id;
-    console.log(userId);
-    Session.find({ Students : userId}).populate(populateArgs)
-    .then(data => 
-      {
+  if (req.query.Cookie) {
+    var userId = Decoder.decodeCookie(req.query.Cookie).Id.toString()?.padStart(24, '0');
+    Session.find({ Students: userId }).populate(populateArgs)
+      .then(data => {
         res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
       });
   }
-  else 
-  {
-  
-  var filter = {};
-  if (req.query.Title){
-    filter.Title = req.query.Title;
-  }
+  else {
 
-  Session.find(filter).populate(populateArgs).then(data => 
-      {
-        res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-      });
+    var filter = {};
+    if (req.query.Title) {
+      filter.Title = req.query.Title;
+    }
+
+    Session.find(filter).populate(populateArgs).then(data => {
+      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
+    });
   }
 };
- 
+
 // Find a single Session with an id
 exports.findOne = (req, res) => {
 
   const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Session.find({_id: {$in: ids}}).populate(populateArgs)
-  .then(data =>
-    {
+  Session.find({ _id: { $in: ids } }).populate(populateArgs)
+    .then(data => {
       res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     })
-    .catch(error => 
-    {
-      res.send({message : error});
+    .catch(error => {
+      res.send({ message: error });
     });
 };
-  
+
 // Update a Session by the id in the request
 exports.update = (req, res) => {
 
   const id = req.params.id;
 
   var updateData = {
-      Title: req.body.Title,
-      Location: req.body.Location,
-      Students: req.body.Students,
-      AttendanceRecords: req.body.AttendanceRecords,
+    Title: req.body.Title,
+    Location: req.body.Location,
+    Students: req.body.Students,
+    AttendanceRecords: req.body.AttendanceRecords,
   }
 
-  if (req.body.DateAndTime) 
-  {
-    try 
-    {
-      updateData.DateAndTime = new Date(req.body.DateAndTime); 
+  if (req.body.DateAndTime) {
+    try {
+      updateData.DateAndTime = new Date(req.body.DateAndTime);
     }
-    catch (error)
-    {
+    catch (error) {
       res.send({ message: error });
     }
   }
 
-  Session.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-    {
-        if (data)
-        {
-            console.log("Updated Session : ", data);
-            res.json(JSON.stringify(data));
-        }
-        else
-        {
-            console.log(err)
-            res.send({message : err});
-        };
-    });
+  Session.findByIdAndUpdate(id, updateData, { new: true }).then(data => {
+    if (data) {
+      console.log("Updated Session : ", data);
+      res.json(JSON.stringify(data));
+    }
+    else {
+      console.log(err)
+      res.send({ message: err });
+    };
+  });
 };
 
 // Delete a Session with the specified id in the request
@@ -158,17 +141,14 @@ exports.delete = (req, res) => {
 
   const id = req.params.id;
 
-  Session.findByIdAndDelete(id).then(data => 
-    {
-      if (data) 
-      {
-        const message = `Session deleted: ${data}`;
-        console.log(message)
-        res.send({message : message});
-      }
-      else 
-      {
-          res.send({message : `Error. No session matches the Id: ${id}`})
-      }
-    });
+  Session.findByIdAndDelete(id).then(data => {
+    if (data) {
+      const message = `Session deleted: ${data}`;
+      console.log(message)
+      res.send({ message: message });
+    }
+    else {
+      res.send({ message: `Error. No session matches the Id: ${id}` })
+    }
+  });
 };
