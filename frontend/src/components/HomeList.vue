@@ -5,7 +5,7 @@
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="name"/>
             <select class="form-select" @change="filterTypeChange($event)">
-              <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.Name}}</option>
+              <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.PathName}}</option>
             </select>
             <UserSelectList v-if="isUsersSelected()" @selectUserType="(value) => updateUserType(value)"/>
           <div class="input-group-append">
@@ -172,7 +172,7 @@
             {
               id : model[i].Id,
               name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
-              routerLink : `${type.Name}/${model[i].Id}`,
+              routerLink : `${type.PathName}/${model[i].Id}`,
             };
             
             if (childType) 
