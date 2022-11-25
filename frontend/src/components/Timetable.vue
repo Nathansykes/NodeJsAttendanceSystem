@@ -20,8 +20,9 @@ export default {
         editable: true,
         selectable: true,
         weekends: false,
+        events: []
       },
-      events: [],
+
     }
   },
   methods: {
@@ -32,18 +33,18 @@ export default {
         console.log("here");
         sessionsService.getSessionByCookie(cookie).then(response => 
         {
-          console.log("here");
-          console.log(response.data);
-          console.log(JSON.parse(response.data));
-          let sessions = response.data;
+          // console.log("here");
+          // console.log(response.data);
+          // console.log(JSON.parse(response.data));
+          let sessions = JSON.parse(response.data);
+          console.log("sessions")
           console.log(sessions);
-          console.log("test1");
           sessions.map(session => {
-            console.log("test")
-            let event = new eventDataService.Event(session.Title, session.Location, session.DateAndTime);
-            this.events.push(event);
+              //let event = new Event("Title", session.Location, session.DateAndTime);
+              let event = {title: session.Title ?? "N/A", start: session.DateAndTime, extendedProps: {location: session.Location}};
+              this.calendarOptions.events.push(event);
           })
-          console.log(this.events);
+          console.log(this.calendarOptions.events);
         });
       } catch (error) {
         console.log(error);

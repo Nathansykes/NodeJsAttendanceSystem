@@ -77,7 +77,7 @@ exports.findAll = (req, res) => {
   {
     var userId = Decoder.decodeCookie(req.query.Cookie).Id;
     console.log(userId);
-    Session.find({ "Students" : userId}).populate(populateArgs)
+    Session.find({ Students : userId}).populate(populateArgs)
     .then(data => 
       {
         res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
