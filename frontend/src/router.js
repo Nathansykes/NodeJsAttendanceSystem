@@ -36,6 +36,12 @@ const routes = [
         alias: "/reporting",
         name: "reporting",
         component: () => import("./components/Reporting.vue")
+    },
+    {
+        path: "/",
+        alias: "/Timetable",
+        name: "Timetable",
+        component: () => import("./components/Timetable.vue")
     }
 ];
 
