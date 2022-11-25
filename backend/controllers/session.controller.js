@@ -2,6 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 const Session = require("../models/session.model");
 const Formatter = require("../formatters/models.formatter");
+const Decoder = require("../services/cookie.service");
  
 // Create and Save a new Session
 exports.create = (req, res) => {
@@ -71,15 +72,29 @@ var populateArgs = [{
 // Retrieve all Sessions from the database.
 exports.findAll = (req, res) => {
 
+  if (req.query.Cookie)
+  {
+    var userId = Decoder.decodeCookie(req.query.Cookie).Id;
+    console.log(userId);
+    Session.find({ "Students" : userId}).populate(populateArgs)
+    .then(data => 
+      {
+        res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
+      });
+  }
+  else 
+  {
+  
   var filter = {};
   if (req.query.Title){
     filter.Title = req.query.Title;
   }
 
   Session.find(filter).populate(populateArgs).then(data => 
-    {
-      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-    });
+      {
+        res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
+      });
+  }
 };
  
 // Find a single Session with an id

@@ -10,6 +10,10 @@ class SessionDataService {
         return http.get(`/sessions/${id}`);
     }
 
+    getByStudentId(cookie) {
+        return http.get("/sessions", {params : { Cookie: cookie}});
+    } 
+
     create(data) {
         return http.post("/sessions", data);
     }
