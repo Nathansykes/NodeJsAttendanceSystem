@@ -12,7 +12,7 @@ class SessionDataService {
 
     //uses the token to get the user's sessions
     getSessionForUser(cookie) {
-        return http.get("/sessions/mine", {params : { Cookie: cookie}});
+        return http.get("/sessions/self");
     } 
 
     create(data) {
