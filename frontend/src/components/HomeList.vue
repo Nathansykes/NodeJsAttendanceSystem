@@ -5,7 +5,7 @@
           <input type="text" class="form-control" placeholder="Search by name"
             v-model="name"/>
             <select class="form-select" @change="filterTypeChange($event)">
-              <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.Name}}</option>
+              <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.PathName}}</option>
             </select>
             <UserSelectList v-if="isUsersSelected()" @selectUserType="(value) => updateUserType(value)"/>
           <div class="input-group-append">
@@ -26,7 +26,11 @@
           <div class="card-body">
               <div v-for="(property) in currentModelProperties"
                 :key="property">
-                <label class="form-label mt-4">{{property.key}}: </label> {{property.value}}
+                <label v-if="property.key === 'DateAndTime'" class="form-label mt-4">Date: {{property.value}}</label>
+                <label v-else class="form-label mt-4">{{property.key}}: {{property.value}}</label>
+              </div>
+              <div>
+                <router-link :to="`/attendance/${currentModel.Id}`" class="btn btn-light" v-if="currentModel.Type.Name === 'Sessions'">Attendance</router-link>
               </div>
           </div>
         </div>
@@ -39,6 +43,7 @@
   import ModelTypes from '../../../shared/modelTypes';
   import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
+  import ObjectHelper from "@/helpers/object.helper";
   
   export default {
     name: "courses-list",
@@ -108,7 +113,7 @@
 
       retrieveSessions() {
         ModelDataService.SessionDataService.findByName(this.name)
-          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Session))
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data)), ModelTypes.Session)
           .catch(error => console.log(error));
       },
 
@@ -161,16 +166,18 @@
 
           for (let i = 0; i < model.length; i++) 
           {
+            model[i].Type = type;
+
             let item = 
             {
               id : model[i].Id,
               name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
-              routerLink : `${type.Name}/${model[i].Id}`,
+              routerLink : `${type.PathName}/${model[i].Id}`,
             };
             
             if (childType) 
             {
-              item.children = this.createTreeViewData(this.GetPropertyValue(model[i], childType.Name), childType);
+              item.children = this.createTreeViewData(ObjectHelper.GetPropertyValue(model[i], childType.Name), childType);
             }
 
             treeViewData.push(item);
@@ -178,39 +185,6 @@
           }
         
         return treeViewData;
-      },
-
-      GetPropertyValue(obj1, dataToRetrieve) 
-      {
-        if (!dataToRetrieve) { return; }
-
-        return dataToRetrieve
-          .split('.') // split string based on `.`
-          .reduce(function(o, k) {
-            return o && o[k]; // get inner property if `o` is defined else get `o` and return
-          }, obj1) // set initial value as object
-      },
-
-      GetProperties(obj) 
-      {
-        var dictionary = [];
-        
-        for(var key in obj) 
-        {
-            if(Object.prototype.hasOwnProperty.call(obj, key) && typeof obj[key] !== 'function' && !Array.isArray(obj[key])) 
-            {
-                if (key !== "Id" && key !== "__v")
-                {
-                  if (key === "DateAndTime") 
-                  {
-                    var date = new Date(obj[key]);
-                    obj[key] = date.toLocaleString("en-GB");
-                  }
-                  dictionary.push( { key : key, value : obj[key] });
-                }
-            }
-        }
-        return dictionary.sort();
       },
   
       refreshList() {
@@ -223,7 +197,7 @@
       {
         this.currentModel = this.models.find(x => x.Id === model.id);
         this.currentIndex = this.models.indexOf(this.currentModel);
-        this.currentModelProperties = this.GetProperties(this.currentModel);
+        this.currentModelProperties = ObjectHelper.GetProperties(this.currentModel);
       },
     },
     mounted() {

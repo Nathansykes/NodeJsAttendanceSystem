@@ -2,7 +2,7 @@
   <div id="index">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="#">{{this.title}}</a>
+        <router-link to="/home" class="navbar-brand">{{this.title}}</router-link>
         <div class="navbar-nav me-auto">
 
           <li class="nav-item">

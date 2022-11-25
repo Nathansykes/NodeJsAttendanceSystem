@@ -18,19 +18,16 @@ exports.login = async (req, res) => {
                     Token: token,
                 }
                 res.json(JSON.stringify(response));
-            }
-            else {
-                res.status(401).send({ message: "Incorrect password" });
+                return;
             }
         }
-        else {
-            res.status(401).send({ message: "User not found" });
-        }
+        
+        res.status(401).send({ message: "Username or Password is Incorrect" });
     }
     catch (error) {
         res.status(500).send({
             message:
-                err.message || "Some error occurred while retrieving the User."
+                error.message || "Some error occurred while retrieving the User."
         });
     }
 }
