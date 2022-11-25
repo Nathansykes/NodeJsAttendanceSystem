@@ -10,8 +10,9 @@ class SessionDataService {
         return http.get(`/sessions/${id}`);
     }
 
-    getSessionByCookie(cookie) {
-        return http.get("/sessions", {params : { Cookie: cookie}});
+    //uses the token to get the user's sessions
+    getSessionForUser(cookie) {
+        return http.get("/sessions/self");
     } 
 
     create(data) {

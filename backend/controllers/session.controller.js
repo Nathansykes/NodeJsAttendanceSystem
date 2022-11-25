@@ -2,8 +2,7 @@ const db = require("../models");
 var mongoose = require('mongoose');
 const Session = require("../models/session.model");
 const Formatter = require("../formatters/models.formatter");
-const Decoder = require("../services/cookie.service");
-const jwt_decode = require('jwt-decode')
+const Auth = require("../authentication");
 
 // Create and Save a new Session
 exports.create = (req, res) => {
@@ -69,25 +68,25 @@ var populateArgs = [{
 // Retrieve all Sessions from the database.
 exports.findAll = (req, res) => {
 
-  if (req.query.Cookie) {
-    var userId = Decoder.decodeCookie(req.query.Cookie).Id.toString()?.padStart(24, '0');
-    Session.find({ Students: userId }).populate(populateArgs)
-      .then(data => {
-        res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-      });
+  var filter = {};
+  if (req.query.Title) {
+    filter.Title = req.query.Title;
   }
-  else {
 
-    var filter = {};
-    if (req.query.Title) {
-      filter.Title = req.query.Title;
-    }
+  Session.find(filter).populate(populateArgs).then(data => {
+    res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
+  });
 
-    Session.find(filter).populate(populateArgs).then(data => {
+};
+
+exports.findAllForUser = (req, res) => {
+  var userId = Auth.getApplicationUser(req).Id;
+  Session.find({ Students: userId }).populate(populateArgs)
+    .then(data => {
       res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     });
-  }
 };
+
 
 // Find a single Session with an id
 exports.findOne = (req, res) => {

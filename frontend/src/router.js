@@ -2,13 +2,13 @@ import { createWebHistory, createRouter } from 'vue-router';
  
 const routes = [
     {
-        path:"/",
+        path:"/upload",
         alias:"/upload",
         name:"upload",
         component: () => import("./components/UploadFile.vue")
     },
     {
-        path: "/",
+        path: "/login",
         alias: "/login",
         name: "Login Page",
         component: () => import("./components/Login.vue")
@@ -20,7 +20,7 @@ const routes = [
         component: () => import("./components/SecureIndex.vue")
     },
     {
-        path: "/",
+        path: "/home",
         alias: "/home",
         name: "home",
         component: () => import("./components/HomeList.vue")
@@ -56,13 +56,13 @@ const routes = [
         component: () => import("./components/UserView.vue")
     },
     {
-        path: "/",
+        path: "/reporting",
         alias: "/reporting",
         name: "reporting",
         component: () => import("./components/Reporting.vue")
     },
     {
-        path: "/",
+        path: "/timetable",
         alias: "/Timetable",
         name: "Timetable",
         component: () => import("./components/Timetable.vue")

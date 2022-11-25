@@ -1,3 +1,4 @@
+var jwt = require('jwt-decode');
 class HTTPCommonDataService {
 
     getCookie = (name) => 
@@ -15,6 +16,15 @@ class HTTPCommonDataService {
     deleteCookie = (name) => 
     {
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    getApplicationUser = () =>
+    {
+        let token = this.getCookie("token");
+        if (token) {
+            return jwt.decode(token);
+        }
+        return null;
     }
 }
 

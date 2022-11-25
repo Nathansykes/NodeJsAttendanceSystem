@@ -28,7 +28,9 @@ export default {
       document.head.appendChild(fontAwesome)
       if (this.loggedIn) 
       {
-        this.$router.push('/home')
+        if(window.location.pathname == "/" || window.location.pathname == "/login"){
+          this.$router.push('/home')
+        }
       }
       else 
       {

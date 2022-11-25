@@ -6,29 +6,4 @@ const UserTypes = {
     ModuleLeader: { Id: 4, Name: "Module Leader", ModelName: "ModuleLeader" },
     CourseLeader: { Id: 5, Name: "Course Leader", ModelName: "CourseLeader" },
 }
-
-function GetUserTypeById(id) {
-    var userType;
-    var keys = Object.keys(UserTypes);
-    keys.forEach(key => {
-        if (UserTypes[key].Id == id) {
-            userType = UserTypes[key];
-        }
-    });
-    return userType;
-}
-function GetUserTypeByModelName(modelName) {
-    var userType;
-    var keys = Object.keys(UserTypes);
-    keys.forEach(key => {
-        if (UserTypes[key].ModelName == modelName) {
-            userType = UserTypes[key];
-        }
-    });
-    return userType;
-}
-
-
 module.exports = UserTypes;
-module.exports.GetUserTypeById = GetUserTypeById;
-module.exports.GetUserTypeByModelName = GetUserTypeByModelName;

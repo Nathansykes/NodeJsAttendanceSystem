@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const UserTypes = require("../../shared/usertypes");
+const GenericFunctions = require("../../shared/functions");
 
 exports.createHash = async (password) => {
     try {
@@ -34,7 +35,7 @@ exports.AllowedUserType = (AllowedUserTypeId) => {
 }
 
 function createApplicationUser(user) {
-    var userType = UserTypes.GetUserTypeByModelName(user.__t);
+    var userType = GenericFunctions.GetUserTypeByModelName(user.__t);
     return {
         Id: user._id,
         UserTypeId: userType.Id,
