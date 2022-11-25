@@ -2,7 +2,7 @@ import AuthenticationDataService from "./authentication.data.service";
 import UserDataService from "./user.data.service";
 import CourseDataService from "./course.data.service";
 import ModuleDataService from "./module.data.service";
-import SessionDataService from "./session.data.sevice";
+import SessionDataService from "./session.data.service";
 import UploadFileDataService from "./uploadfile.data.service";
 import AttendanceDataService from "./attendance.data.service";
 

@@ -9,6 +9,10 @@
             <router-link to="/attendance" class="nav-link">Attendance</router-link>
           </li>
 
+          <li class="nav-item">
+            <router-link to="/timetable" class="nav-link">Timetable</router-link>
+          </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
