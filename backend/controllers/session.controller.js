@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 const Session = require("../models/session.model");
 const Formatter = require("../formatters/models.formatter");
 const Decoder = require("../services/cookie.service");
+const jwt_decode = require('jwt-decode')
  
 // Create and Save a new Session
 exports.create = (req, res) => {
