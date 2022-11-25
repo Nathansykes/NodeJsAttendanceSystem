@@ -20,7 +20,7 @@ const routes = [
         component: () => import("./components/SecureIndex.vue")
     },
     {
-        path: "/",
+        path: "/home",
         alias: "/home",
         name: "home",
         component: () => import("./components/HomeList.vue")
