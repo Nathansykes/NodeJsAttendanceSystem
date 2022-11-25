@@ -11,6 +11,9 @@ router.post("/sessions/", Auth.AllowedUserType(UserTypes.ModuleLeader.Id), sessi
  
 // Retrieve all sessions
 router.get("/sessions/", sessionController.findAll);
+
+// Retrieve all sessions for requestee
+router.get("/sessions/mine", sessionController.findAllForUser);
  
 // Retrieve a single session with id
 router.get("/sessions/:id", sessionController.findOne);

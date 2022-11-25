@@ -26,9 +26,7 @@ export default {
   methods: {
     populateCalendar() {
       try {
-        //Get cookie - access_token
-        var cookie = httpCommonDataService.getCookie("access_token");
-        sessionsService.getSessionByCookie(cookie).then((response) => {
+        sessionsService.getSessionForUser().then((response) => {
           let sessions = JSON.parse(response.data);
           sessions.map((session) => {
             let event = {
