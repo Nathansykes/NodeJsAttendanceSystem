@@ -95,33 +95,32 @@
       updateUserType(value) 
       {
         this.selectedUserType = value;
-        console.log(this.selectedUserType);
         this.retrieveUsers();
       },
 
       retrieveCourses() {
         ModelDataService.CourseDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Course))
-          .catch(error => console.log(error));
+          .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
       retrieveModules() {
         ModelDataService.ModuleDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Module))
-          .catch(error => console.log(error));
+          .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
       retrieveSessions() {
         ModelDataService.SessionDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data)), ModelTypes.Session)
-          .catch(error => console.log(error));
+          .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
       retrieveUsers() {
         const names = this.name.split(" ");       
         ModelDataService.UserDataService.findByName(this.selectedUserType, names[0], names[1])
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.User))
-          .catch(error => console.log(error));
+          .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
       isUsersSelected() 
@@ -201,7 +200,7 @@
       },
     },
     mounted() {
-      this.retrieveCourses();
+        this.retrieveCourses();
     }
   };
 </script>

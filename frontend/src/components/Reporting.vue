@@ -86,30 +86,18 @@ export default {
         GetReport() {
             if (this.studentId) {
                 ReportingDataService.getStudentReport(this.studentId, this.moduleId, this.courseId)
-                    .then(response => {
-                        this.setReport(response.data);
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
+                    .then(response => this.setReport(response.data))
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
             }
             else if (this.moduleId) {
                 ReportingDataService.getModuleReport(this.moduleId)
-                    .then(response => {
-                        this.setReport(response.data);
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
+                    .then(response => this.setReport(response.data))
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
             }
             else if (this.courseId) {
                 ReportingDataService.getCourseReport(this.courseId)
-                    .then(response => {
-                        this.setReport(response.data);
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
+                    .then(response => this.setReport(response.data))
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
             }
             else {
                 this.setReport(null);
@@ -152,9 +140,7 @@ export default {
                         Name: x.FirstName + ' ' + x.LastName,
                     }));
                 })
-                .catch(error => {
-                    console.log(error);
-                });
+                .catch(error => ModelDataService.ErrorHandlerService(error));
         },
         PopulateCourses() {
             ModelDataService.CourseDataService.getAll()
@@ -165,9 +151,7 @@ export default {
                         Name: x.Title,
                     }));
                 })
-                .catch(error => {
-                    console.log(error);
-                });
+                .catch(error => ModelDataService.ErrorHandlerService(error));
         },
         PopulateModules() {
             ModelDataService.CourseDataService.getAll()
@@ -179,9 +163,7 @@ export default {
                         Name: x.Title,
                     }));
                 })
-                .catch(error => {
-                    console.log(error);
-                });
+                .catch(error => ModelDataService.ErrorHandlerService(error));
         },
     },
     mounted() {

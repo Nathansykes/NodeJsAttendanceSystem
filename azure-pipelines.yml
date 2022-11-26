@@ -23,6 +23,18 @@ steps:
 - task: Npm@1
   inputs:
     command: 'custom'
+    workingDir: '$(Build.SourcesDirectory)/frontend'
+    customCommand: 'install --cache /tmp/empty-cache'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: '$(Build.SourcesDirectory)/frontend'
+    customCommand: 'run serve-pipeline'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
     workingDir: '$(Build.SourcesDirectory)/backend'
     customCommand: 'run test-pipeline'
 

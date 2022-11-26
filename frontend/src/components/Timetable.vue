@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import httpCommonDataService from "@/services/http-common.data.service";
-import sessionsService from "@/services/session.data.service";
+import ModelDataService from "@/services/models.data.service";
 
 export default {
   name: "app",
@@ -26,7 +26,7 @@ export default {
   methods: {
     populateCalendar() {
       try {
-        sessionsService.getSessionForUser().then((response) => {
+        ModelDataService.SessionDataService.getSessionForUser().then((response) => {
           let sessions = JSON.parse(response.data);
           sessions.map((session) => {
             let event = {
@@ -38,20 +38,18 @@ export default {
           });
         });
       } catch (error) {
-        console.log(error);
+        ModelDataService.ErrorHandlerService(error);
       }
     },
     getAllSessions(userId) {
-      let sessions = sessionsService
+      let sessions = ModelDataService.SessionDataService
         .getAll()
         .then((response) => {
           const data = JSON.parse(response.data);
           sessions = data;
           this.getAllUserSessions(sessions, userId);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(error => ModelDataService.ErrorHandlerService(error));
     },
     getAllUserSessions(sessions, userId) {
       sessions.map((session) => {
