@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve-pipeline": "concurrently --kill-others \"node pipeline/timeout.js\" \"npm run serve\"",
+    "serve-pipeline": "concurrently --kill-others --success first \"npm run serve\" \"node pipeline/timeout.js\"",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
