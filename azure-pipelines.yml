@@ -26,7 +26,7 @@ steps:
     workingDir: '$(Build.SourcesDirectory)/frontend'
     customCommand: 'install --cache /tmp/empty-cache'
 
-  - task: Npm@1
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: '$(Build.SourcesDirectory)/frontend'
