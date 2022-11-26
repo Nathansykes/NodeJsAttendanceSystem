@@ -155,7 +155,7 @@ exports.find = (req, res) =>
         });
       break;
     default:
-      res.status(500).send("UserType is not valid.");
+      res.status(400).send("UserType is not valid.");
       break;
   }
 };
@@ -210,7 +210,7 @@ exports.findOne = (req, res) => {
         });
       break;
     default:
-      res.status(500).send("UserType is not valid.");
+      res.status(400).send("UserType is not valid.");
       break;
   }
 };

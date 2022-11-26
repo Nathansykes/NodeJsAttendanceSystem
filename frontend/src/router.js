@@ -14,7 +14,7 @@ const routes = [
         component: () => import("./components/Login.vue")
     },
     {
-        path:"/",
+        path:"/advisor",
         alias:"/advisor",
         name:"Advisor Page",
         component: () => import("./components/AdvisorView.vue")
