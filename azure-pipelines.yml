@@ -30,8 +30,7 @@ steps:
   inputs:
     command: 'custom'
     workingDir: '$(Build.SourcesDirectory)/frontend'
-    customCommand: 'run serve'
-    timeoutInMinutes: 1
+    customCommand: 'run serve-pipeline'
 
 - task: Npm@1
   inputs:
