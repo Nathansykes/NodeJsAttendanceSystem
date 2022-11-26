@@ -19,6 +19,7 @@ export default {
         editable: true,
         selectable: true,
         weekends: false,
+        eventClick: this.onEventClick,
         events: [],
       },
     };
@@ -30,6 +31,7 @@ export default {
           let sessions = JSON.parse(response.data);
           sessions.map((session) => {
             let event = {
+              id : session.Id,
               title: session.Title ?? "N/A",
               start: session.DateAndTime,
               extendedProps: { location: session.Location },
@@ -59,6 +61,10 @@ export default {
           }
         });
       });
+    },
+    onEventClick(eventClickInfo) {
+      this.$router.push(`/sessions/${eventClickInfo.event.id}`)
+      console.log(eventClickInfo);
     },
   },
   mounted() {
