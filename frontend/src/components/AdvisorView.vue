@@ -46,7 +46,6 @@
 <script>
     import userDataService from '@/services/user.data.service';
     import UserTypes from '../../../shared/usertypes';
-    import userService from'@/services/user.data.service';
     import httpCommonDataService from '@/services/http-common.data.service';
     export default{
         name: "advisors-Student-List",
@@ -61,7 +60,8 @@
         },
         methods:{
             retrieveStudents(){
-                userDataService.get("1009", UserTypes.AcademicAdvisor.Id)// temporary placeholder
+                let loggedInUserID = httpCommonDataService.getApplicationUser().Id;
+                userDataService.get(loggedInUserID, UserTypes.AcademicAdvisor.Id)
                 .then(response =>{
                     const advisor = JSON.parse(response.data);
                     this.users = advisor.Students;
