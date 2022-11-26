@@ -15,9 +15,15 @@ export default {
         }
     },
     methods: {
+        getError() {
+            this.error = this.$route.params.error
+            if (this.error == "network_error") {
+                this.error = "Network Error";
+            }
+        },
         getErrorMessage() 
         {
-            switch(this.error) {
+            switch(this.$route.params.error) {
                 case 401:
                     this.errorMessage = "You are not authorized to view this page.";
                     break;
@@ -35,8 +41,7 @@ export default {
                 case 504:
                     this.errorMessage = "The server is currently unavailable.";
                     break;
-                case "NETWORK_ERROR":
-                case "AxiosError: Network Error":
+                case "network_error":
                     this.errorMessage = "There was a problem connecting to the server. Please try again later.";
                     break;
                 default:
@@ -47,7 +52,7 @@ export default {
     },
     mounted() 
     {
-        this.error = this.$route.params.error
+        this.getError()
         this.getErrorMessage();
     }
 }

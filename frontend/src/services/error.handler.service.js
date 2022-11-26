@@ -7,7 +7,7 @@ class ErrorHandlerService {
         console.log(error);
 
         if (error.code === 'ERR_NETWORK') {
-            window.location.href = `/error/${error}`;
+            window.location.href = `/error/network_error`;
         }
 
         switch(error?.response?.staus) {
@@ -21,10 +21,12 @@ class ErrorHandlerService {
             case 502:
             case 503:
             case 504:
+                window.location.href = `/error/${error}`;
+                break;
             case 'ERR_NETWORK':
             case "NETWORK_ERROR":
             case "AxiosError: Network Error":
-                window.location.href = `/error/${error}`;
+                window.location.href = `/error/network_error`;
                 break;
             default:
                 var errorMessage = "Something went wrong. Please try again later.";
