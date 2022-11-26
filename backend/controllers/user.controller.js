@@ -112,6 +112,7 @@ exports.find = (req, res) =>
   if(req.query.UserType){
     var userType = parseInt(req.query.UserType);
   }
+  
   switch(userType)
   {
     case UserTypes.Student.Id:
@@ -127,8 +128,9 @@ exports.find = (req, res) =>
         });
       break;
       case UserTypes.AcademicAdvisor.Id:
-      AcademicAdvisor.find(filter).then(data =>
+      AcademicAdvisor.find(filter).populate("Students").then(data =>
         {
+          console.log(data);
           res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         });
       break;
@@ -153,7 +155,7 @@ exports.find = (req, res) =>
         });
       break;
     default:
-      res.status(500).send("UserType is not valid.");
+      res.status(400).send("UserType is not valid.");
       break;
   }
 };
@@ -163,11 +165,56 @@ exports.findOne = (req, res) => {
 
   const id = req.params.id.toString().padStart(24, '0');
 
-  User.findById(id).then(data =>
-    {
-      res.json(JSON.stringify(Formatter.formatUser(data)));
-    });
+  if(req.query.UserType){
+    var userType = parseInt(req.query.UserType);
+  }
+
+  switch(userType)
+  {
+    case UserTypes.Student.Id:
+      Student.findById(id).then(data =>
+        {
+          res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+    case UserTypes.Tutor.Id:
+      Tutor.findById(id).then(data =>
+        {
+          res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+      case UserTypes.AcademicAdvisor.Id:
+      AcademicAdvisor.findById(id).populate("Students").then(data =>
+        {
+          res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+      case UserTypes.CourseLeader.Id:
+      CourseLeader.findById(id).then(data =>
+        {
+          res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+      case UserTypes.ModuleLeader.Id:
+      ModuleLeader.findById(id).then(data =>
+        {
+          res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+    case UserTypes.All.Id:
+    case undefined:
+    case null:
+      User.findById(id).then(data =>
+        {
+        res.json(JSON.stringify(Formatter.formatUser(data)));
+        });
+      break;
+    default:
+      res.status(400).send("UserType is not valid.");
+      break;
+  }
 };
+
 
 // Update a User by the id in the request
 exports.update = (req, res) => {

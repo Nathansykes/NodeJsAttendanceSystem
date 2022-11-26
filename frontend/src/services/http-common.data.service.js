@@ -1,4 +1,4 @@
-var jwt = require('jwt-decode');
+import jwt from'jwt-decode';
 class HTTPCommonDataService {
 
     getCookie = (name) => 
@@ -20,9 +20,9 @@ class HTTPCommonDataService {
 
     getApplicationUser = () =>
     {
-        let token = this.getCookie("token");
+        let token = this.getCookie("access_token");
         if (token) {
-            return jwt.decode(token);
+            return jwt(token);
         }
         return null;
     }

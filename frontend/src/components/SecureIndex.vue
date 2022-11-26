@@ -29,6 +29,10 @@
             <router-link to="/reporting" class="nav-link">Reporting</router-link>
           </li>
 
+          <li class="nav-item">
+            <router-link to="/advisor" class="nav-link">Advisor View</router-link>
+          </li>
+
         </div>
         <div class="navbar-nav mr-auto">
           <li class="nav-item">

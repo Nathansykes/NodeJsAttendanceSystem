@@ -43,12 +43,21 @@ class ModelFormatter
     
     formatUser(data) 
     {
-        return {
+        var user = {
             Id: data._id,
             FirstName: data.FirstName,
             LastName: data.LastName,
             Type: data.__t,
         }
+
+        switch(user.Type){
+            case"Advisor":
+                user.Students = data.Students.map(student => this.formatUser(student));
+            break;
+            default:
+                break;
+            }
+        return user;
     }
 }
 
