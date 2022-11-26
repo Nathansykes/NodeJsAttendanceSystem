@@ -6,13 +6,14 @@ class UserDataService {
         return http.get("/users", { params : {UserType : userType}});
     }
 
-    get(id) {
-        return http.get(`/users/${id}`)
+    get(id, userType) {
+        return http.get(`/users/${id}`, { params : {UserType : userType}})
     }
 
     getAttendance(id){
         return http.get(`/attendance/id=${id}`)
     }
+
     create(data) {
         return http.post("/users", data);
     }
