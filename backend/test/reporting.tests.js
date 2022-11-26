@@ -46,7 +46,7 @@ describe('GET student report COURSE', () => {
     it('it should get report for all attendance in course for student', (done) => {
         chai.request(server)
         .get('/reporting/student')
-        .query({StudentId: "1000", CourseId: "63737b30333e9cb735d40ea4"})
+        .query({StudentId: "1000", CourseId: "636f75727365313233343435"})
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             testReport(res);
@@ -72,7 +72,7 @@ describe('Get course attendance report', () => {
     it('it should get report for all attendance in course', (done) => {
         chai.request(server)
         .get('/reporting/course')
-        .query({CourseId: "63737b30333e9cb735d40ea4"})
+        .query({CourseId: "636f75727365313233343435"})
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             testReport(res);
