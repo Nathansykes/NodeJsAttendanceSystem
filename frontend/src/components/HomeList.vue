@@ -112,7 +112,7 @@
 
       retrieveSessions() {
         ModelDataService.SessionDataService.findByName(this.name)
-          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data)), ModelTypes.Session)
+          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Session))
           .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
