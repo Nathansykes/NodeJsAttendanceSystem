@@ -57,8 +57,6 @@ class ModelFormatter
             default:
                 break;
             }
-
-        // console.log(user);
         return user;
     }
 }
