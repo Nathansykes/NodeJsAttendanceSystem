@@ -66,6 +66,12 @@ const routes = [
         alias: "/Timetable",
         name: "Timetable",
         component: () => import("./components/Timetable.vue")
+    },
+    {
+        path: "/error/:error",
+        alias: "/error",
+        name: "Error",
+        component: () => import("./components/Error.vue")
     }
 ];
 

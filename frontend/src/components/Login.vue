@@ -16,7 +16,7 @@
                             <button class="submit_class" type="button" @click="login()">Login</button>
                         </form>
                     </div>
-                    <p v-if=errorMessage>{{errorMessage}}</p>
+                    <p style="margin-top: 10%;" v-if="errorMessage">{{errorMessage}}</p>
                 </div>
             </main>
         </body>
@@ -24,6 +24,7 @@
 </template>
 <script>
 import Authentication from '../services/authentication.data.service';
+import ErrorHandlerService from '@/services/error.handler.service';
 
 export default{
     
@@ -43,14 +44,7 @@ export default{
                 this.$router.push('/home')
                 window.location.href= '/home';
             })
-            .catch(error => 
-            {
-                if(error.response?.status == 401)
-                {
-                    this.errorMessage = error.response.data.message;
-                }
-                console.log(error);
-            });
+            .catch(error => this.errorMessage = ErrorHandlerService.handlerError(error));
         }
     }
 }

@@ -8,6 +8,7 @@
                 <input v-if="property.key === 'DateAndTime'" class="form-control" type="datetime-local" v-model="property.value"/>
                 <input v-else class="form-control" v-model="property.value"/>
             </div>
+            <p style="margin-top: 10%;" v-if="errorMessage">{{errorMessage}}</p>
             <button type="submit" class="btn btn-primary" @click="save" style="margin-top:5%">Submit</button>
         </fieldset>
     </form>
@@ -16,6 +17,7 @@
 <script>
 
 import ObjectHelper from '@/helpers/object.helper';
+import ModelDataService from '@/services/models.data.service';
 
 export default 
 {
@@ -26,6 +28,7 @@ export default
     },
     data() {
         return {
+            errorMessage : "",
             modelProperties : [],
         }   
     },
@@ -34,25 +37,15 @@ export default
             this.dataService.get(this.$route.params.id).then(response => 
             {
                 var model = JSON.parse(response.data);
-                if (Array.isArray(model)) 
-                {
-                    model = model[0]
-                }
+                if (Array.isArray(model)) { model = model[0] }
                 this.modelProperties = ObjectHelper.GetProperties(model);
-                console.log(this.modelProperties);
             })
-            .catch(e => {
-                console.log(e);
-            });
+            .catch(error => this.errorMessage = ModelDataService.ErrorHandlerService.handlerError(error));
         },
         save() {
             this.dataService.update(this.$route.params.id, ObjectHelper.GetObjectFromProperties(this.modelProperties))
-            .then(response => {
-                this.$router.push('/home');
-            })
-            .catch(e => {
-                console.log(e);
-            });
+            .then(response => this.$router.push('/home'))
+            .catch(error => this.errorMessage = ModelDataService.ErrorHandlerService.handlerError(error));
         }
     },
     mounted() {

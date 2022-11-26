@@ -54,7 +54,8 @@ export default {
                 this.session = data[0];
                 this.students = data[0].Students;
                 this.attendances = data[0].AttendanceRecords;
-            });
+            })
+            .error(error => ModelDataService.ErrorHandlerService(error));
         },
         updateMark(value, index)
         {
@@ -86,10 +87,7 @@ export default {
                     {
                         console.log(response);
                     })
-                    .catch(error => 
-                    {
-                        console.log(error);
-                    });
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
                 })
 
                 this.$router.go("/courses");
@@ -106,7 +104,6 @@ export default {
                         AttendanceRecords: attendanceIds,
                     };
         
-                    console.log(updatedSessionData);
                     ModelDataService.SessionDataService.update(this.sessionId, updatedSessionData).then(response => 
                     {
                         if (response) 
@@ -114,17 +111,17 @@ export default {
                             this.$router.go("/courses");
                         }
                     })
-                    .catch(error => 
-                    {
-                        console.log(error);
-                    });
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
                 });
 
             }
         }
     },
     mounted() {
-      this.retrieveUsers();
+        if (!this.$route.params.id) {
+            this.$router.push("/home");
+        }
+        this.retrieveUsers();
     }
 }
 
