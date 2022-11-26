@@ -1,1 +1,1 @@
-setTimeout(() => process.exit(1), 60000)
+setTimeout(() => process.exit(1), 120000)
