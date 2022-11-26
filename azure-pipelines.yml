@@ -31,6 +31,7 @@ steps:
     command: 'custom'
     workingDir: '$(Build.SourcesDirectory)/frontend'
     customCommand: 'run serve'
+    timeoutInMinutes: 1
 
 - task: Npm@1
   inputs:
