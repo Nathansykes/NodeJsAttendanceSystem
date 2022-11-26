@@ -1,5 +1,8 @@
 <template>
-    <CRUDView :data-service="this.dataService" title="Sessions"/>
+    <div>
+        <CRUDView :data-service="this.dataService" title="Sessions"/>
+        <router-link :to="`/attendance/${this.$route.params.id}`" class="btn btn-primary" style="margin-top:2%">Mark Attendance</router-link>
+    </div>
 </template>
 
 <script>
