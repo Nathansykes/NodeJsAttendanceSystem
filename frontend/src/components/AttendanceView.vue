@@ -1,7 +1,7 @@
 <template>
     <div id="attendance">
         <body v-if="session">
-            <h2> {{session.Title + " " + session.Date}} </h2>
+            <h2> {{session.Title + " " + new Date(session.DateAndTime).toLocaleString()}} </h2>
         </body>
         <table style="width:75%">
             <tr>
@@ -19,7 +19,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <button @click="save()">Submit</button>
+                    <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
                 </td>
             </tr>
         </table>
@@ -55,7 +55,7 @@ export default {
                 this.students = data[0].Students;
                 this.attendances = data[0].AttendanceRecords;
             })
-            .error(error => ModelDataService.ErrorHandlerService(error));
+            .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
         },
         updateMark(value, index)
         {
@@ -87,7 +87,7 @@ export default {
                     {
                         console.log(response);
                     })
-                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                    .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
 
                 this.$router.go("/courses");
@@ -111,7 +111,7 @@ export default {
                             this.$router.go("/courses");
                         }
                     })
-                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                    .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 });
 
             }
