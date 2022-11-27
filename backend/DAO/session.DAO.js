@@ -28,7 +28,7 @@ exports.tryCreate = (session, res) => {
             return;
           }
           catch (error) {
-            ErrorHandler.handleError(error, res);
+            ErrorHandler.handleError(res, error);
           }
     }
 }
@@ -46,7 +46,7 @@ exports.tryGet = (filter, populateArgs, res) => {
         {
             res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
         })
-        .catch(error => ErrorHandler.handleError(error, res));
+        .catch(error => ErrorHandler.handleError(res, error));
     }
 }
 
@@ -64,10 +64,10 @@ exports.tryUpdate = (id, updateData, res) => {
               res.json(JSON.stringify(data));
             }
             else {
-              ErrorHandler.handleError(error, res)
+              ErrorHandler.handleError(res, error)
             };
           })
-          .catch(error => ErrorHandler.handleError(error, res));
+          .catch(error => ErrorHandler.handleError(res, error));
     }
 }
 
@@ -89,6 +89,6 @@ exports.tryDelete = (id, res) => {
               res.send({ message: `Error. No session matches the Id: ${id}` })
             }
           })
-          .catch(error => ErrorHandler.handleError(error, res));
+          .catch(error => ErrorHandler.handleError(res, error));
     }
 }

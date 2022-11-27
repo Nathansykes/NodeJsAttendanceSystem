@@ -26,7 +26,7 @@ function createSession(body, res) {
     session = new Session(data);
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 
   return session;
@@ -85,7 +85,7 @@ exports.update = (req, res) => {
       updateData.DateAndTime = new Date(req.body.DateAndTime);
     }
     catch (error) {
-      ErrorHandler.handleError(error, res)
+      ErrorHandler.handleError(res, error)
     }
   }
 

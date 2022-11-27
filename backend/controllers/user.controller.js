@@ -37,7 +37,7 @@ async function createUserFromBody(body, res) {
     }
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 
   if (body.UserType) {
@@ -74,7 +74,7 @@ async function createUser(data, userType)
     }
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
   return user;
 }

@@ -26,7 +26,7 @@ exports.tryCreate = (user, res) => {
             });
             return;
           } catch (error) {
-            ErrorHandler.handleError(error, res);
+            ErrorHandler.handleError(res, error);
           }
     }
 }
@@ -44,7 +44,7 @@ exports.tryGet = (model, filter, populateArgs, res) => {
         {
             res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
         })
-        .catch(error => ErrorHandler.handleError(error, res));
+        .catch(error => ErrorHandler.handleError(res, error));
     }
 }
 
@@ -66,10 +66,10 @@ exports.tryUpdate = (id, updateData, res) => {
             }
             else
             {
-                ErrorHandler.handleError(error, res);
+                ErrorHandler.handleError(res, error);
             };
         })
-        .catch(error => ErrorHandler.handleError(error, res));
+        .catch(error => ErrorHandler.handleError(res, error));
     }
 }
 
@@ -94,6 +94,6 @@ exports.tryDelete = (id, res) => {
                 res.send({message : `Error. No user matches the Id: ${id}`})
             }
         })
-        .catch(error => ErrorHandler.handleError(error, res));
+        .catch(error => ErrorHandler.handleError(res, error));
     }
 }
