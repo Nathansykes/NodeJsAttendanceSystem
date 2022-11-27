@@ -1,4 +1,3 @@
-const db = require("../models");
 const mongoose = require('mongoose');
 const ErrorHandler = require("../handlers/error.handler");
 const Course = require("../models/course.model");
@@ -57,13 +56,15 @@ exports.findAll = (req, res) => {
     filter.Title = req.query.Title;
   }
 
-  CourseDAO.tryGet(null, filter, populateArgs, res);
+  CourseDAO.tryGet(filter, populateArgs, res);
 };
  
 // Find a single Course with an id
 exports.findOne = (req, res) => {
 
-  CourseDAO.tryGet(req.params.id, null, populateArgs, res);
+  const ids = (req.params.id).replace(/ /g, '').split(",");
+
+  CourseDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
 };
   
 // Update a Course by the id in the request

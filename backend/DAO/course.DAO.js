@@ -39,24 +39,15 @@ exports.canGet = () => {
     return true;
 }
 
-exports.tryGet = (id, filter, populateArgs, res) => {
+exports.tryGet = (filter, populateArgs, res) => {
 
     if (this.canGet) {
 
-        if (id) {
-            Course.findById(id).then(data =>
-            {
-                res.json(JSON.stringify(Formatter.formatCourse(data)));
-            })
-            .catch(error => ErrorHandler.handleError(res, error));
-        }
-        else if (filter) {
-            Course.find(filter).populate(populateArgs)
-            .then(data => 
-            {
-                res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));
-            });
-        }
+        Course.find(filter).populate(populateArgs)
+        .then(data => 
+        {
+            res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));
+        });
     }
 }
 

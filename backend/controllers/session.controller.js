@@ -1,37 +1,13 @@
-const db = require("../models");
 const mongoose = require('mongoose');
 const Session = require("../models/session.model");
-const Formatter = require("../formatters/models.formatter");
 const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
+const SessionDAO = require("../DAO/session.DAO");
 
 // Create and Save a new Session
 exports.create = (req, res) => {
 
-  // Create a Session model object
-  const session = createSession(req.body, res);
-
-  console.log(session);
-  // Save Session in the database
-  try {
-    session
-      .save()
-      .then(data => {
-        var successMessage = `Session saved in the database: ${data}`;
-        console.log(successMessage);
-        res.json(JSON.stringify(data));
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the Session."
-        });
-      });
-    return;
-  }
-  catch (error) {
-    ErrorHandler.handleError(error, res);
-  }
+  SessionDAO.tryCreate(createSession(req.body, res), res);
 };
 
 function createSession(body, res) {
@@ -73,19 +49,14 @@ exports.findAll = (req, res) => {
     filter.Title = req.query.Title;
   }
 
-  Session.find(filter).populate(populateArgs).then(data => {
-    res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-  })
-  .catch(error => ErrorHandler.handleError(error, res));
-
+  SessionDAO.tryGet(filter, populateArgs, res);
 };
 
 exports.findAllForUser = (req, res) => {
+
   var userId = Auth.getApplicationUser(req).Id;
-  Session.find({ Students: userId }).populate(populateArgs).then(data => {
-      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-    })
-  .catch(error => ErrorHandler.handleError(error, res));
+
+  SessionDAO.tryGet({ Students: userId }, populateArgs, res);
 };
 
 
@@ -94,11 +65,7 @@ exports.findOne = (req, res) => {
 
   const ids = (req.params.id).replace(/ /g, '').split(",");
 
-  Session.find({ _id: { $in: ids } }).populate(populateArgs)
-    .then(data => {
-      res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-    })
-    .catch(error => ErrorHandler.handleError(error, res));
+  SessionDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
 };
 
 // Update a Session by the id in the request
@@ -122,32 +89,11 @@ exports.update = (req, res) => {
     }
   }
 
-  Session.findByIdAndUpdate(id, updateData, { new: true }).then(data => {
-    if (data) {
-      console.log("Updated Session : ", data);
-      res.json(JSON.stringify(data));
-    }
-    else {
-      ErrorHandler.handleError(error, res)
-    };
-  })
-  .catch(error => ErrorHandler.handleError(error, res));
+  SessionDAO.tryUpdate(id, updateData, res);
 };
 
 // Delete a Session with the specified id in the request
 exports.delete = (req, res) => {
 
-  const id = req.params.id;
-
-  Session.findByIdAndDelete(id).then(data => {
-    if (data) {
-      const message = `Session deleted: ${data}`;
-      console.log(message)
-      res.send({ message: message });
-    }
-    else {
-      res.send({ message: `Error. No session matches the Id: ${id}` })
-    }
-  })
-  .catch(error => ErrorHandler.handleError(error, res));
+  SessionDAO.tryDelete(req.params.id, res);
 };
