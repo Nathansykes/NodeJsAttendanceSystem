@@ -1,8 +1,9 @@
 const db = require("../models");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Session = require("../models/session.model");
 const Formatter = require("../formatters/models.formatter");
 const Auth = require("../authentication");
+const ErrorHandler = require("../handlers/error.handler");
 
 // Create and Save a new Session
 exports.create = (req, res) => {
@@ -29,7 +30,7 @@ exports.create = (req, res) => {
     return;
   }
   catch (error) {
-    console.log(error);
+    ErrorHandler.handleError(error, res);
   }
 };
 
@@ -49,8 +50,7 @@ function createSession(body, res) {
     session = new Session(data);
   }
   catch (error) {
-    console.log(error);
-    res.send({ message: error.toString() });
+    ErrorHandler.handleError(error, res);
   }
 
   return session;
@@ -75,16 +75,17 @@ exports.findAll = (req, res) => {
 
   Session.find(filter).populate(populateArgs).then(data => {
     res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-  });
+  })
+  .catch(error => ErrorHandler.handleError(error, res));
 
 };
 
 exports.findAllForUser = (req, res) => {
   var userId = Auth.getApplicationUser(req).Id;
-  Session.find({ Students: userId }).populate(populateArgs)
-    .then(data => {
+  Session.find({ Students: userId }).populate(populateArgs).then(data => {
       res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-    });
+    })
+  .catch(error => ErrorHandler.handleError(error, res));
 };
 
 
@@ -97,9 +98,7 @@ exports.findOne = (req, res) => {
     .then(data => {
       res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
     })
-    .catch(error => {
-      res.send({ message: error });
-    });
+    .catch(error => ErrorHandler.handleError(error, res));
 };
 
 // Update a Session by the id in the request
@@ -119,7 +118,7 @@ exports.update = (req, res) => {
       updateData.DateAndTime = new Date(req.body.DateAndTime);
     }
     catch (error) {
-      res.send({ message: error });
+      ErrorHandler.handleError(error, res)
     }
   }
 
@@ -129,10 +128,10 @@ exports.update = (req, res) => {
       res.json(JSON.stringify(data));
     }
     else {
-      console.log(err)
-      res.send({ message: err });
+      ErrorHandler.handleError(error, res)
     };
-  });
+  })
+  .catch(error => ErrorHandler.handleError(error, res));
 };
 
 // Delete a Session with the specified id in the request
@@ -149,5 +148,6 @@ exports.delete = (req, res) => {
     else {
       res.send({ message: `Error. No session matches the Id: ${id}` })
     }
-  });
+  })
+  .catch(error => ErrorHandler.handleError(error, res));
 };

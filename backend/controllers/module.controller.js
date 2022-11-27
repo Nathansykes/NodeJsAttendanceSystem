@@ -1,7 +1,8 @@
 const db = require("../models");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Module = require("../models/module.model");
 const Formatter = require("../formatters/models.formatter");
+const ErrorHandler = require("../handlers/error.handler");
  
 // Create and Save a new Module
 exports.create = (req, res) => {
@@ -29,7 +30,7 @@ exports.create = (req, res) => {
     } 
     catch (error) 
     {
-      console.log(error);
+      ErrorHandler.handleError(res, error);
     }
 };
 
@@ -52,8 +53,7 @@ function createModule(body, res)
   }
   catch (error) 
   {
-    console.log(error);
-    res.send({ message : error.toString()});
+    ErrorHandler.handleError(res, error);
   }
 
   return module;
@@ -75,15 +75,16 @@ var populateArgs = {
 // Retrieve all Modules from the database.
 exports.findAll = (req, res) => {
 
-  var filter = {};
-  if (req.query.Title){
-    filter.Title = req.query.Title;
-  }
+    var filter = {};
+    if (req.query.Title){
+      filter.Title = req.query.Title;
+    }
 
-  Module.find(filter).populate(populateArgs).then(data => 
+    Module.find(filter).populate(populateArgs).then(data => 
     {
       res.json(JSON.stringify(data.map(module => Formatter.formatModule(module))));
-    });
+    })
+    .catch(error => ErrorHandler.handleError(res, error));
 };
  
 // Find a single Module with an id
@@ -95,24 +96,21 @@ exports.findOne = (req, res) => {
   {
     res.json(JSON.stringify(data.map(module => Formatter.formatModule(module))));
   })
-  .catch(error => 
-  {
-    res.send({message : error});
-  });
+  .catch(error => ErrorHandler.handleError(res, error));
 };
 
 // Update a Module by the id in the request
 exports.update = (req, res) => {
 
-const id = req.params.id;
+  const id = req.params.id;
 
-var updateData = {
-    Title: req.body.Title,
-    ModuleLeader: req.body.ModuleLeader,
-    Sessions : req.body.Sessions,
-    Staff : req.body.Staff,
-    Students : req.body.Students,
-}
+  var updateData = {
+      Title: req.body.Title,
+      ModuleLeader: req.body.ModuleLeader,
+      Sessions : req.body.Sessions,
+      Staff : req.body.Staff,
+      Students : req.body.Students,
+  }
 
   Module.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
   {
@@ -123,28 +121,28 @@ var updateData = {
       }
       else
       {
-          console.log(err)
-          res.send({message : err});
+        ErrorHandler.handleError(res, error)
       };
-  });
+  })
+  .catch(error => ErrorHandler.handleError(res, error));
 };
 
 // Delete a Module with the specified id in the request
 exports.delete = (req, res) => {
 
-const id = req.params.id;
+  const id = req.params.id;
 
-Module.findByIdAndDelete(id).then(data => 
+  Module.findByIdAndDelete(id).then(data => 
   {
     if (data) 
     {
       const message = `Module deleted: ${data}`;
-      console.log(message)
       res.send({message : message});
     }
     else 
     {
         res.send({message : `Error. No module matches the Id: ${id}`})
     }
-  });
+  })
+  .catch(error => ErrorHandler.handleError(res, error));
 };

@@ -1,5 +1,5 @@
 const db = require("../models");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const User = require("../models/user.model");
 const Student = require("../models/student.model");
 const AcademicAdvisor = require("../models/advisor.model");
@@ -10,6 +10,7 @@ const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
 const Formatter = require("../formatters/models.formatter")
+const ErrorHandler = require("../handlers/error.handler");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -37,7 +38,7 @@ exports.create = async (req, res) => {
         });
         return;
       } catch (error) {
-        console.log(error);
+        ErrorHandler.handleError(error, res);
       }
 };
 
@@ -55,8 +56,7 @@ async function createUserFromBody(body, res) {
     }
   }
   catch (error) {
-    console.log(error);
-    res.send({ message: error.toString() });
+    ErrorHandler.handleError(error, res);
   }
 
   if (body.UserType) {
@@ -93,7 +93,7 @@ async function createUser(data, userType)
     }
   }
   catch (error) {
-    console.log(error);
+    ErrorHandler.handleError(error, res);
   }
   return user;
 }
@@ -234,10 +234,10 @@ exports.update = (req, res) => {
     }
     else
     {
-      console.log(err)
-      res.send({message : err});
+      ErrorHandler.handleError(error, res);
     };
-  });
+  })
+  .catch(error => ErrorHandler.handleError(error, res));
 };
 
 // Delete a User with the specified id in the request
@@ -250,13 +250,13 @@ exports.delete = (req, res) => {
       if (data) 
       {
         const message = `User deleted: ${data}`;
-        console.log(message)
         res.send({message : message});
       }
       else 
       {
         res.send({message : `Error. No user matches the Id: ${id}`})
       }
-    });
+    })
+  .catch(error => ErrorHandler.handleError(error, res));
 };
 

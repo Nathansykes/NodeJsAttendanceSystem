@@ -1,13 +1,12 @@
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Attendance = require("../models/attendanceRecord.model");
 const Module = require("../models/module.model");
 const Course = require("../models/course.model");
 const Student = require("../models/student.model");
-var Auth = require('../authentication')
-var UserTypes = require('../../shared/usertypes');
-
-var GenericFunctions = require('../../shared/functions');  
+const Auth = require('../authentication')
+const UserTypes = require('../../shared/usertypes');
+const GenericFunctions = require('../../shared/functions');  
 
 exports.GetAttendanceForStudent = async (req, res) => {
   var studentId = req.query.StudentId?.toString()?.padStart(24, '0');

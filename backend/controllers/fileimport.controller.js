@@ -1,11 +1,12 @@
 const db = require("../models");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const User = require("../models/user.model");
 const UserController = require("../controllers/user.controller");
 const Constants = require("../../shared/constants").Constants;
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
 const Auth = require("../authentication");
+const ErrorHandler = require("../handlers/error.handler");
 
 const { parse } = require('csv-parse');
 
@@ -44,12 +45,12 @@ exports.importUsers = (req, res) => {
                 res.send({ message: `File uploaded successfully. ${count} users added to the database.` });
             }
             catch (error) {
-                console.log(error);
+                ErrorHandler.handleError(res, error);
             }
         });
     }
     catch (error) {
-        console.log(error);
+        ErrorHandler.handleError(res, error);
     }
 };
 function validateUserData(fileData) {
@@ -94,6 +95,6 @@ function handleFile(file, output) {
         });
     }
     catch (error) {
-        console.log(error);
+        ErrorHandler.handleError(res, error);
     }
 }
