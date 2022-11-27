@@ -1,4 +1,4 @@
 exports.handleError = (res, error) => {
     console.log(error);
-    res.send({ message : error.toString()});
+    res.send({ message : error?.toString() || "Something went wrong."});
 }
