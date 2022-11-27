@@ -63,7 +63,7 @@ describe('POST /modules', () => {
             });
         });
     });
-//Finished POST /petshop/pets
+//Finished POST
 
 //Testing GET /modules - positive test
 describe('GET /modules', () => {
@@ -73,8 +73,13 @@ describe('GET /modules', () => {
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('string');
             res.body.length.should.not.be.eql(0);
+
+            const returnedModule = JSON.parse(res.body)[0];
+            returnedModule.should.have.property('Id');
+            returnedModule.should.have.property('Title');
+            returnedModule.should.have.property('ModuleLeader');
+            returnedModule.should.have.property('Sessions');
             done();
         });
     });
