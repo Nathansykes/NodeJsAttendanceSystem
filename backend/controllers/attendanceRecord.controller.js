@@ -1,9 +1,9 @@
-const db = require("../models");
 const mongoose = require('mongoose');
-const Attendance = require("../models/attendanceRecord.model");
 const Auth = require('../authentication')
 const UserTypes = require('../../shared/usertypes');
 const ErrorHandler = require('../handlers/error.handler');
+const Attendance = require("../models/attendanceRecord.model");
+const AttendanceDAO = require("../DAO/attendance.DAO");
 
 // Create and Save a new Attendance
 exports.create = (req, res) => {
@@ -11,18 +11,7 @@ exports.create = (req, res) => {
       var data = req.body;
       var modelData = data.map(model => createAttendance(model, res));
       
-      Attendance.insertMany(modelData)
-      .then(data => {
-        var successMessage = `Attendance saved in the database: ${data}`;
-        console.log(successMessage);
-        res.json(JSON.stringify(data));
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the Attendance."
-        });
-      });
+      AttendanceDAO.tryCreate(modelData, res);
 };
 
 function createAttendance(body, res)
@@ -52,65 +41,34 @@ exports.findAll = (req, res) => {
       filter= { Student : applicationUser.Id };// only get attendance records for the current student, if they are a student
     }
 
-    Attendance.find(filter).then(data =>
-    {
-      res.json(JSON.stringify(data));
-    })
-    .catch(error => ErrorHandler.handleError(res, error));
+    AttendanceDAO.tryGet(filter, null, res);
 };
 
 // Find a single Attendance with an id
 exports.findOne = (req, res) => {
 
-    const id = req.query.id;
     var filter;
     var applicationUser = Auth.getApplicationUser(req);
     if(applicationUser.UserTypeId == UserTypes.Student.Id){
       filter = { Student : applicationUser.Id };
     }
 
-    Attendance.findOne(filter).then(data =>
-    {
-        res.json(JSON.stringify(data));
-    })
-    .catch(error => ErrorHandler.handleError(res, error));
+    AttendanceDAO.tryGet(filter, null, res);
 };
  
 // Update a Attendance by the id in the request
 exports.update = (req, res) => {
-
-    const id = req.params.id;
 
     var updateData = {
         Student: req.body.Student,
         Attendance : req.body.Attendance,
     }
 
-    Attendance.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-    {
-        console.log("Updated AttendanceRecord : ", data);
-        res.json(JSON.stringify(data));
-    })
-    .catch(error => ErrorHandler.handleError(res, error));
+    AttendanceDAO.tryUpdate(req.params.id, updateData, res);
 };
  
 // Delete a Attendance with the specified id in the request
 exports.delete = (req, res) => {
 
-  const id = req.params.id;
-
-  Attendance.findByIdAndDelete(id).then(data => 
-    {
-      if (data) 
-      {
-        const message = `AttendanceRecord deleted: ${data}`;
-        console.log(message)
-        res.send({message : message});
-      }
-      else 
-      {
-          res.send({message : `Error. No attendancerecord matches the Id: ${id}`})
-      }
-    })
-    .catch(error => ErrorHandler.handleError(res, error));
+  AttendanceDAO.tryDelete(req.params.id, res);
 };
