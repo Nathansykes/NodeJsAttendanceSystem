@@ -24,7 +24,7 @@ class ObjectHelper
                   if (key === "DateAndTime") 
                   {
                     var date = new Date(obj[key]);
-                    obj[key] = date.toISOString().slice(0,16)
+                    obj[key] = date.toLocaleString();
                   }
                   dictionary.push( { key : key, value : obj[key] });
                 }

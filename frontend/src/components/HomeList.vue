@@ -170,13 +170,24 @@
             let item = 
             {
               id : model[i].Id,
-              name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
+              name : model[i].Title || (`${model[i].FirstName} ${model[i].LastName}`),
               routerLink : `${type.PathName}/${model[i].Id}`,
             };
+            if (type === ModelTypes.Session) 
+            {
+              var date = new Date(model[i].DateAndTime);
+              item.name = (`${model[i].Title} ${date.toLocaleDateString()}`)
+              item.date = date;
+            }
             
             if (childType) 
             {
               item.children = this.createTreeViewData(ObjectHelper.GetPropertyValue(model[i], childType.Name), childType);
+
+              if (childType === ModelTypes.Session) 
+              {
+                item.children.sort((a, b) => a.date - b.date);
+              }
             }
 
             treeViewData.push(item);
