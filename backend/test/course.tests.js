@@ -72,7 +72,7 @@ describe('GET /courses', () => {
             res.should.have.status(200);
             res.body.length.should.not.be.eql(0);
 
-            const returnedCourse = JSON.parse(res.body);
+            const returnedCourse = JSON.parse(res.body)[0];
             returnedCourse.should.have.property('Id');
             returnedCourse.should.have.property('Title');
             returnedCourse.should.have.property('CourseLeader');
