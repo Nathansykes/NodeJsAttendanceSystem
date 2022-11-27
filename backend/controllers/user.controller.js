@@ -1,5 +1,3 @@
-const db = require("../models");
-const mongoose = require('mongoose');
 const User = require("../models/user.model");
 const Student = require("../models/student.model");
 const AcademicAdvisor = require("../models/advisor.model");
@@ -9,8 +7,8 @@ const Tutor = require("../models/tutor.model");
 const Auth = require("../authentication/");
 const UserTypes = require("../../shared/usertypes");
 const Generic = require("../generic/functions");
-const Formatter = require("../formatters/models.formatter")
 const ErrorHandler = require("../handlers/error.handler");
+const UserDAO = require("../DAO/user.DAO");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
@@ -22,24 +20,7 @@ exports.create = async (req, res) => {
       // Create a User model object
       const user = await createUserFromBody(req.body, res);
 
-      // Save User in the database
-      try {
-        user
-        .save()
-        .then(data => {
-          console.log(`User saved in the database: ${data}`);
-          res.json(JSON.stringify(data));
-        })
-        .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while creating the User."
-          });
-        });
-        return;
-      } catch (error) {
-        ErrorHandler.handleError(error, res);
-      }
+      UserDAO.tryCreate(user, res);
 };
 
 async function createUserFromBody(body, res) {
@@ -116,43 +97,24 @@ exports.find = (req, res) =>
   switch(userType)
   {
     case UserTypes.Student.Id:
-      Student.find(filter).then(data =>
-        {
-          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+      UserDAO.tryGet(Student, filter, null, res);
       break;
     case UserTypes.Tutor.Id:
-      Tutor.find(filter).then(data =>
-        {
-          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+      UserDAO.tryGet(Tutor, filter, null, res);
       break;
-      case UserTypes.AcademicAdvisor.Id:
-      AcademicAdvisor.find(filter).populate("Students").then(data =>
-        {
-          console.log(data);
-          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+    case UserTypes.AcademicAdvisor.Id:
+      UserDAO.tryGet(AcademicAdvisor, filter, null, res);
       break;
-      case UserTypes.CourseLeader.Id:
-      CourseLeader.find(filter).then(data =>
-        {
-          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+    case UserTypes.CourseLeader.Id:
+      UserDAO.tryGet(CourseLeader, filter, null, res);
       break;
-      case UserTypes.ModuleLeader.Id:
-      ModuleLeader.find(filter).then(data =>
-        {
-          res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+    case UserTypes.ModuleLeader.Id:
+      UserDAO.tryGet(ModuleLeader, filter, null, res);
       break;
     case UserTypes.All.Id:
     case undefined:
     case null:
-      User.find(filter).then(data =>
-        {
-        res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        });
+      UserDAO.tryGet(User, filter, null, res);
       break;
     default:
       res.status(400).send("UserType is not valid.");
@@ -172,42 +134,24 @@ exports.findOne = (req, res) => {
   switch(userType)
   {
     case UserTypes.Student.Id:
-      Student.findById(id).then(data =>
-        {
-          res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(Student, { _id : id}, null, res);
       break;
     case UserTypes.Tutor.Id:
-      Tutor.findById(id).then(data =>
-        {
-          res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(Tutor, { _id : id}, null, res);
       break;
       case UserTypes.AcademicAdvisor.Id:
-      AcademicAdvisor.findById(id).populate("Students").then(data =>
-        {
-          res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(AcademicAdvisor, { _id : id}, null, res);
       break;
       case UserTypes.CourseLeader.Id:
-      CourseLeader.findById(id).then(data =>
-        {
-          res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(CourseLeader, { _id : id}, null, res);
       break;
       case UserTypes.ModuleLeader.Id:
-      ModuleLeader.findById(id).then(data =>
-        {
-          res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(ModuleLeader, { _id : id}, null, res);
       break;
     case UserTypes.All.Id:
     case undefined:
     case null:
-      User.findById(id).then(data =>
-        {
-        res.json(JSON.stringify(Formatter.formatUser(data)));
-        });
+      UserDAO.tryGet(User, { _id : id}, null, res);
       break;
     default:
       res.status(400).send("UserType is not valid.");
@@ -225,19 +169,8 @@ exports.update = (req, res) => {
     FirstName: req.body.FirstName,
     LastName: req.body.LastName,
   }
-
-  User.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  {
-    if (data)
-    {
-      console.log("Updated User : ", data);
-      res.json(JSON.stringify(data));
-    }
-    else
-    {
-      ErrorHandler.handleError(error, res);
-    };
-  })
-  .catch(error => ErrorHandler.handleError(error, res));
+  
+  UserDAO.tryUpdate(id, updateData, res)
 };
 
 // Delete a User with the specified id in the request
@@ -245,18 +178,5 @@ exports.delete = (req, res) => {
   
   const id = req.params.id.toString().padStart(24, '0');
 
-  User.findByIdAndDelete(id).then(data => 
-    {
-      if (data) 
-      {
-        const message = `User deleted: ${data}`;
-        res.send({message : message});
-      }
-      else 
-      {
-        res.send({message : `Error. No user matches the Id: ${id}`})
-      }
-    })
-  .catch(error => ErrorHandler.handleError(error, res));
+  UserDAO.tryDelete(id, res);
 };
-
