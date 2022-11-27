@@ -19,6 +19,9 @@
             <tr>
                 <td></td>
                 <td>
+                    <button id ="addStudent" class="btn btn-primary" style="margin-top:2%" @click="addStudent()">Add Student</button> 
+                </td>
+                <td>
                     <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
                 </td>
             </tr>
@@ -115,6 +118,9 @@ export default {
                 });
 
             }
+        },
+        addStudent(){
+
         }
     },
     mounted() {
