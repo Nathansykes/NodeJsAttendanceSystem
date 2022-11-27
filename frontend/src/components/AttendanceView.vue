@@ -13,7 +13,7 @@
                     {{ student.FirstName + " " + student.LastName }}
                 </td>
                 <td>
-                    <UserMarkAttendance :value="this.attendances[index].Attendance" @selectMark="(value) => updateMark(value, index)"/>
+                    <UserMarkAttendance :value="this.attendances[index]?.Attendance || -1" @selectMark="(value) => updateMark(value, index)"/>
                 </td>
             </tr>
             <tr>
