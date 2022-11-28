@@ -206,13 +206,13 @@ exports.update = async (req, res) => {
       case UserTypes.AcademicAdvisor.ModelName:
         if(req.body.Students){
           var studentList = req.body.Students.split(",").map((id) => Generic.CreateObjectId(id));
-          updatedData = await UserDAO.tryAddToArrayField(id, AcademicAdvisor , "Students", studentList);
+          updatedData = await UserDAO.tryAddToArrayField(id, "Students", studentList);
         }
         break;
       case UserTypes.Tutor.ModelName:
         if(req.body.Modules){
           var moduleList = req.body.Modules.split(",").map((id) => Generic.CreateObjectId(id));
-          updatedData = await UserDAO.tryAddToArrayField(id, Tutor , "Modules", moduleList);
+          updatedData = await UserDAO.tryAddToArrayField(id, "Modules", moduleList);
         }
         break;
     }

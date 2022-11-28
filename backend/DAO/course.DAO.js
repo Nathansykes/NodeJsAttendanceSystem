@@ -68,6 +68,17 @@ exports.tryUpdate = async (id, updateData) => {
     }
 }
 
+exports.tryAddToArrayField = async (id, field, items) => {
+    if (this.canUpdate) {
+        var dataToUpdate = await Course.findOne({ _id: id });
+        items.forEach(item => {
+            dataToUpdate[field].push(item);
+          });
+        var updatedData = await dataToUpdate.save();
+        return updatedData;
+    }
+}
+
 // Delete Methods
 exports.canDelete = () => {
     return true;

@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
 
@@ -20,12 +20,16 @@ function createSession(body) {
   var session;
 
   var data = {
-    _id: mongoose.Types.ObjectId(body.Id),
+    _id: Generic.CreateObjectId(body.Id),
     Title: body.Title,
     Location: body.Location,
     DateAndTime: new Date(body.DateAndTime),
-    Students: body.Students?.split(",").map(id => id.toString().padStart(24, "0")),
-    AttendanceRecords: body.AttendanceRecords?.split(",").map(id => Generic.CreateObjectId(id)),
+  }
+  if(body.Students){
+    data.Students = body.Students.split(",").map(id => Generic.CreateObjectId(id));
+  }
+  if(body.AttendanceRecords){
+    data.AttendanceRecords = body.AttendanceRecords.split(",");
   }
   session = new Session(data);
 
@@ -54,7 +58,7 @@ exports.findAll = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
 
@@ -67,7 +71,7 @@ exports.findAllForUser = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
 
@@ -80,7 +84,7 @@ exports.findOne = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch (error) {
-    ErrorHandler.handleError(error);
+    ErrorHandler.handleError(res, error);
   }
 };
 
@@ -92,16 +96,22 @@ exports.update = async (req, res) => {
   var updateData = {
     Title: req.body.Title,
     Location: req.body.Location,
-    Students: req.body.Students,
-    AttendanceRecords: req.body.AttendanceRecords,
   }
 
   try {
     if (req.body.DateAndTime) {
       updateData.DateAndTime = new Date(req.body.DateAndTime);
     }
-
     var updatedData = await SessionDAO.tryUpdate(id, updateData);
+
+    if(req.body.AttendanceRecords) {
+      var attendanceRecordsList = req.body.AttendanceRecords.split(",");
+      data = await SessionDAO.tryAddToArrayField(id, "AttendanceRecords", attendanceRecordsList);
+    }
+    if(req.body.Students) {
+      var studentsList = req.body.Students.split(",").map(id => Generic.CreateObjectId(id));
+      data = await SessionDAO.tryAddToArrayField(id, "Students", studentsList);
+    }
     res.json(JSON.stringify(updatedData));
   }
   catch (error) {
@@ -116,6 +126,6 @@ exports.delete = async (req, res) => {
     res.json(JSON.stringify(deletedData));
   }
   catch (error) {
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };

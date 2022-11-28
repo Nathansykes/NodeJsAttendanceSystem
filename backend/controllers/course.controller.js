@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const ErrorHandler = require("../handlers/error.handler");
 const Course = require("../models/course.model");
 const CourseDAO = require("../DAO/course.DAO");
+const Generic = require("../generic/functions");
  
 // Create and Save a new Course
 exports.create = async (req, res) => {
@@ -10,7 +11,7 @@ exports.create = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch(error){
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
 
@@ -18,10 +19,10 @@ function createCourse(body) {
   console.log("trying to create a course");
   var course;
   var data = {
-    _id: mongoose.Types.ObjectId(body.Id),
+    _id: Generic.CreateObjectId(body.Id),
     CourseLeader: body.CourseLeader,
     Title: body.Title,
-    Modules : body.Modules,
+    Modules : body.Modules?.split(","),
   }
   course = new Course(data);
   return course;
@@ -55,7 +56,7 @@ exports.findAll = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch(error){
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
  
@@ -67,7 +68,7 @@ exports.findOne = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch(error){
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 };
   
@@ -76,15 +77,18 @@ exports.update = async (req, res) => {
   var updateData = {
       CourseLeader: req.body.CourseLeader,
       Title: req.body.Title,
-      Modules : req.body.Modules,
   }
 
   try{
     var data = await CourseDAO.tryUpdate(req.params.id, updateData);
+    if(req.body.Modules){
+      var moduleList = req.body.Modules.split(",");
+      data = await CourseDAO.tryAddToArrayField(req.params.id, "Modules", moduleList);
+    }
     res.json(JSON.stringify(data));
   }
   catch(error){
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }  
 };
 
@@ -96,7 +100,7 @@ exports.delete = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch(error){
-    ErrorHandler.handleError(error, res);
+    ErrorHandler.handleError(res, error);
   }
 
 };

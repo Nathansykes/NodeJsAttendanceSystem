@@ -57,7 +57,6 @@ describe('POST /modules', () => {
                 returnedModule.should.have.property('ModuleLeader');
                 returnedModule.should.have.property('Sessions');
                 returnedModule.should.have.property('Tutors');
-                returnedModule.should.have.property('Students');
                 
                 done();
             });
