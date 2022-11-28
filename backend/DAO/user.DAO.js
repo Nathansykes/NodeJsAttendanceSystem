@@ -76,7 +76,7 @@ exports.tryDelete = async (id) => {
         }
         else 
         {
-            throw new Error(`No user matches the Id: ${id}`);
+            throw new Error(`No user matches the Id: ${id} STATUS_CODE: 404`);
         }
     }
     else{
