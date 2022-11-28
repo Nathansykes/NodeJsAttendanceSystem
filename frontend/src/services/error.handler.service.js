@@ -5,15 +5,14 @@ class ErrorHandlerService {
     handlerError(error) {
 
         console.log(error);
-
+        
         if (error.code === 'ERR_NETWORK') {
             window.location.href = `/error/network_error`;
         }
-
-        switch(error?.response?.staus) {
+        
+        switch(error?.response?.status) {
             case 401:
-                httpCommonDataService.removeCookie("access_token");
-                window.location.href = "/login";
+                httpCommonDataService.deleteCookie("access_token");
                 break;
             case 404:
             case 408:
