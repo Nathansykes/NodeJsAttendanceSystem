@@ -44,13 +44,13 @@ async function createUserFromBody(body, res) {
 
     switch (userType) {
       case UserTypes.AcademicAdvisor.Id:
-        if(body.Students){
+        if (body.Students) {
           studentList = body.Students.split(",");
           data.Students = studentList;
         }
         break;
       case UserTypes.Tutor.Id:
-        if(body.Sessions){
+        if (body.Sessions) {
           sessionList = body.Sessions.split(",");
           data.Sessions = sessionList;
         }
