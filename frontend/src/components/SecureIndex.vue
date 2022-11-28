@@ -1,12 +1,14 @@
+
+
 <template>
   <div id="index">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="container">
         <router-link to="/home" class="navbar-brand">{{this.title}}</router-link>
         <div class="navbar-nav me-auto">
-
-          <li class="nav-item">
-            <router-link to="/timetable" class="nav-link">Timetable</router-link>
+          
+          <li id="timetable_link" class="nav-item">
+            <router-link v-if="this.showTimetableLink()" to="/timetable" class="nav-link">Timetable</router-link>
           </li>
 
           <li class="nav-item dropdown">
@@ -44,16 +46,19 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 
 import httpCommonService from "../services/http-common.data.service";
+import permissions from '../../permissions/permissions'
+import actions from "../../constants";
 
 export default {
   name: "app",
   data(){
         return{
             title: document.title,
+            currentUser: Object,
         }
     },
   methods:
@@ -61,12 +66,20 @@ export default {
     Logout() {
       httpCommonService.deleteCookie("access_token");
       this.$router.push("/");
+    },
+    showTimetableLink()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_TIMETABLE);
     }
   },
   computed: {
     currentRoute() {
       return this.$route.name;
     }
+  },
+  mounted() {
+    this.currentUser = httpCommonService.getApplicationUser();
+    this.showNavigationLinksBasedOnPermissions();
   }
 };
 </script>
