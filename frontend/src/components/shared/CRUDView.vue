@@ -6,17 +6,17 @@
                 <div class="form-group" v-for="(property) in this.modelProperties"
                     :key="property">
                     <label class="form-label mt-4">{{property.key}}</label> 
-                    <input v-if="property.key === 'DateAndTime'" class="form-control" type="datetime-local" v-model="property.value"/>
-                    <input v-else class="form-control" v-model="property.value"/>
+                    <input :readonly="this.isReadOnly" v-if="property.key === 'DateAndTime'" class="form-control" type="datetime-local" v-model="property.value"/>
+                    <input :readonly="this.isReadOnly" v-else class="form-control" v-model="property.value"/>
                 </div>
                 <p style="margin-top: 10%;" v-if="errorMessage">{{errorMessage}}</p>
             </fieldset>
         </form>
         
         <div class="form-group" style="margin-top:3%">
-            <button style="margin:2%" class="btn btn-secondary" type="button" @click="cancel()">Cancel</button>
-            <button style="margin:2%" class="btn btn-primary" data-bs-target="#myModal" data-bs-toggle="modal">Delete</button>
-            <button style="margin:2%" class="btn btn-primary" type="button" @click="save()">Save</button>
+            <button :disabled="this.isReadOnly" style="margin:2%" class="btn btn-secondary" type="button" @click="cancel()">Cancel</button>
+            <button :disabled="this.isReadOnly" style="margin:2%" class="btn btn-primary" data-bs-target="#myModal" data-bs-toggle="modal">Delete</button>
+            <button :disabled="this.isReadOnly" style="margin:2%" class="btn btn-primary" type="button" @click="save()">Save</button>
         </div>
 
         <div class="modal" id="myModal">
@@ -24,14 +24,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button :disabled="this.isReadOnly" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete this item?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="remove">Delete</button>
+                        <button :disabled="this.isReadOnly" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button :disabled="this.isReadOnly" type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="remove">Delete</button>
                     </div>
                 </div>
             </div>
@@ -51,12 +51,13 @@ export default
     props: {
         dataService : Object,
         title: String,
+        isReadOnly: Boolean
     },
     data() {
         return {
             errorMessage : "",
             modelProperties : [],
-            model: null,
+            model: null
         }   
     },
     methods: {
