@@ -13,30 +13,30 @@ class permissionsService{
         switch (userTypeId)
         {
           case 1:
-            usertype = roles.STUDENT;
+            userTypeId = roles.STUDENT;
             break;
           case 2:
-            usertype = roles.ACADEMIC_ADVISOR;
+            userTypeId = roles.ACADEMIC_ADVISOR;
             break;
           case 3:
-            usertype = roles.TUTOR;
+            userTypeId = roles.TUTOR;
             break;
           case 4:
-            usertype = roles.MODULE_LEADER;
+            userTypeId = roles.MODULE_LEADER;
             break;
           case 5:
-            usertype = roles.COURSE_LEADER;
+            userTypeId = roles.COURSE_LEADER;
             break;
           default:
-            usertype = null;
+            userTypeId = null;
         }
     
-        if (usertype == null) {
+        if (userTypeId == null) {
           return false;
         }
       
         if (mappings.has(action)) {
-          return mappings.get(action).includes(usertype);
+          return mappings.get(action).includes(userTypeId);
         }
       
         return false;
