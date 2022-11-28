@@ -6,6 +6,7 @@ import SessionDataService from "./session.data.service";
 import UploadFileDataService from "./uploadfile.data.service";
 import AttendanceDataService from "./attendance.data.service";
 import ErrorHandlerService from "./error.handler.service";
+import HTTPCommonDataService from "./http-common.data.service";
 
 class ModelDataService 
 {
@@ -17,6 +18,7 @@ class ModelDataService
     UploadFileDataService = UploadFileDataService;
     AttendanceDataService = AttendanceDataService;
     ErrorHandlerService = ErrorHandlerService;
+    HTTPCommonDataService = HTTPCommonDataService;
 }
 
 export default new ModelDataService();
