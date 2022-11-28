@@ -5,12 +5,12 @@ const mappings = new Map();
 
 mappings.set(actions.UPLOAD_FILE, [roles.COURSE_LEADER]);
 mappings.set(actions.VIEW_REPORT, [roles.ACADEMIC_ADVISOR, roles.TUTOR, roles.COURSE_LEADER, roles.MODULE_LEADER, roles.STUDENT]);
-mappings.set(actions.MARK_ATTENDANCE, []);
 mappings.set(actions.VIEW_TIMETABLE, [roles.STUDENT, roles.TUTOR]);
 mappings.set(actions.VIEW_ADVISOR_VIEW, [roles.ACADEMIC_ADVISOR]);
 mappings.set(actions.EDIT_COURSE, [roles.COURSE_LEADER]);
 mappings.set(actions.EDIT_MODULE, [roles.COURSE_LEADER]);
 mappings.set(actions.EDIT_SESSION, [roles.COURSE_LEADER, roles.MODULE_LEADER]);
+mappings.set(actions.ADD_STUDENT_TO_SESSION, [roles.COURSE_LEADER, roles.MODULE_LEADER, roles.TUTOR])
 
 class permissionsService{
     hasPermission(userTypeId, action) {
