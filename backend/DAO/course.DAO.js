@@ -7,30 +7,21 @@ exports.canCreate = () => {
     return true;
 }
 
-exports.tryCreate = (course, res) => {
+exports.tryCreate = async (course) => {
 
     if (this.canCreate) {
-        
-        try {
-            course
-            .save()
-            .then(data => {
-                var successMessage = `Course saved in the database: ${data}`;
-                console.log(successMessage);
-                res.json(JSON.stringify(data));
-            })
-            .catch(err => {
-                res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Course."
-                });
-            });
-            return;
-        } 
-        catch (error) 
-        {
-          ErrorHandler.handleError(res, error);
+        var data = await course.save();
+        if(data){
+            var successMessage = `Course saved in the database: ${data}`;
+            console.log(successMessage);
+            return data;
         }
+        else{
+            throw new Error("Some error occurred while creating the Course.");            
+        }
+    }
+    else {
+        throw new Error("Unable to create course");
     }
 }
 
@@ -39,15 +30,19 @@ exports.canGet = () => {
     return true;
 }
 
-exports.tryGet = (filter, populateArgs, res) => {
+exports.tryGet = async (filter, populateArgs) => {
 
     if (this.canGet) {
-
-        Course.find(filter).populate(populateArgs)
-        .then(data => 
-        {
-            res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));
-        });
+        var data = await Course.find(filter).populate(populateArgs)
+        if(data) {
+            return data.map(course => Formatter.formatCourse(course));
+        }
+        else{
+            throw new Error("No Courses found");
+        }
+    }
+    else {
+        throw new Error("Unable to get courses");
     }
 }
 
@@ -56,23 +51,20 @@ exports.canUpdate = () => {
     return true;
 }
 
-exports.tryUpdate = (id, updateData, res) => {
-
+exports.tryUpdate = async (id, updateData) => {
     if (this.canUpdate) {
 
-        Course.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-        {
-            if (data)
-            {
-                console.log("Updated Course : ", data);
-                res.json(JSON.stringify(data));
-            }
-            else
-            {
-                ErrorHandler.handleError(res, error)
-            };
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await Course.findByIdAndUpdate(id, updateData, {new : true})         
+        if (data) {
+            console.log("Updated Course : ", data);
+            return data
+        }
+        else {
+            throw new Error(`No course matches the Id: ${id}`);
+        }
+    }
+    else {
+        throw new Error("Unable to update course");
     }
 }
 
@@ -81,22 +73,19 @@ exports.canDelete = () => {
     return true;
 }
 
-exports.tryDelete = (id, res) => {
-
-    if (this.canDelete) {
-        
-        Course.findByIdAndDelete(id).then(data => 
-        {
-            if (data) 
-            {
+exports.tryDelete = async (id, res) => {
+    if (this.canDelete) {        
+    var data = await Course.findByIdAndDelete(id)
+        if (data) {
             const message = `Course deleted: ${data}`;
-            res.send({message : message});
-            }
-            else 
-            {
-                res.send({message : `Error. No course matches the Id: ${id}`})
-            }
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+            console.log(message);
+            return data;
+        }
+        else {
+            throw new Error(`No course matches the Id: ${id}`);
+        }
+    }    
+    else {
+        throw new Error("Unable to delete course");
     }
 }
