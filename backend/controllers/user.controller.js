@@ -34,10 +34,25 @@ async function createUserFromBody(body, res) {
   try {
     var data = {
       _id: Generic.CreateObjectId(body.Id),
-      AccessLevel: body.AccessLevel,
       FirstName: body.FirstName,
       LastName: body.LastName,
       Password: passwordHash,
+    }
+    if (body.UserType) {
+      var userType = parseInt(body.UserType);
+    } // check userType is able to be parsed
+
+    switch (userType) {
+      case UserTypes.AcademicAdvisor.Id:
+        if(body.Students){
+          data.Students = body.Students;
+        }
+        break;
+      case UserTypes.Tutor.Id:
+        if(body.Sessions){
+          data.Sessions = body.Sessions;
+        }
+        break;
     }
   }
   catch (error) {
@@ -45,9 +60,6 @@ async function createUserFromBody(body, res) {
     return;
   }
 
-  if (body.UserType) {
-    var userType = parseInt(body.UserType);
-  } // check userType is able to be parsed
 
   try {
     var user = await createUser(data, userType);
