@@ -1,36 +1,12 @@
-const db = require("../models");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const ErrorHandler = require("../handlers/error.handler");
 const Course = require("../models/course.model");
-const Formatter = require("../formatters/models.formatter");
+const CourseDAO = require("../DAO/course.DAO");
  
 // Create and Save a new Course
 exports.create = (req, res) => {
 
-    // Create a Course model object
-    const course = createCourse(req.body, res);
-    
-    console.log(course);
-    // Save Course in the database
-    try {
-        course
-        .save()
-        .then(data => {
-            var successMessage = `Course saved in the database: ${data}`;
-            console.log(successMessage);
-            res.json(JSON.stringify(data));
-        })
-        .catch(err => {
-            res.status(500).send({
-            message:
-                err.message || "Some error occurred while creating the Course."
-            });
-        });
-        return;
-    } 
-    catch (error) 
-    {
-        console.log(error);
-    }
+    CourseDAO.tryCreate(createCourse(req.body, res), res);
 };
 
 function createCourse(body, res)
@@ -50,8 +26,7 @@ function createCourse(body, res)
   }
   catch (error) 
   {
-    console.log(error);
-    res.send({ message : error.toString()});
+    ErrorHandler.handleError(res, error);
   }
 
   return course;
@@ -81,28 +56,19 @@ exports.findAll = (req, res) => {
     filter.Title = req.query.Title;
   }
 
-  Course.find(filter).populate(populateArgs)
- .then(data => 
-  {
-    res.json(JSON.stringify(data.map(course => Formatter.formatCourse(course))));
-  });
+  CourseDAO.tryGet(filter, populateArgs, res);
 };
  
 // Find a single Course with an id
 exports.findOne = (req, res) => {
 
-    const id = req.params.id;
-  
-    Course.findById(id).then(data =>
-    {
-      res.json(JSON.stringify(Formatter.formatCourse(data)));
-    });
+  const ids = (req.params.id).replace(/ /g, '').split(",");
+
+  CourseDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
 };
   
 // Update a Course by the id in the request
 exports.update = (req, res) => {
-
-  const id = req.params.id;
 
   var updateData = {
       CourseLeader: req.body.CourseLeader,
@@ -110,37 +76,13 @@ exports.update = (req, res) => {
       Modules : req.body.Modules,
   }
 
-  Course.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-    {
-        if (data)
-        {
-            console.log("Updated Course : ", data);
-            res.json(JSON.stringify(data));
-        }
-        else
-        {
-            console.log(err)
-            res.send({message : err});
-        };
-    });
+  CourseDAO.tryUpdate(req.params.id, updateData, res);
+  
 };
 
 // Delete a Course with the specified id in the request
 exports.delete = (req, res) => {
 
-  const id = req.params.id;
+  CourseDAO.tryDelete(req.params.id, res);
 
-  Course.findByIdAndDelete(id).then(data => 
-    {
-      if (data) 
-      {
-        const message = `Course deleted: ${data}`;
-        console.log(message)
-        res.send({message : message});
-      }
-      else 
-      {
-          res.send({message : `Error. No course matches the Id: ${id}`})
-      }
-    });
 };

@@ -37,14 +37,14 @@
       </div>
     </div>
   </template>
-  
+
 <script>
   import ModelDataService from "../services/models.data.service";
   import ModelTypes from '../../../shared/modelTypes';
   import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
   import ObjectHelper from "@/helpers/object.helper";
-  
+
   export default {
     name: "courses-list",
     components: {
@@ -65,15 +65,15 @@
       };
     },
     methods: {
-      filterTypeChange(event) 
+      filterTypeChange(event)
       {
         this.selectedModelType = event.target.value;
         this.refresh();
       },
 
-      refresh() 
+      refresh()
       {
-        switch (this.selectedModelType) 
+        switch (this.selectedModelType)
           {
             case ModelTypes.Course.Id.toString():
               this.retrieveCourses();
@@ -92,7 +92,7 @@
           }
       },
 
-      updateUserType(value) 
+      updateUserType(value)
       {
         this.selectedUserType = value;
         this.retrieveUsers();
@@ -117,35 +117,35 @@
       },
 
       retrieveUsers() {
-        const names = this.name.split(" ");       
+        const names = this.name.split(" ");
         ModelDataService.UserDataService.findByName(this.selectedUserType, names[0], names[1])
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.User))
           .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
-      isUsersSelected() 
+      isUsersSelected()
       {
         return this.selectedModelType === ModelTypes.User.Id.toString();
       },
 
-      createTreeViewData(model, type) 
+      createTreeViewData(model, type)
       {
           const treeViewData = [];
 
-          if (!model || !type) 
+          if (!model || !type)
           {
             return;
           }
 
           // if only one item is returned change to an array so we can iterate.
-          if (!Array.isArray(model)) 
+          if (!Array.isArray(model))
           {
             model = [model];
           }
 
           let childType
 
-          switch (type) 
+          switch (type)
           {
             case ModelTypes.Course:
               childType = ModelTypes.Module;
@@ -163,36 +163,63 @@
                 break;
           }
 
-          for (let i = 0; i < model.length; i++) 
+          for (let i = 0; i < model.length; i++)
           {
             model[i].Type = type;
 
-            let item = 
+            let item =
             {
               id : model[i].Id,
-              name : model[i].Title ?? (`${model[i].FirstName} ${model[i].LastName}`),
+              name : model[i].Title || (`${model[i].FirstName} ${model[i].LastName}`),
               routerLink : `${type.PathName}/${model[i].Id}`,
             };
-            
-            if (childType) 
+            if (type === ModelTypes.Session) 
+            {
+              var date = new Date(model[i].DateAndTime);
+              item.date = date;
+            }
+
+            if (childType)
             {
               item.children = this.createTreeViewData(ObjectHelper.GetPropertyValue(model[i], childType.Name), childType);
+
+              if (childType === ModelTypes.Session)
+              {
+                var TitleSessions = Array.from(new Set(item.children.map(item => item.name)));
+                var sessions = []
+
+                TitleSessions.map(title => {
+
+                  var filterChildren = item.children.filter(child => child.name === title);
+                  var sortChildren = filterChildren.sort((a, b) => a.date - b.date);
+                  sortChildren.map(child => child.name = ` ${child.date.toLocaleDateString()}`)
+
+                  sessions.push({
+                    id : 0,
+                    name : title,
+                    routerLink : "",
+                    children : sortChildren,
+                  })
+                })
+
+                item.children = sessions;
+              }
             }
 
             treeViewData.push(item);
             this.models.push(model[i]);
           }
-        
-        return treeViewData;
+
+          return treeViewData;
       },
-  
+
       refreshList() {
         this.retrieveCourses();
         this.currentCourse = null;
         this.currentIndex = -1;
       },
-  
-      setActiveModel(model) 
+
+      setActiveModel(model)
       {
         this.currentModel = this.models.find(x => x.Id === model.id);
         this.currentIndex = this.models.indexOf(this.currentModel);
@@ -204,7 +231,7 @@
     }
   };
 </script>
-  
+
 <style>
   .list {
     text-align: left;
