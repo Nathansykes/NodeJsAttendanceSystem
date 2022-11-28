@@ -5,7 +5,7 @@
         <router-link to="/home" class="navbar-brand">{{this.title}}</router-link>
         <div class="navbar-nav me-auto">
 
-          <li class="nav-item">
+          <li v-if="this.showTimetableLink()" class="nav-item">
             <router-link to="/timetable" class="nav-link">Timetable</router-link>
           </li>
 
@@ -46,14 +46,16 @@
 </template>
   
 <script>
-
 import httpCommonService from "../services/http-common.data.service";
+import permissions from '../services/permissions.data.service'
+import { actions } from "../../constants";
 
 export default {
   name: "app",
   data(){
         return{
             title: document.title,
+            currentUser: httpCommonService.getApplicationUser(),
         }
     },
   methods:
@@ -61,13 +63,17 @@ export default {
     Logout() {
       httpCommonService.deleteCookie("access_token");
       this.$router.push("/");
+    },
+    showTimetableLink()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_TIMETABLE);
     }
   },
   computed: {
     currentRoute() {
       return this.$route.name;
     }
-  }
+  },
 };
 </script>
   
