@@ -9,7 +9,7 @@
             <router-link to="/timetable" class="nav-link">Timetable</router-link>
           </li>
 
-          <li class="nav-item dropdown">
+          <li v-if="this.showUploadFileDropDown()" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               Upload File
@@ -21,11 +21,11 @@
             </ul>
           </li>
 
-          <li class="nav-item">
+          <li v-if="this.showReportLink()" class="nav-item">
             <router-link to="/reporting" class="nav-link">Reporting</router-link>
           </li>
 
-          <li class="nav-item">
+          <li v-if="this.showAdvisorViewLink()" class="nav-item">
             <router-link to="/advisor" class="nav-link">Advisor View</router-link>
           </li>
 
@@ -67,6 +67,18 @@ export default {
     showTimetableLink()
     {
       return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_TIMETABLE);
+    },
+    showUploadFileDropDown()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.UPLOAD_FILE);
+    },
+    showAdvisorViewLink()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_ADVISOR_VIEW);
+    },
+    showReportLink()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_REPORT);
     }
   },
   computed: {
