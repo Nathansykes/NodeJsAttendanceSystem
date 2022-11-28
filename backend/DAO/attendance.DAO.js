@@ -7,22 +7,20 @@ exports.canCreate = () => {
     return true;
 }
 
-exports.tryCreate = (attendance, res) => {
-
+exports.tryCreate = async (attendance) => {
     if (this.canCreate) {
-
-        Attendance.insertMany(attendance)
-        .then(data => {
+        var data = await Attendance.insertMany(attendance)
+        if(data) {
             var successMessage = `Attendance saved in the database: ${data}`;
             console.log(successMessage);
-            res.json(JSON.stringify(data));
-        })
-        .catch(err => {
-            res.status(500).send({
-            message:
-                err.message || "Some error occurred while creating the Attendance."
-            });
-        });
+            return data;
+        }
+        else { 
+            throw new Error("Some error occurred while creating the Attendance.");            
+        }        
+    }
+    else {
+        throw new Error("Unable to create attendance");
     }
 }
 
@@ -31,15 +29,18 @@ exports.canGet = () => {
     return true;
 }
 
-exports.tryGet = (filter, populateArgs, res) => {
-
+exports.tryGet = async (filter, populateArgs, res) => {
     if (this.canGet) {
-
-        Attendance.findOne(filter).then(data =>
-        {
-            res.json(JSON.stringify(data));
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await Attendance.findOne(filter)
+        if (data) {
+            return data;
+        }
+        else{
+            throw new Error("No Attendance found");
+        }
+    }
+    else{
+        throw new Error("Unable to get attendance");
     }
 }
 
@@ -48,16 +49,19 @@ exports.canUpdate = () => {
     return true;
 }
 
-exports.tryUpdate = (id, updateData, res) => {
-
+exports.tryUpdate = async (id, updateData) => {
     if (this.canUpdate) {
-
-        Attendance.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-        {
+        var data = await Attendance.findByIdAndUpdate(id, updateData, {new : true})
+        if(data) {
             console.log("Updated AttendanceRecord : ", data);
-            res.json(JSON.stringify(data));
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+            return data;
+        }
+        else {
+            throw new Error(`Error. No attendancerecord matches the Id: ${id}`);
+        }
+    }
+    else {
+        throw new Error("Unable to update attendance");
     }
 }
 
@@ -66,22 +70,21 @@ exports.canDelete = () => {
     return true;
 }
 
-exports.tryDelete = (id, res) => {
+exports.tryDelete = async (id, res) => {
 
     if (this.canDelete) {
 
-        Attendance.findByIdAndDelete(id).then(data => 
-        {
-            if (data) 
-            {
-                const message = `AttendanceRecord deleted: ${data}`;
-                res.send({message : message});
-            }
-            else 
-            {
-                res.send({message : `Error. No attendancerecord matches the Id: ${id}`})
-            }
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await Attendance.findByIdAndDelete(id)
+        if (data) {
+            const message = `AttendanceRecord deleted: ${data}`;
+            console.log(message);
+            return data;
+        }
+        else {
+            throw new Error(`Error. No attendancerecord matches the Id: ${id}`);
+        }
+    }
+    else {
+        throw new Error("Unable to delete attendance");
     }
 }
