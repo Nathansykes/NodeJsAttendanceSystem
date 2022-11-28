@@ -7,6 +7,7 @@ mappings.set(actions.UPLOAD_FILE, []);
 mappings.set(actions.VIEW_REPORT, []);
 mappings.set(actions.MARK_ATTENDANCE, []);
 mappings.set(actions.VIEW_TIMETABLE, [roles.STUDENT, roles.TUTOR]);
+mappings.set(actions.VIEW_ADVISORS_STUDENTS, [roles.ACADEMIC_ADVISOR]);
 
 class permissionsService{
     hasPermission(userTypeId, action) {

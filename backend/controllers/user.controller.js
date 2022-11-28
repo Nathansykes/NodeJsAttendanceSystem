@@ -140,7 +140,7 @@ exports.findOne = (req, res) => {
       UserDAO.tryGet(Tutor, { _id : id}, null, res);
       break;
       case UserTypes.AcademicAdvisor.Id:
-      UserDAO.tryGet(AcademicAdvisor, { _id : id}, null, res);
+      UserDAO.tryGet(AcademicAdvisor, { _id : id}, { path : 'Students' }, res);
       break;
       case UserTypes.CourseLeader.Id:
       UserDAO.tryGet(CourseLeader, { _id : id}, null, res);

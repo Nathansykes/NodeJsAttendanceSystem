@@ -13,7 +13,7 @@
     </div>
     <div class="col-md-6">
         <h4>Your list of students</h4>
-        <ul class="list-group">
+        <ul v-if="this.viewAdvisors_Students()" class="list-group">
           <li class="list-group-item"
             :class="{ active: index == currentIndex }"
             v-for="(user, index) in users"
@@ -36,6 +36,8 @@
     import userDataService from '@/services/user.data.service';
     import UserTypes from '../../../shared/usertypes';
     import httpCommonDataService from '@/services/http-common.data.service';
+    import Perms from '../services/permissions.data.service';
+    import { actions } from '../../constants';
     export default{
         name: "advisors-Student-List",
         data(){
@@ -51,8 +53,8 @@
             retrieveStudents(){
                 let loggedInUserID = httpCommonDataService.getApplicationUser().Id;
                 userDataService.get(loggedInUserID, UserTypes.AcademicAdvisor.Id)
-                .then(response =>{
-                    const advisor = JSON.parse(response.data);
+                .then(response => {
+                    const advisor = JSON.parse(response.data)[0];
                     this.users = advisor.Students;
                 })
                 .catch(e =>{
@@ -80,7 +82,11 @@
                         return (user.FirstName.toLowerCase() === names[0]?.toLowerCase() || user.LastName.toLowerCase() === names[1]?.toLowerCase()) || user.LastName.toLowerCase() === names[0]?.toLocaleLowerCase();
                     });
                     }
-            }
+            },
+            viewAdvisors_Students()
+            {
+                return Perms.hasPermission(httpCommonDataService.getApplicationUser().UserTypeId, actions.VIEW_ADVISORS_STUDENTS);
+            },
         },
         mounted(){
             this.retrieveStudents();
