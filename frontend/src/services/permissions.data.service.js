@@ -9,8 +9,8 @@ mappings.set(actions.MARK_ATTENDANCE, []);
 mappings.set(actions.VIEW_TIMETABLE, [roles.STUDENT, roles.TUTOR]);
 
 class permissionsService{
-    hasPermission(usertype, action) {
-        switch (usertype)
+    hasPermission(userTypeId, action) {
+        switch (userTypeId)
         {
           case 1:
             usertype = roles.STUDENT;
@@ -32,13 +32,10 @@ class permissionsService{
         }
     
         if (usertype == null) {
-          console.log("in first if");
           return false;
         }
       
         if (mappings.has(action)) {
-          console.log("in second if");
-          console.log(mappings.get(action).includes(usertype));
           return mappings.get(action).includes(usertype);
         }
       
