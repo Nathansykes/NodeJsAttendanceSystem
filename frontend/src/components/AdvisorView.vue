@@ -18,29 +18,18 @@
             :class="{ active: index == currentIndex }"
             v-for="(user, index) in users"
             :key="index"
-            @click="setActiveStudent(user, index)"
+            @click="routeToUser(user)"
           >
             {{ user.Id }}
             <br/>
             {{ user.FirstName + " " + user.LastName }}
           </li>
         </ul>
+        <div>
+        <router-link :to="`/users/${user.Id}`" class="btn btn-light" v-if="currentUser === 'users'">Edit</router-link>
+        </div>
     </div>
-    <div class="col-md-6">
-        <div v-if="currentUser">
-          <h4>User</h4>
-          <div>
-            <label><strong>Id:</strong></label> {{ currentUser.Id }}
-          </div>
-          <div>
-            <label><strong>Name:</strong></label> {{ currentUser.FirstName + " " + currentUser.LastName }}
-          </div>
-        </div>
-        <div v-else>
-          <br />
-          <p>Please click on an User...</p>
-        </div>
-      </div>
+    
     </div>
 </template>
 <script>
@@ -75,9 +64,9 @@
                 this.currentUser = null;
                 this.currentIndex = -1;
             },
-            setActiveStudent(student, index){
-                this.currentUser = student;
-                this.currentIndex = student ? index : -1;
+
+            routeToUser(user) {
+                this.$router.push(`/users/${user.Id}`)
             },
 
             searchStudent(){
