@@ -1,5 +1,5 @@
 <template>
-    <CRUDView :data-service="this.dataService" title="Modules" :isReadOnly="this.canEditSessionData()"/>
+    <CRUDView :data-service="this.dataService" title="Modules" :isReadOnly="this.canEditModuleData()"/>
 </template>
 
 <script>
