@@ -5,29 +5,28 @@ const ErrorHandler = require("../handlers/error.handler");
 const SessionDAO = require("../DAO/session.DAO");
 
 // Create and Save a new Session
-exports.create = (req, res) => {
-
-  SessionDAO.tryCreate(createSession(req.body, res), res);
-};
-
-function createSession(body, res) {
-  console.log("trying to create a session");
-  var session;
-
+exports.create = async (req, res) => {
   try {
-    var data = {
-      _id: mongoose.Types.ObjectId(body.Id),
-      Title: body.Title,
-      Location: body.Location,
-      DateAndTime: new Date(body.DateAndTime),
-      Students: body.Students,
-      AttendanceRecords: body.AttendanceRecords,
-    }
-    session = new Session(data);
+    var data = await SessionDAO.tryCreate(createSession(req.body, res), res);
+    res.json(JSON.stringify(data));
   }
   catch (error) {
-    ErrorHandler.handleError(res, error);
+    ErrorHandler.handleError(error, res);
   }
+};
+
+function createSession(body) {
+  var session;
+
+  var data = {
+    _id: mongoose.Types.ObjectId(body.Id),
+    Title: body.Title,
+    Location: body.Location,
+    DateAndTime: new Date(body.DateAndTime),
+    Students: body.Students,
+    AttendanceRecords: body.AttendanceRecords,
+  }
+  session = new Session(data);
 
   return session;
 }
@@ -42,34 +41,50 @@ var populateArgs = [{
 }];
 
 // Retrieve all Sessions from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
 
   var filter = {};
   if (req.query.Title) {
     filter.Title = req.query.Title;
   }
 
-  SessionDAO.tryGet(filter, populateArgs, res);
+  try {
+    var data = await SessionDAO.tryGet(filter, populateArgs, res);
+    res.json(JSON.stringify(data));
+  }
+  catch (error) {
+    ErrorHandler.handleError(error, res);
+  }
 };
 
-exports.findAllForUser = (req, res) => {
+exports.findAllForUser = async (req, res) => {
 
   var userId = Auth.getApplicationUser(req).Id;
 
-  SessionDAO.tryGet({ Students: userId }, populateArgs, res);
+  try {
+    var data = await SessionDAO.tryGet({ Students: userId }, populateArgs, res);
+    res.json(JSON.stringify(data));
+  }
+  catch (error) {
+    ErrorHandler.handleError(error, res);
+  }
 };
 
 
 // Find a single Session with an id
-exports.findOne = (req, res) => {
-
-  const ids = (req.params.id).replace(/ /g, '').split(",");
-
-  SessionDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
+exports.findOne = async (req, res) => {
+  try {
+    const ids = (req.params.id).replace(/ /g, '').split(",");
+    var data = await SessionDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
+    res.json(JSON.stringify(data));
+  }
+  catch (error) {
+    ErrorHandler.handleError(error);
+  }
 };
 
 // Update a Session by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
 
   const id = req.params.id;
 
@@ -80,20 +95,26 @@ exports.update = (req, res) => {
     AttendanceRecords: req.body.AttendanceRecords,
   }
 
-  if (req.body.DateAndTime) {
-    try {
+  try {
+    if (req.body.DateAndTime) {
       updateData.DateAndTime = new Date(req.body.DateAndTime);
     }
-    catch (error) {
-      ErrorHandler.handleError(res, error)
-    }
-  }
 
-  SessionDAO.tryUpdate(id, updateData, res);
+    var updatedData = await SessionDAO.tryUpdate(id, updateData);
+    res.json(JSON.stringify(updatedData));
+  }
+  catch (error) {
+    ErrorHandler.handleError(res, error)
+  }
 };
 
 // Delete a Session with the specified id in the request
-exports.delete = (req, res) => {
-
-  SessionDAO.tryDelete(req.params.id, res);
+exports.delete = async (req, res) => {
+  try {
+    var deletedData = await SessionDAO.tryDelete(req.params.id, res);
+    res.json(JSON.stringify(deletedData));
+  }
+  catch (error) {
+    ErrorHandler.handleError(error, res);
+  }
 };

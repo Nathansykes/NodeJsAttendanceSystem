@@ -25,9 +25,8 @@ exports.create = async (req, res) => {
     res.json(JSON.stringify(data));
   }
   catch (error) {
-    res.status(500).send({ message: error.message || "Some error occurred while creating the User." });
+    ErrorHandler.handleError(res, error);
   }
-
 };
 
 async function createUserFromBody(body, res) {
@@ -43,6 +42,7 @@ async function createUserFromBody(body, res) {
   }
   catch (error) {
     ErrorHandler.handleError(res, error);
+    return;
   }
 
   if (body.UserType) {
@@ -124,7 +124,7 @@ exports.find = async (req, res) => {
         res.status(400).send("UserType is not valid.");
         return;
     }
-    res.json(JSON.stringify({returnedData}));
+    res.json(JSON.stringify(returnedData));
     return;
   }
   catch (error) {
