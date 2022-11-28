@@ -24,7 +24,7 @@ describe('GET /modules', () => {
 //Finished GET /modules
 
 var moduleId = "module123456";
-var moduleTitle = "Web Application Development"
+var moduleTitle = "Test Module"
 //Testing POST /modules - positive test
 describe('POST /modules', () => {
     let module;

@@ -49,7 +49,6 @@ describe('POST /courses', () => {
             .send(course)
             .end((err, res) => {
                 const returnedCourse = (Course)(JSON.parse(res.body));
-                console.log(returnedCourse);
                 res.should.have.status(200);
                 returnedCourse.should.have.property('_id');
                 returnedCourse.should.have.property('Title');

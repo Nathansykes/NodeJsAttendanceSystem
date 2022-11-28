@@ -13,11 +13,11 @@ exports.CreateObjectId = function (id) {
             var x = id.toString().padStart(24, '0');
             return mongoose.Types.ObjectId(x);
         }
-        else if(id.length == 12){
+        else if(id.length == 12 || id.length == 24){
             return mongoose.Types.ObjectId(id)
         }
         else{
-            throw "Id is not a valid number or 12 characters long.";
+            throw "Id is not a valid number or is not 12 or 24 characters.";
         }
     }
     else{ 

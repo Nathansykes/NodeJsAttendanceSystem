@@ -29,7 +29,7 @@ function createSession(body) {
     data.Students = body.Students.split(",").map(id => Generic.CreateObjectId(id));
   }
   if(body.AttendanceRecords){
-    data.AttendanceRecords = body.AttendanceRecords.split(",");
+    data.AttendanceRecords = body.AttendanceRecords.split(",").map((id) => Generic.CreateObjectId(id));
   }
   session = new Session(data);
 
@@ -105,7 +105,7 @@ exports.update = async (req, res) => {
     var updatedData = await SessionDAO.tryUpdate(id, updateData);
 
     if(req.body.AttendanceRecords) {
-      var attendanceRecordsList = req.body.AttendanceRecords.split(",");
+      var attendanceRecordsList = req.body.AttendanceRecords.split(",").map((id) => Generic.CreateObjectId(id));
       data = await SessionDAO.tryAddToArrayField(id, "AttendanceRecords", attendanceRecordsList);
     }
     if(req.body.Students) {

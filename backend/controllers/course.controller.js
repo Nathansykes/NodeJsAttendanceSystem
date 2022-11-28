@@ -22,7 +22,9 @@ function createCourse(body) {
     _id: Generic.CreateObjectId(body.Id),
     CourseLeader: body.CourseLeader,
     Title: body.Title,
-    Modules : body.Modules?.split(","),
+  }
+  if(body.Modules){
+    data.Modules = body.Modules.split(",").map((id) => Generic.CreateObjectId(id));
   }
   course = new Course(data);
   return course;
@@ -82,7 +84,7 @@ exports.update = async (req, res) => {
   try{
     var data = await CourseDAO.tryUpdate(req.params.id, updateData);
     if(req.body.Modules){
-      var moduleList = req.body.Modules.split(",");
+      var moduleList = req.body.Modules.split(",").map((id) => Generic.CreateObjectId(id));
       data = await CourseDAO.tryAddToArrayField(req.params.id, "Modules", moduleList);
     }
     res.json(JSON.stringify(data));
