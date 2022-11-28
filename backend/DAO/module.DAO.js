@@ -7,30 +7,20 @@ exports.canCreate = () => {
     return true;
 }
 
-exports.tryCreate = (module, res) => {
-
+exports.tryCreate = async (module) => {
     if (this.canCreate) {
-
-        try {
-            module
-            .save()
-            .then(data => {
-                var successMessage = `Module saved in the database: ${data}`;
-                console.log(successMessage);
-                res.json(JSON.stringify(data));
-            })
-            .catch(err => {
-                res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Module."
-                });
-            });
-            return;
-          } 
-          catch (error) 
-          {
-            ErrorHandler.handleError(res, error);
-          }
+        var data = await module.save();
+        if (data) {
+            var successMessage = `Module saved in the database: ${data}`;
+            console.log(successMessage);
+            return data;
+        }
+        else {
+            throw new Error("Some error occurred while creating the Module.");
+        }
+    }
+    else {
+        throw new Error("Unable to create module");
     }
 }
 
@@ -39,15 +29,19 @@ exports.canGet = () => {
     return true;
 }
 
-exports.tryGet = (filter, populateArgs, res) => {
+exports.tryGet = async (filter, populateArgs) => {
 
     if (this.canGet) {
-
-        Module.find(filter).populate(populateArgs).then(data =>
-        {
-            res.json(JSON.stringify(data.map(module => Formatter.formatModule(module))));
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await Module.find(filter).populate(populateArgs);
+        if (data) {
+            return data.map(module => Formatter.formatModule(module));
+        }
+        else {
+            throw new Error("No Modules found");
+        }
+    }
+    else {
+        throw new Error("Unable to get modules");
     }
 }
 
@@ -56,23 +50,20 @@ exports.canUpdate = () => {
     return true;
 }
 
-exports.tryUpdate = (id, updateData, res) => {
+exports.tryUpdate = async (id, updateData) => {
 
     if (this.canUpdate) {
-
-        Module.findByIdAndUpdate(id, updateData, {new : true}).then(data =>  
-        {
-            if (data)
-            {
-                console.log("Updated Module : ", data);
-                res.json(JSON.stringify(data));
-            }
-            else
-            {
-                ErrorHandler.handleError(res, error)
-            };
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await Module.findByIdAndUpdate(id, updateData, { new: true })
+        if (data) {
+            console.log("Updated Module : ", data);
+            return data;
+        }
+        else {
+            throw new Error(`No session module the Id: ${id}`);
+        }
+    }
+    else {
+        throw new Error("Unable to update module");
     }
 }
 
@@ -81,22 +72,20 @@ exports.canDelete = () => {
     return true;
 }
 
-exports.tryDelete = (id, res) => {
+exports.tryDelete = async (id) => {
 
     if (this.canDelete) {
-
-        Module.findByIdAndDelete(id).then(data => 
-        {
-            if (data) 
-            {
+        var data = await Module.findByIdAndDelete(id)
+        if (data) {
             const message = `Module deleted: ${data}`;
-            res.send({message : message});
-            }
-            else 
-            {
-                res.send({message : `Error. No module matches the Id: ${id}`})
-            }
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+            console.log(message);
+            return data;
+        }
+        else {
+            throw new Error(`Error. No module matches the Id: ${id}`);
+        }
+    }
+    else {
+        throw new Error("Unable to delete module");
     }
 }
