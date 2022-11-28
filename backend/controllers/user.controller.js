@@ -45,13 +45,13 @@ async function createUserFromBody(body, res) {
     switch (userType) {
       case UserTypes.AcademicAdvisor.Id:
         if (body.Students) {
-          studentList = body.Students.split(",");
+          studentList = body.Students.split(",").map((id) => Generic.CreateObjectId(id));
           data.Students = studentList;
         }
         break;
       case UserTypes.Tutor.Id:
         if (body.Sessions) {
-          sessionList = body.Sessions.split(",");
+          sessionList = body.Sessions.split(",").map((id) => Generic.CreateObjectId(id));
           data.Sessions = sessionList;
         }
         break;
@@ -202,6 +202,20 @@ exports.update = async (req, res) => {
 
   try{
     var updatedData = await UserDAO.tryUpdate(id, updateData)
+    switch (updatedData.__t) {
+      case UserTypes.AcademicAdvisor.ModelName:
+        if(req.body.Students){
+          var studentList = req.body.Students.split(",").map((id) => Generic.CreateObjectId(id));
+          updatedData = await UserDAO.tryAddToArrayField(id, AcademicAdvisor , "Students", studentList);
+        }
+        break;
+      case UserTypes.Tutor.ModelName:
+        if(req.body.Modules){
+          var moduleList = req.body.Modules.split(",").map((id) => Generic.CreateObjectId(id));
+          updatedData = await UserDAO.tryAddToArrayField(id, Tutor , "Modules", moduleList);
+        }
+        break;
+    }
     res.json(JSON.stringify(updatedData));
   }
   catch(error){

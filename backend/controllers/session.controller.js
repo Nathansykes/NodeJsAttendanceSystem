@@ -3,6 +3,7 @@ const Session = require("../models/session.model");
 const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const SessionDAO = require("../DAO/session.DAO");
+const Generic = require("../generic/functions");
 
 // Create and Save a new Session
 exports.create = async (req, res) => {
@@ -23,8 +24,8 @@ function createSession(body) {
     Title: body.Title,
     Location: body.Location,
     DateAndTime: new Date(body.DateAndTime),
-    Students: body.Students,
-    AttendanceRecords: body.AttendanceRecords,
+    Students: body.Students?.split(",").map(id => id.toString().padStart(24, "0")),
+    AttendanceRecords: body.AttendanceRecords?.split(",").map(id => Generic.CreateObjectId(id)),
   }
   session = new Session(data);
 
