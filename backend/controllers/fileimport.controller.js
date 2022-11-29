@@ -27,15 +27,13 @@ exports.importAttendance = async (req, res) => {
             return;
         }
         var attendanceData = await Promise.all(data.map(async x => ({
-            _id: Generic.CreateObjectId(),
             Session: Generic.CreateObjectId(x.Session),
             Student: Generic.CreateObjectId(x.Student),
             Attendance: x.Attendance,
         })));
 
-        var attendanceRecords = await Promise.all(attendanceData.map(async x => await AttendanceRecord.create(x)));
         var count = 0;
-        var result = await AttendanceRecord.insertMany(attendanceRecords);
+        var result = await AttendanceRecord.insertMany(attendanceData, { ordered: false });
         count = result.length;
         
         res.send({ message: `File uploaded successfully. ${count} attendance records added to the database.` });
@@ -93,20 +91,42 @@ exports.importUsers = async (req, res) => {
                 Password: await Auth.createHash(await x.Password),
         })));
         var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
-        var count = 0;
-        users.forEach(user => {
-            user.save()
-                .then(data => {
-                });
-            count++;
-        });
-        res.send({ message: `File uploaded successfully. ${count} users added to the database.` });
+        try{
+            var promises = users.map(async user => await saveDocument(user));
+            var savedUsers = await Promise.all(promises);//save all users asynchronously
+        }
+        catch (error) {
+            if (error.code == 11000) {
+                res.status(500).send({ message: `Duplicate Keys Encountered, ${savedUsers?.length ?? 0}/${users?.length ?? 0} users saved in database`, SavedUsers: savedUsers });
+                return;
+            }
+            else {
+                throw error;// let the default error handler handle it
+            }
+        }
+        
+        res.send({ message: `File uploaded successfully. ${savedUsers.length} users added to the database.` });
             
     }
     catch (error) {
         ErrorHandler.handleError(res, error);
     }
 };
+
+// async save multiple documents whilst working with different models
+function saveDocument(doc){
+    return new Promise((resolve, reject) => {
+        doc.save((err, doc) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(doc);
+            }
+        });
+    });
+}
+
 function validateUserData(fileData) {
     var result = {
         InvalidIdCount: 0,
