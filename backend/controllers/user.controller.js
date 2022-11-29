@@ -101,24 +101,24 @@ exports.find = async (req, res) => {
     var returnedData;
     switch (userType) {
       case UserTypes.Student.Id:
-        returnedData = await UserDAO.tryGet(Student, filter, null, res);
+        returnedData = await UserDAO.tryGet(Student, filter, null);
         break;
       case UserTypes.Tutor.Id:
-        returnedData = await UserDAO.tryGet(Tutor, filter, null, res);
+        returnedData = await UserDAO.tryGet(Tutor, filter, null);
         break;
       case UserTypes.AcademicAdvisor.Id:
-        returnedData = await UserDAO.tryGet(AcademicAdvisor, filter, null, res);
+        returnedData = await UserDAO.tryGet(AcademicAdvisor, filter, { path : 'Students' });
         break;
       case UserTypes.CourseLeader.Id:
-        returnedData = await UserDAO.tryGet(CourseLeader, filter, null, res);
+        returnedData = await UserDAO.tryGet(CourseLeader, filter, null);
         break;
       case UserTypes.ModuleLeader.Id:
-        returnedData = await UserDAO.tryGet(ModuleLeader, filter, null, res);
+        returnedData = await UserDAO.tryGet(ModuleLeader, filter, null);
         break;
       case UserTypes.All.Id:
       case undefined:
       case null:
-        returnedData = await UserDAO.tryGet(User, filter, null, res);
+        returnedData = await UserDAO.tryGet(User, filter, null);
         break;
       default:
         res.status(400).send("UserType is not valid.");
@@ -144,24 +144,24 @@ exports.findOne = async (req, res) => {
   try {
     switch (userType) {
       case UserTypes.Student.Id:
-        returnedData = await UserDAO.tryGet(Student, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(Student, { _id: id }, null);
         break;
       case UserTypes.Tutor.Id:
-        returnedData = await UserDAO.tryGet(Tutor, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(Tutor, { _id: id }, null);
         break;
       case UserTypes.AcademicAdvisor.Id:
-        returnedData = await UserDAO.tryGet(AcademicAdvisor, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(AcademicAdvisor, { _id: id }, { path : 'Students' });
         break;
       case UserTypes.CourseLeader.Id:
-        returnedData = await UserDAO.tryGet(CourseLeader, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(CourseLeader, { _id: id }, null);
         break;
       case UserTypes.ModuleLeader.Id:
-        returnedData = await UserDAO.tryGet(ModuleLeader, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(ModuleLeader, { _id: id }, null);
         break;
       case UserTypes.All.Id:
       case undefined:
       case null:
-        returnedData = await UserDAO.tryGet(User, { _id: id }, null, res);
+        returnedData = await UserDAO.tryGet(User, { _id: id }, null);
         break;
       default:
         res.status(400).send("UserType is not valid.");

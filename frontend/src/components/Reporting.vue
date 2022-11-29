@@ -102,6 +102,7 @@ export default {
             ApplicationUser: null,
             Average: {},
             StudentView: false,
+            AdvisorView: false,
         }
     },
     methods: {
@@ -187,13 +188,54 @@ export default {
         PopulateStudents() {
             if (this.StudentView) 
             {
-                ModelDataService.UserDataService.get(this.ApplicationUser.Id)
+                ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
                     .then(response => {
                         var data = JSON.parse(response.data);
                         this.Students = data.map(x => ({
                             Id: parseInt(x.Id),
                             Name: x.FirstName + ' ' + x.LastName,
                         }));
+                    })
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+            }
+            if (this.AdvisorView) 
+            {
+                console.log(this.ApplicationUser.Id);
+                ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
+                    .then(response => {
+
+                        var advisor = JSON.parse(response.data);
+                        var advisorStudents = advisor.Students.map(x => ({
+                            Id: parseInt(x.Id),
+                            Name: x.FirstName + ' ' + x.LastName,
+                        }));
+
+                        if (!this.courseId) {
+                            ModelDataService.UserDataService.getAll(UserTypes.Student.Id)
+                            .then(response => {
+                                var students = JSON.parse(response.data);
+                                students = students.map(x => ({
+                                    Id: parseInt(x.Id),
+                                    Name: x.FirstName + ' ' + x.LastName,
+                                }));
+                                this.Students = advisorStudents.filter(x => students.find(y => x.Id === y.Id));
+                            })
+                            .catch(error => ModelDataService.ErrorHandlerService(error));
+                        }
+                        else {
+                            ModelDataService.CourseDataService.getAll()
+                                .then(response => {
+
+                                    var students = this.getStudentsFromCurrentCourse(JSON.parse(response.data));
+                                    students = students.map(x => ({
+                                        Id: parseInt(x.Id),
+                                        Name: `${x.FirstName} ${x.LastName}` ,
+                                    }));
+                                    this.Students = advisorStudents.filter(x => students.find(y => x.Id === y.Id));
+
+                                })
+                                .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+                        }
                     })
                     .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
@@ -213,19 +255,9 @@ export default {
                 else {
                     ModelDataService.CourseDataService.getAll()
                         .then(response => {
-                            var data = JSON.parse(response.data);
-                            var modules = (data.find(x => x)).Modules;
-                            var sessions = (modules.find(x => x)).Sessions;
 
-                            if (this.courseId) {
-                                modules = (data.find(x => x.Id == this.courseId)).Modules;
-                                sessions = (modules.find(x => x)).Sessions;
-                            }
-                            if (this.moduleId) {
-                                sessions = (modules.find(x => x.Id == this.moduleId)).Sessions;
-                            }
-
-                            var students = (sessions.find(x => x)).Students;
+                            var students = this.getStudentsFromCurrentCourse(JSON.parse(response.data));
+                            
                             this.Students = students.map(x => ({
                                 Id: parseInt(x.Id),
                                 Name: `${x.FirstName} ${x.LastName}` ,
@@ -234,6 +266,24 @@ export default {
                         .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
                 }
             }
+        },
+        getStudentsFromCurrentCourse(data) 
+        {
+            var modules = (data.find(x => x)).Modules;
+            var sessions = (modules.find(x => x)).Sessions;
+
+            if (this.courseId) {
+                modules = (data.find(x => x.Id == this.courseId)).Modules;
+                sessions = (modules.find(x => x)).Sessions;
+            }
+            if (this.moduleId) {
+                sessions = (modules.find(x => x.Id == this.moduleId)).Sessions;
+            }
+
+            var students = (sessions.find(x => x)).Students;
+            console.log(students);
+
+            return students;
         },
         calculateAverage() {
             var numberOfLates = 0;
@@ -264,6 +314,7 @@ export default {
     mounted() {
         this.ApplicationUser = ModelDataService.HTTPCommonDataService.getApplicationUser();
         this.StudentView = (this.ApplicationUser.UserTypeId === UserTypes.Student.Id);
+        this.AdvisorView = (this.ApplicationUser.UserTypeId === UserTypes.AcademicAdvisor.Id);
         this.PopulateStudents();
         this.PopulateCourses();
     }
