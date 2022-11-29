@@ -112,3 +112,9 @@ input[type="reset"] {
 .clickable {
     cursor: pointer;
 }
+
+.flexEvenly{
+    display: flex; 
+    justify-content: space-evenly; 
+    height: 80%;
+}

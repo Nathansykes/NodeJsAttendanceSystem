@@ -6,7 +6,8 @@ const Course = require("../models/course.model");
 const Student = require("../models/student.model");
 const Auth = require('../authentication')
 const UserTypes = require('../../shared/usertypes');
-const GenericFunctions = require('../../shared/functions');  
+const GenericFunctions = require('../../shared/functions');
+const ErrorHandler = require("../handlers/error.handler");
 
 exports.GetAttendanceForStudent = async (req, res) => {
   var studentId = req.query.StudentId?.toString()?.padStart(24, '0');
@@ -222,4 +223,29 @@ exports.GetAttendanceForCourse = async (req, res) => {
   
   res.json(JSON.stringify(returnObject));
   
+}
+
+exports.DownloadReport = (req, res) => {
+  
+  try {
+    var report = req.body.Report;
+    const csv = convertRecordsToCSV(report.Records);
+    res.json(JSON.stringify(csv));
+  }
+  catch(error) {
+    ErrorHandler.handleError(res, error);
+  }
+}
+
+function convertRecordsToCSV(records) {
+
+  return [
+    [
+      Object.keys(records[0]),
+    ],
+    records.map(record => ["\n" +
+      Object.values(record),
+    ])
+  ]
+  .map(e => e.join(","));
 }
