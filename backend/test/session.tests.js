@@ -8,7 +8,7 @@ let Session = require('../models/session.model');
 chai.use(chaiHttp);
 
 var sessionId = "session12345";
-let students = [321321321321, 123123123123]
+let students = "1000,1001"
 let location = 'Charles Street';
 let dateTime = "11-10-2022";
 
@@ -119,7 +119,7 @@ describe('PUT /sessions', () => {
         });
     });
     
-    it('it should POST an session ', (done) => {        
+    it('it should PUT an session ', (done) => {        
         chai.request(server)
             .put(`/sessions/${sessionId}`)
             .auth(token, {type: 'bearer'})

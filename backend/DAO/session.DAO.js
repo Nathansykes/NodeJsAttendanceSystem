@@ -4,91 +4,96 @@ const Formatter = require("../formatters/models.formatter");
 
 // Create Methods
 exports.canCreate = () => {
-    return true;
+  return true;
 }
 
-exports.tryCreate = (session, res) => {
-
-    if (this.canCreate) {
-
-        try {
-            session
-              .save()
-              .then(data => {
-                var successMessage = `Session saved in the database: ${data}`;
-                console.log(successMessage);
-                res.json(JSON.stringify(data));
-              })
-              .catch(err => {
-                res.status(500).send({
-                  message:
-                    err.message || "Some error occurred while creating the Session."
-                });
-              });
-            return;
-          }
-          catch (error) {
-            ErrorHandler.handleError(res, error);
-          }
+exports.tryCreate = async (session) => {
+  if (this.canCreate) {
+    var data = await session.save();
+    if (data) {
+      console.log(`Session saved in the database: ${data}`);
+      return data;
     }
+    else {
+      throw new Error("Some error occurred while creating the session.");
+    }
+  }
+  else {
+    throw new Error("Unable to create the session.");
+  }
 }
 
 // Get Methods
 exports.canGet = () => {
-    return true;
+  return true;
 }
 
-exports.tryGet = (filter, populateArgs, res) => {
+exports.tryGet = async (filter, populateArgs, res) => {
 
-    if (this.canGet) {
+  if (this.canGet) {
 
-        Session.find(filter).populate(populateArgs).then(data => 
-        {
-            res.json(JSON.stringify(data.map(session => Formatter.formatSession(session))));
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+    data = await Session.find(filter).populate(populateArgs)
+    if(data) {
+      return data.map(session => Formatter.formatSession(session))
     }
+    else{
+      throw new Error("No sessions found.");
+    }
+  }
+  else {
+    throw new Error("Unable to get the session.");
+  }
 }
 
 // Update Methods
 exports.canUpdate = () => {
-    return true;
+  return true;
 }
 
-exports.tryUpdate = (id, updateData, res) => {
-
-    if (this.canUpdate) {
-        Session.findByIdAndUpdate(id, updateData, { new: true }).then(data => {
-            if (data) {
-              console.log("Updated Session : ", data);
-              res.json(JSON.stringify(data));
-            }
-            else {
-              ErrorHandler.handleError(res, error)
-            };
-          })
-          .catch(error => ErrorHandler.handleError(res, error));
+exports.tryUpdate = async (id, updateData) => {
+  if (this.canUpdate) {
+    var data = await Session.findByIdAndUpdate(id, updateData, { new: true })
+    if (data) {
+      console.log("Updated Session : ", data);
+      return data;
     }
+    else {
+      throw new Error(`No session matches the Id: ${id}`);
+    }
+  }  
+  else {
+    throw new Error("Unable to update the session.");
+  }
+}
+
+exports.tryAddToArrayField = async (id, field, items) => {
+  if (this.canUpdate) {
+      var dataToUpdate = await Session.findOne({ _id: id });
+      items.forEach(item => {
+        dataToUpdate[field].push(item);
+      });
+      var updatedData = await dataToUpdate.save();
+      return updatedData;
+  }
 }
 
 // Delete Methods
 exports.canDelete = () => {
-    return true;
+  return true;
 }
 
-exports.tryDelete = (id, res) => {
-
-    if (this.canDelete) {
-
-        Session.findByIdAndDelete(id).then(data => {
-            if (data) {
-              const message = `Session deleted: ${data}`;
-              res.send({ message: message });
-            }
-            else {
-              res.send({ message: `Error. No session matches the Id: ${id}` })
-            }
-          })
-          .catch(error => ErrorHandler.handleError(res, error));
+exports.tryDelete = async (id) => {
+  if (this.canDelete) {
+    var deletedData = await Session.findByIdAndDelete(id)
+    if (deletedData) {
+      console.log("Deleted Session : ", deletedData);
+      return data
     }
+    else {
+      throw new Error(`No session matches the Id: ${id}`);
+    }
+  }
+  else {
+    throw new Error("Unable to delete the session.");
+  }
 }

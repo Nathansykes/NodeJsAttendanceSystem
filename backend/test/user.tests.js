@@ -139,3 +139,16 @@ describe('DELETE /users', () => {
     });
 });
 //Testing DELETE /users - positive test
+
+//Testing DELETE /users - negative test
+describe('DELETE /users', () => {
+    it('it should NOT DELETE user', (done) => {
+        chai.request(server)
+        .delete(`/users/912155`)
+        .auth(token, {type: 'bearer'})
+        .end((err, res) => {
+            res.status.should.eql(404);
+            done();
+        });
+    });
+});

@@ -6,14 +6,7 @@
             <br />
             <div class="row">
                 <div class=col-md-3>
-                    <select class="form-select" @change="selectStudent">
-                        <option value="" selected>Select Student</option>
-                        <option v-for="student in this.Students" :key="student.Id" :value="student.Id">{{ student.Id }}
-                            - {{ student.Name }}</option>
-                    </select>
-                </div>
-                <div class=col-md-3>
-                    <select class="form-select" @change="selectCourse">
+                    <select class="form-select" @change="selectCourse" :disabled="this.studentId || this.StudentView">
                         <option value="" selected="selected">Select Course</option>
                         <option v-for="course in this.Courses" :key="course.Id" :value="course.Id">{{ course.Name }}
                         </option>
@@ -28,6 +21,13 @@
                 </div>
                 <div class="col-md-3" v-else>
                     <i>Please Select a course before selecting a module</i>
+                </div>
+                <div class=col-md-3>
+                    <select class="form-select" @change="selectStudent">
+                        <option value="" selected>Select Student</option>
+                        <option v-for="student in this.Students" :key="student.Id" :value="student.Id">{{ student.Id }}
+                            - {{ student.Name }}</option>
+                    </select>
                 </div>
                 <div class=col-md-3>
                     <button type="button" class="btn btn-primary" @click="GetReport">Get Report</button>
@@ -46,6 +46,25 @@
                     <tbody>
                         <tr v-for="record in this.Report.Records" :key="record">
                             <td v-for="value in Object.values(record)" :key="value">{{ value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <h4>Mark Overview</h4>
+                <hr />
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Present</th>
+                            <th>Late</th>
+                            <th>Absent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ this.Average.Present }}%</td>
+                            <td>{{ this.Average.Late }}%</td>
+                            <td>{{ this.Average.Absent }}%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -80,6 +99,10 @@ export default {
             Courses: [],
             Report: {},
             ReportReturned: false,
+            ApplicationUser: null,
+            Average: {},
+            StudentView: false,
+            AdvisorView: false,
         }
     },
     methods: {
@@ -87,17 +110,17 @@ export default {
             if (this.studentId) {
                 ReportingDataService.getStudentReport(this.studentId, this.moduleId, this.courseId)
                     .then(response => this.setReport(response.data))
-                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
             else if (this.moduleId) {
                 ReportingDataService.getModuleReport(this.moduleId)
                     .then(response => this.setReport(response.data))
-                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
             else if (this.courseId) {
                 ReportingDataService.getCourseReport(this.courseId)
                     .then(response => this.setReport(response.data))
-                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
             else {
                 this.setReport(null);
@@ -116,31 +139,28 @@ export default {
             else {
                 this.ReportReturned = false;
             }
+
+            this.calculateAverage();
         },
         selectStudent(event) {
-            this.studentId = event.target.value;
+            this.studentId = event.target.value || undefined;
         },
         selectCourse(event) {
-            this.courseId = event.target.value;
+            this.courseId = event.target.value || undefined;
             if(this.courseId){
                 this.PopulateModules();
             }
             this.moduleId = null;
             this.Modules = null;
+            this.studentId = null;
+            this.Students = null;
+            this.PopulateStudents();
         },
         selectModule(event) {
-            this.moduleId = event.target.value;
-        },
-        PopulateStudents() {
-            ModelDataService.UserDataService.getAll(UserTypes.Student.Id)
-                .then(response => {
-                    var data = JSON.parse(response.data);
-                    this.Students = data.map(x => ({
-                        Id: parseInt(x.Id),
-                        Name: x.FirstName + ' ' + x.LastName,
-                    }));
-                })
-                .catch(error => ModelDataService.ErrorHandlerService(error));
+            this.moduleId = event.target.value || undefined;
+            if (this.moduleId) {
+                this.PopulateStudents();
+            }
         },
         PopulateCourses() {
             ModelDataService.CourseDataService.getAll()
@@ -151,7 +171,7 @@ export default {
                         Name: x.Title,
                     }));
                 })
-                .catch(error => ModelDataService.ErrorHandlerService(error));
+                .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
         },
         PopulateModules() {
             ModelDataService.CourseDataService.getAll()
@@ -163,10 +183,134 @@ export default {
                         Name: x.Title,
                     }));
                 })
-                .catch(error => ModelDataService.ErrorHandlerService(error));
+                .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
         },
+        PopulateStudents() {
+            if (this.StudentView) 
+            {
+                ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
+                    .then(response => {
+                        var data = JSON.parse(response.data);
+                        this.Students = data.map(x => ({
+                            Id: parseInt(x.Id),
+                            Name: x.FirstName + ' ' + x.LastName,
+                        }));
+                    })
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+            }
+            if (this.AdvisorView) 
+            {
+                ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
+                    .then(response => {
+
+                        var advisor = JSON.parse(response.data);
+                        var advisorStudents = advisor.Students.map(x => ({
+                            Id: parseInt(x.Id),
+                            Name: x.FirstName + ' ' + x.LastName,
+                        }));
+
+                        if (!this.courseId) {
+                            ModelDataService.UserDataService.getAll(UserTypes.Student.Id)
+                            .then(response => {
+                                var students = JSON.parse(response.data);
+                                students = students.map(x => ({
+                                    Id: parseInt(x.Id),
+                                    Name: x.FirstName + ' ' + x.LastName,
+                                }));
+                                this.Students = advisorStudents.filter(x => students.find(y => x.Id === y.Id));
+                            })
+                            .catch(error => ModelDataService.ErrorHandlerService(error));
+                        }
+                        else {
+                            ModelDataService.CourseDataService.getAll()
+                                .then(response => {
+
+                                    var students = this.getStudentsFromCurrentCourse(JSON.parse(response.data));
+                                    students = students.map(x => ({
+                                        Id: parseInt(x.Id),
+                                        Name: `${x.FirstName} ${x.LastName}` ,
+                                    }));
+                                    this.Students = advisorStudents.filter(x => students.find(y => x.Id === y.Id));
+
+                                })
+                                .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+                        }
+                    })
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+            }
+            else 
+            {
+                if (!this.courseId) {
+                    ModelDataService.UserDataService.getAll(UserTypes.Student.Id)
+                    .then(response => {
+                        var data = JSON.parse(response.data);
+                        this.Students = data.map(x => ({
+                            Id: parseInt(x.Id),
+                            Name: x.FirstName + ' ' + x.LastName,
+                        }));
+                    })
+                    .catch(error => ModelDataService.ErrorHandlerService(error));
+                }
+                else {
+                    ModelDataService.CourseDataService.getAll()
+                        .then(response => {
+
+                            var students = this.getStudentsFromCurrentCourse(JSON.parse(response.data));
+                            
+                            this.Students = students.map(x => ({
+                                Id: parseInt(x.Id),
+                                Name: `${x.FirstName} ${x.LastName}` ,
+                            }));
+                        })
+                        .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+                }
+            }
+        },
+        getStudentsFromCurrentCourse(data) 
+        {
+            var modules = (data.find(x => x)).Modules;
+            var sessions = (modules.find(x => x)).Sessions;
+
+            if (this.courseId) {
+                modules = (data.find(x => x.Id == this.courseId)).Modules;
+                sessions = (modules.find(x => x)).Sessions;
+            }
+            if (this.moduleId) {
+                sessions = (modules.find(x => x.Id == this.moduleId)).Sessions;
+            }
+
+            return (sessions.find(x => x)).Students;
+        },
+        calculateAverage() {
+            var numberOfLates = 0;
+            var numberOfAbsents = 0;
+            var numberOfPresents = 0;
+            this.Report.Records.map(record => {
+                switch(record.AttendanceMark || record.Attendance) {
+                    case "Present":
+                        numberOfPresents++;
+                        break;
+                    case "Absent":
+                        numberOfAbsents++;
+                        break;
+                    case "Late":
+                        numberOfLates++;
+                        break;
+                        default:
+                            break;
+                }
+            });
+            this.Average = {
+                Present : (numberOfPresents / this.Report.Records.length) * 100,
+                Absent : (numberOfAbsents / this.Report.Records.length) * 100,
+                Late : (numberOfLates / this.Report.Records.length) * 100,
+            }
+        }
     },
     mounted() {
+        this.ApplicationUser = ModelDataService.HTTPCommonDataService.getApplicationUser();
+        this.StudentView = (this.ApplicationUser.UserTypeId === UserTypes.Student.Id);
+        this.AdvisorView = (this.ApplicationUser.UserTypeId === UserTypes.AcademicAdvisor.Id);
         this.PopulateStudents();
         this.PopulateCourses();
     }

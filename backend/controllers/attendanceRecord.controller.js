@@ -6,46 +6,49 @@ const Attendance = require("../models/attendanceRecord.model");
 const AttendanceDAO = require("../DAO/attendance.DAO");
 
 // Create and Save a new Attendance
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
 
-      var data = req.body;
-      var modelData = data.map(model => createAttendance(model, res));
-      
-      AttendanceDAO.tryCreate(modelData, res);
+  var data = req.body;
+  try{
+    var modelData = data.map(model => createAttendance(model));    
+    var data = await AttendanceDAO.tryCreate(modelData);
+    res.json(JSON.stringify(data));
+  }
+  catch(error){
+    ErrorHandler.handleError(error, res);
+  }
 };
 
-function createAttendance(body, res)
+function createAttendance(body)
 {
-  try
-  {
-    var data = {
-      _id: mongoose.Types.ObjectId(body.Id),
-      Student: mongoose.Types.ObjectId(body.Student.Id),
-      Attendance: body.Attendance,
-    }
-    var attendance = new Attendance(data);
+  var data = {
+    _id: mongoose.Types.ObjectId(body.Id),
+    Student: mongoose.Types.ObjectId(body.Student.Id),
+    Attendance: body.Attendance,
   }
-  catch (error) 
-  {
-    ErrorHandler.handleError(res, error);
-  }
-
+  var attendance = new Attendance(data);
+  
   return attendance;
 }
 
 // Retrieve all Attendances from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
     var filter;
     var applicationUser = Auth.getApplicationUser(req);
     if(applicationUser.UserTypeId == UserTypes.Student.Id){
       filter= { Student : applicationUser.Id };// only get attendance records for the current student, if they are a student
     }
-
-    AttendanceDAO.tryGet(filter, null, res);
+    try{
+      var data = await AttendanceDAO.tryGet(filter, null, res);
+      res.json(JSON.stringify(data));
+    }
+    catch(error){
+      ErrorHandler.handleError(error, res);
+    }
 };
 
 // Find a single Attendance with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
 
     var filter;
     var applicationUser = Auth.getApplicationUser(req);
@@ -53,22 +56,40 @@ exports.findOne = (req, res) => {
       filter = { Student : applicationUser.Id };
     }
 
-    AttendanceDAO.tryGet(filter, null, res);
+    try{
+      var data = await AttendanceDAO.tryGet(filter, null);
+      res.json(JSON.stringify(data));
+    }
+    catch(error){
+      ErrorHandler.handleError(error, res);
+    }
 };
  
 // Update a Attendance by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
 
-    var updateData = {
-        Student: req.body.Student,
-        Attendance : req.body.Attendance,
-    }
+  var updateData = {
+      Student: req.body.Student,
+      Attendance : req.body.Attendance,
+  }
 
-    AttendanceDAO.tryUpdate(req.params.id, updateData, res);
+  try{
+    var data = await AttendanceDAO.tryUpdate(req.params.id, updateData);
+    res.json(JSON.stringify(data));
+  }
+  catch(error){
+    ErrorHandler.handleError(error, res);
+  }
 };
  
 // Delete a Attendance with the specified id in the request
 exports.delete = (req, res) => {
 
-  AttendanceDAO.tryDelete(req.params.id, res);
+  try{
+    var data = AttendanceDAO.tryDelete(req.params.id, res);
+    res.json(JSON.stringify(data));
+  }
+  catch(error){
+    ErrorHandler.handleError(error, res);
+  }
 };

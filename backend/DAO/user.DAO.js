@@ -1,33 +1,28 @@
 const User = require("../models/user.model");
 const ErrorHandler = require("../handlers/error.handler");
 const Formatter = require("../formatters/models.formatter");
+const mongoose = require('mongoose');
+const Student = require("../models/student.model");
 
 // Create Methods
 exports.canCreate = () => {
     return true;
 }
 
-exports.tryCreate = (user, res) => {
+exports.tryCreate = async (user) => {
 
     if (this.canCreate) {
-
-        try {
-            user
-            .save()
-            .then(data => {
-              console.log(`User saved in the database: ${data}`);
-              res.json(JSON.stringify(data));
-            })
-            .catch(err => {
-              res.status(500).send({
-                message:
-                  err.message || "Some error occurred while creating the User."
-              });
-            });
-            return;
-          } catch (error) {
-            ErrorHandler.handleError(res, error);
-          }
+        data = await user.save(user);
+        console.log(`User saved in the database: ${data}`);
+        if (data) {
+            return data;
+        }
+        else {
+            throw new Error("Some error occurred while creating the User.");
+        }
+    }
+    else {
+        throw new Error("Unable to create the user.");
     }
 }
 
@@ -36,15 +31,17 @@ exports.canGet = () => {
     return true;
 }
 
-exports.tryGet = (model, filter, populateArgs, res) => {
+exports.tryGet = async (model, filter, populateArgs) => {
 
     if (this.canGet) {
+        var data = await model.find(filter).populate(populateArgs)
 
-        model.find(filter).populate(populateArgs).then(data =>
-        {
-            res.json(JSON.stringify(data.map(user => Formatter.formatUser(user))));
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        if (data) {
+            return data.map(user => Formatter.formatUser(user))
+        }
+        else {
+            throw new Error("Some error occurred while retrieving users.");
+        }
     }
 }
 
@@ -53,23 +50,26 @@ exports.canUpdate = () => {
     return true;
 }
 
-exports.tryUpdate = (id, updateData, res) => {
+exports.tryUpdate = async (id, updateData) => {
 
     if (this.canUpdate) {
+        data = await User.findByIdAndUpdate(id, updateData, { new: true })
+        console.log("Updated User : ", data);
+        return data;
+    }
+    else {
+        throw new Error("Unable to update the user.");
+    }
+}
 
-        User.findByIdAndUpdate(id, updateData, {new : true}).then(data => 
-        {
-            if (data)
-            {
-                console.log("Updated User : ", data);
-                res.json(JSON.stringify(data));
-            }
-            else
-            {
-                ErrorHandler.handleError(res, error);
-            };
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+exports.tryAddToArrayField = async (id, field, items) => {
+    if (this.canUpdate) {
+        var dataToUpdate = await User.findOne({ _id: id });
+        items.forEach(item => {
+            dataToUpdate[field].push(item);
+          });
+        var updatedData = await dataToUpdate.save();
+        return updatedData;
     }
 }
 
@@ -78,22 +78,19 @@ exports.canDelete = () => {
     return true;
 }
 
-exports.tryDelete = (id, res) => {
+exports.tryDelete = async (id) => {
 
     if (this.canDelete) {
 
-        User.findByIdAndDelete(id).then(data => 
-        {
-            if (data) 
-            {
-                const message = `User deleted: ${data}`;
-                res.send({message : message});
-            }
-            else 
-            {
-                res.send({message : `Error. No user matches the Id: ${id}`})
-            }
-        })
-        .catch(error => ErrorHandler.handleError(res, error));
+        var data = await User.findByIdAndDelete(id)
+        if (data) {
+            return data;
+        }
+        else {
+            throw new Error(`No user matches the Id: ${id} STATUS_CODE: 404`);
+        }
+    }
+    else {
+        throw new Error("Unable to delete the user.");
     }
 }

@@ -9,23 +9,35 @@
 
 import LoginVue from './components/Login.vue';
 import Index from './components/SecureIndex.vue';
-import httpCommonService from "./services/http-common.data.service";
+import ModelDataService from './services/models.data.service';
 
 export default {
   name: "app",
   data() {
     return {
-      loggedIn: httpCommonService.getCookie("access_token")
+      loggedIn: false,
     }
   },
   components: {
       LoginVue,
       Index
     },
-  mounted() {
+  methods: {
+    isLoggedIn() {
+      ModelDataService.AuthenticationDataService.verifyToken()
+      .then(response => 
+      {
+        this.loggedIn = (response.status === 200)
+        this.updateRoutes();
+      })
+      .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
+    },
+    loadFonts() {
       var fontAwesome = document.createElement('script')
       fontAwesome.setAttribute('src', 'https://kit.fontawesome.com/93c807bff0.js')
       document.head.appendChild(fontAwesome)
+    },
+    updateRoutes() {
       if (this.loggedIn) 
       {
         if(window.location.pathname == "/" || window.location.pathname == "/login"){
@@ -36,6 +48,12 @@ export default {
       {
         this.$router.push('/login')
       }
+    }
+  },
+  mounted() {
+  
+      this.isLoggedIn();
+      this.loadFonts();
     }
 };
 </script>

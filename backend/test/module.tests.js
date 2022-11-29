@@ -24,7 +24,7 @@ describe('GET /modules', () => {
 //Finished GET /modules
 
 var moduleId = "module123456";
-var moduleTitle = "Web Application Development"
+var moduleTitle = "Test Module"
 //Testing POST /modules - positive test
 describe('POST /modules', () => {
     let module;
@@ -57,7 +57,6 @@ describe('POST /modules', () => {
                 returnedModule.should.have.property('ModuleLeader');
                 returnedModule.should.have.property('Sessions');
                 returnedModule.should.have.property('Tutors');
-                returnedModule.should.have.property('Students');
                 
                 done();
             });
