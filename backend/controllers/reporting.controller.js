@@ -225,11 +225,11 @@ exports.GetAttendanceForCourse = async (req, res) => {
   
 }
 
-exports.DownloadReport = async (req, res) => {
+exports.DownloadReport = (req, res) => {
   
   try {
     var report = req.body.Report;
-    const csv = await convertRecordsToCSV(report.Records);
+    const csv = convertRecordsToCSV(report.Records);
     res.json(JSON.stringify(csv));
   }
   catch(error) {
