@@ -11,6 +11,17 @@ var apiBackend = axios.create({
   }
 });
 
+var apiBackendNoError = axios.create({
+  baseURL: process.env.VUE_APP_API_BACKEND_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    'Access-Control-Allow-Origin': '*',
+    'Authorization': `Bearer ${httpCommonDataService.getCookie("access_token")}`
+  }
+});
+
 apiBackend.interceptors.response.use((response) => response, (error) => errorHandlerService.handlerError(error));
 
-export default apiBackend;
+
+
+export default { apiBackend, apiBackendNoError };

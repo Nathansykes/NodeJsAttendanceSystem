@@ -97,7 +97,7 @@ exports.importUsers = async (req, res) => {
         }
         catch (error) {
             if (error.code == 11000) {
-                res.status(500).send({ message: `Duplicate Keys Encountered, ${savedUsers?.length ?? 0}/${users?.length ?? 0} users saved in database`, SavedUsers: savedUsers });
+                res.status(400).send({ message: `Duplicate Keys Encountered, ${savedUsers?.length ?? 0}/${users?.length ?? 0} users saved in database`, SavedUsers: savedUsers });
                 return;
             }
             else {

@@ -23,9 +23,14 @@
                     </div>
                 </div>
             </form>
-            <div v-if="uploadSuccess != null">
+            <br />
+            <div v-if="uploadSuccess != null" class="alert alert-dismissible" :class="uploadSuccess === true ? 'alert-success' : 'alert-warning'">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h4 class="alert-heading">{{uploadSuccess === true ? 'Success' : 'Error'}}</h4>
                 <p v-if="uploadSuccess === true">{{ response }}</p>
                 <p v-if="uploadSuccess === false" style="white-space: pre-wrap;">{{ response }}</p>
+              </div>
+            <div >
             </div>
         </body>
     </div>
@@ -85,16 +90,18 @@ export default {
         },
         handleErrors(e) {
             var response = e.response;
+            console.log(response);
             if (response.status == 400) {
                 this.uploadSuccess = false;
-                var errors = [];
-                Object.keys(response.data.result).forEach(function (key) {
-                    var val = response.data.result[key];
-                    errors.push(key + ': '+ val);
-                });
-                this.response = response.data.message + "\n" + errors.join("\n");
+                var errStr = "";
+                if(response.data.result) {          
+                    Object.keys(response.data.result).forEach(function (key) {
+                        var val = response.data.result[key];
+                        errStr += key + ': '+ val + '\r\n';
+                    });
+                }
+                this.response = response.data.message + "\n" + errStr;
             }
-            console.log(e);
         }
     }
 }
