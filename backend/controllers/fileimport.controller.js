@@ -12,40 +12,34 @@ const AttendanceRecord = require("../models/attendanceRecord.model");
 const { parse } = require('csv-parse');
 
 
-exports.importAttendance = (req, res) => {
+exports.importAttendance = async (req, res) => {
     var file = req.files?.AttendanceFile;
     if (!file) {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
         return;
     }
     try{
-        handleFile(file, async function (data) {
-            //test the file to make sure data is valid
-            var result = validateAttendanceData(data);
-            try {
-                if (!result.IsValid) {
-                    res.status(400).send({ message: "Invalid data in file.", result: result });
-                    return;
-                }
-                var attendanceData = await Promise.all(data.map(async x => ({
-                    _id: Generic.CreateObjectId(),
-                    Session: Generic.CreateObjectId(x.Session),
-                    Student: Generic.CreateObjectId(x.Student),
-                    Attendance: x.Attendance,
-                })));
+        var data = handleFile(file);
+        //test the file to make sure data is valid
+        var result = validateAttendanceData(data);
+        if (!result.IsValid) {
+            res.status(400).send({ message: "Invalid data in file.", result: result });
+            return;
+        }
+        var attendanceData = await Promise.all(data.map(async x => ({
+            _id: Generic.CreateObjectId(),
+            Session: Generic.CreateObjectId(x.Session),
+            Student: Generic.CreateObjectId(x.Student),
+            Attendance: x.Attendance,
+        })));
 
-                var attendanceRecords = await Promise.all(attendanceData.map(async x => await AttendanceRecord.create(x)));
-                var count = 0;
-                var result = await AttendanceRecord.insertMany(attendanceRecords);
-                count = result.length;
-                
-                res.send({ message: `File uploaded successfully. ${count} attendance records added to the database.` });
-            }
-            catch (error) {
-                ErrorHandler.handleError(res, error);
-            }
-        });
-    }
+        var attendanceRecords = await Promise.all(attendanceData.map(async x => await AttendanceRecord.create(x)));
+        var count = 0;
+        var result = await AttendanceRecord.insertMany(attendanceRecords);
+        count = result.length;
+        
+        res.send({ message: `File uploaded successfully. ${count} attendance records added to the database.` });
+    }    
     catch (error) {
         ErrorHandler.handleError(res, error);
     }
@@ -76,7 +70,7 @@ function validateAttendanceData(fileData) {
 }
 
 
-exports.importUsers = (req, res) => {
+exports.importUsers = async (req, res) => {
     var file = req.files?.UserFile;
     if (!file) {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
@@ -84,35 +78,30 @@ exports.importUsers = (req, res) => {
     }
 
     try {
-        handleFile(file, async function (data) {
-            //test the file to make sure data is valid
-            var result = validateUserData(data);
-            try {
-                if (!result.IsValid) {
-                    res.status(400).send({ message: "Invalid data in file.", result: result });
-                    return;
-                }
-                var userData = await Promise.all(data.map(async x => ({
-                        _id: Generic.CreateObjectId(x.Id),
-                        UserType: x.UserType,
-                        FirstName: x.FirstName,
-                        LastName: x.LastName,
-                        Password: await Auth.createHash(await x.Password),
-                })));
-                var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
-                var count = 0;
-                users.forEach(user => {
-                    user.save()
-                        .then(data => {
-                        });
-                    count++;
+        var data = handleFile(file)
+        //test the file to make sure data is valid
+        var result = validateUserData(data);        
+        if (!result.IsValid) {
+            res.status(400).send({ message: "Invalid data in file.", result: result });
+            return;
+        }
+        var userData = await Promise.all(data.map(async x => ({
+                _id: Generic.CreateObjectId(x.Id),
+                UserType: x.UserType,
+                FirstName: x.FirstName,
+                LastName: x.LastName,
+                Password: await Auth.createHash(await x.Password),
+        })));
+        var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
+        var count = 0;
+        users.forEach(user => {
+            user.save()
+                .then(data => {
                 });
-                res.send({ message: `File uploaded successfully. ${count} users added to the database.` });
-            }
-            catch (error) {
-                ErrorHandler.handleError(res, error);
-            }
+            count++;
         });
+        res.send({ message: `File uploaded successfully. ${count} users added to the database.` });
+            
     }
     catch (error) {
         ErrorHandler.handleError(res, error);
@@ -153,13 +142,23 @@ function validateUserData(fileData) {
 }
 
 
-function handleFile(file, output) {
+function handleFile(file) {
     try {
-        parse(file.data, { columns: true }, function (err, data) {
-            output(data);
-        });
+        var str = file.data.toString('utf8');
+        var rows = str.split('\r\n');
+        var headers = rows[0].split(',');
+        var data = [];
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i].split(',');
+            var obj = {};
+            for (var j = 0; j < headers.length; j++) {
+                obj[headers[j]] = row[j];
+            }
+            data.push(obj);
+        }
+        return data;
     }
     catch (error) {
-        res.status(500).send({ message: "Error uploading file." });
+        throw error;
     }
 }
