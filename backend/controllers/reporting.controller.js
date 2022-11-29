@@ -241,20 +241,10 @@ function convertRecordsToCSV(records) {
 
   return [
     [
-      "StudentName",
-      "StudentID",
-      "Module",
-      "Session",
-      "Date",
-      "AttendanceMark",
+      Object.keys(records[0]),
     ],
     records.map(record => ["\n" +
-      record.StudentName,
-      record.StudentID,
-      record.Module,
-      record.Session,
-      record.Date,
-      record.AttendanceMark,
+      Object.values(record),
     ])
   ]
   .map(e => e.join(","));
