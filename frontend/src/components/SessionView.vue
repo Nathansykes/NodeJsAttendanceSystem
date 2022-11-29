@@ -4,7 +4,7 @@
     <router-link v-if="!this.canEditSessionData()" :to="`/attendance/${this.$route.params.id}`" class="btn btn-primary" style="margin-top: 2%; margin: 1em; display: inline">Mark Attendance</router-link>
     <a id="searchButton" class="btn btn-primary" @click="this.searchStudents = true">Search Student</a>
     <form class="Search" v-if="this.searchStudents">
-      <select id="studentMenu" @change="selectedUser">
+      <select class="form-select" id="studentMenu" @change="selectedUser">
         <option v-for="student in this.filteredStudents" :key="student.Id" :value="student.Id">{{`${student.FirstName} ${student.LastName}`}}</option>
       </select>
       <a class="btn btn-primary" id="submit" @click="addStudent()">Add Student to Session</a>
