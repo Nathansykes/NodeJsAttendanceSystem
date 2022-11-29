@@ -52,71 +52,52 @@ export default {
             this.sessionId = this.$route.params.id;
             ModelDataService.SessionDataService.get(this.sessionId).then(response => 
             {
-                var data = JSON.parse(response.data)
-                data[0].AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
-                this.session = data[0];
-                this.students = data[0].Students;
-                this.attendances = data[0].AttendanceRecords;
+                var data = JSON.parse(response.data)[0]
+                data.AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
+                this.session = data;
+                this.students = data.Students;
+                this.attendances = data.AttendanceRecords;
             })
             .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
         },
         updateMark(value, index)
         {
-            this.attendances[index].Attendance = value; 
-            this.markAttedance(index)
-        },
-        markAttedance(index) 
-        {   
             var student = this.students[index];
             this.attendances[index] =  
             {
-                Id : this.attendances[index].Id,
+                Id : this.attendances[index]?.Id,
                 Student: student,
-                Attendance: this.attendances[index].Attendance,
+                Attendance: value,
             }
         },
         save() 
         {
+            var attendancesToCreate = this.attendances.filter(x => !x.Id)
+            this.attendances = this.attendances.filter(x => !(attendancesToCreate.find(y => x === y)));
+
             // try and get attendance data first
             if (this.session.AttendanceRecords !== [] && this.session.AttendanceRecords !== undefined) 
             {
-                this.attendances.map(attendance => 
+                this.attendances.map(attendance =>
                 {
-                    var updateData = {
-                        Attendance : parseInt(attendance.Attendance)
-                    };
-
-                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify(updateData)).then(response => 
-                    {
-                        console.log(response);
-                    })
+                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify({ Attendance : parseInt(attendance.Attendance) }))
+                    .then(response => console.log(response))
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
-
-                this.$router.go("/courses");
             }
-            // else try and create
-            else
+            if (attendancesToCreate !== [] && attendancesToCreate !== undefined ) 
             {
-                ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(this.attendances))).then(response => 
+                // else try and create
+                ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(attendancesToCreate))).then(response => 
                 {
                     const data = JSON.parse(response.data);
-                    const attendanceIds = data.map(attendance => attendance._id);
-                    let updatedSessionData = 
-                    {
-                        AttendanceRecords: attendanceIds,
-                    };
-        
-                    ModelDataService.SessionDataService.update(this.sessionId, updatedSessionData).then(response => 
-                    {
-                        if (response) 
-                        {
-                            this.$router.go("/courses");
-                        }
-                    })
+                    data.map(attendance => this.attendances.push(attendance));
+                    const attendanceIds = this.attendances.map(attendance => attendance._id || attendance.Id);
+
+                    ModelDataService.SessionDataService.update(this.sessionId, { AttendanceRecords : attendanceIds.join(",") })
+                    .then(response => this.$router.go("/home"))
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 });
-
             }
         },
         addStudent(){
