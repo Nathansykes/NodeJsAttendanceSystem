@@ -1,4 +1,6 @@
 import jwt from 'jwt-decode';
+import axios from "axios";
+
 class HTTPCommonDataService {
 
     setCookie(cname, cvalue, exHours) {
@@ -37,6 +39,17 @@ class HTTPCommonDataService {
             return jwt(token);
         }
         return null;
+    }
+
+    testConnection = () =>
+    {
+        return axios.get(`${process.env.VUE_APP_API_BACKEND_URL}/verifyToken`, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': `Bearer ${this.getCookie("access_token")}`
+            }
+        });
     }
 }
 

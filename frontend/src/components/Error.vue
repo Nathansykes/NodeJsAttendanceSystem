@@ -1,11 +1,15 @@
 <template>
     <div class="alert alert-dismissible alert-danger">
         <h4 class="alert-heading">{{this.error ?? "Error"}}</h4>
-        <strong>Oh snap!</strong> {{this.errorMessage}} <router-link :to="this.$router.options.history.state.back ?? '/home'" class="alert-link">Try refreshing.</router-link>
+        <p>
+            <strong>Oh snap!</strong> {{this.errorMessage}} 
+        </p>
     </div>
 </template>
 
 <script>
+import ModelDataService from '../services/models.data.service';
+
 export default {
     name: "app",
     data() {
@@ -20,6 +24,18 @@ export default {
             if (this.error == "network_error") {
                 this.error = "Network Error";
             }
+        },
+        retryConnection() {
+            setInterval(function(){
+                console.log("retrying connection");
+                ModelDataService.HTTPCommonDataService.testConnection().then(response => {
+                    window.location.href = this.$router.options.history.state.back ?? "/home";                    
+                }).catch(error => {
+                    if(error.response){
+                        window.location.href = "/login";
+                    }
+                })
+            },5000)
         },
         getErrorMessage() 
         {
@@ -54,6 +70,7 @@ export default {
     {
         this.getError()
         this.getErrorMessage();
+        this.retryConnection();
     }
 }
 </script>

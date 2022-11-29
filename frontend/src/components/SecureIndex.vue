@@ -84,16 +84,6 @@ export default {
     {
       return permissions.hasPermission(this.currentUser.UserTypeId, actions.RETURN_HOME)
     },
-    sendDefaultRoute()
-    {
-      if (httpCommonService.getApplicationUser().UserTypeId == 1)
-      {
-        this.$router.push("/timetable");
-        return;
-      }
-      
-      this.$router.push("/home");
-    },
     getDefaultRoute()
     {
       if (httpCommonService.getApplicationUser().UserTypeId == 1)
@@ -105,7 +95,6 @@ export default {
     }
   },
   mounted() {
-    this.sendDefaultRoute();
     console.log(this.currentUserName);
   },
   computed: {
