@@ -20,8 +20,8 @@ exports.create = async (req, res) => {
   }
 
   var userData = await createUserFromBody(req.body, res);// Create a User data object
-  if (body.UserType) {
-    var userType = parseInt(body.UserType);// check userType is able to be parsed
+  if (req.body.UserType) {
+    var userType = parseInt(req.body.UserType);// check userType is able to be parsed
   }
   else{
     ErrorHandler.handleError(res, new Error("UserType is not valid."));

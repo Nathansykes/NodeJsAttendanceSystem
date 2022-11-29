@@ -45,12 +45,16 @@ exports.importAttendance = async (req, res) => {
             Attendance: x.Attendance,
         })));
 
+        var attendances = await Promise.all(attendanceData.map(x => new AttendanceRecord(x)));
+
         try{
-            var promises = attendanceData.map(async item => await save(item));
+            var promises = attendances.map(async item => await saveDocument(item));
             var savedAttendance = await Promise.all(promises);
         }
         catch(error){
+            console.log(error);
             res.status(400).send({ message: `Failed to save, ${savedAttendance?.length ?? 0}/${attendanceData?.length ?? 0} attendance records saved in database`, SavedAttendance: savedAttendance, Error: error });
+            return;
         }
         
         res.send({ message: `File uploaded successfully. ${savedAttendance.length} attendance records added to the database.` });
