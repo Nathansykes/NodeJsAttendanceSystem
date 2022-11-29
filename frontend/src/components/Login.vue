@@ -44,8 +44,16 @@ export default{
             {
                 var token = (JSON.parse(response.data)).Token;
                 HTTPCommonDataService.setCookie("access_token", token, 1);
-                this.$router.push('/home')
-                window.location.href= '/home';
+                if (HTTPCommonDataService.getApplicationUser().UserTypeId == 1)
+                {
+                    this.$router.push('/timetable')
+                    window.location.href= '/timetable';
+                }
+                else
+                {
+                    this.$router.push('/home')
+                    window.location.href= '/home';
+                }
             })
             .catch(error => this.errorMessage = ErrorHandlerService.handlerError(error));
         },
