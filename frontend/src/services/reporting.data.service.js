@@ -1,4 +1,5 @@
 import http from "../http/http-form-encoded";
+import jsonHttp from "../http/http-form-json";
 
 class ReportingDataService {
 
@@ -12,6 +13,10 @@ class ReportingDataService {
 
     getCourseReport(courseId) {
         return http.get(`/reporting/course`, { params: { CourseId: courseId } });
+    }
+
+    downloadReport(report) {
+        return jsonHttp.post(`/reporting/download`, report);
     }
 }
 
