@@ -6,7 +6,8 @@ const Course = require("../models/course.model");
 const Student = require("../models/student.model");
 const Auth = require('../authentication')
 const UserTypes = require('../../shared/usertypes');
-const GenericFunctions = require('../../shared/functions');  
+const GenericFunctions = require('../../shared/functions');
+const ErrorHandler = require("../handlers/error.handler");
 
 exports.GetAttendanceForStudent = async (req, res) => {
   var studentId = req.query.StudentId?.toString()?.padStart(24, '0');
@@ -222,4 +223,39 @@ exports.GetAttendanceForCourse = async (req, res) => {
   
   res.json(JSON.stringify(returnObject));
   
+}
+
+exports.DownloadReport = async (req, res) => {
+  
+  try {
+    var report = req.body.Report;
+    const csv = await convertRecordsToCSV(report.Records);
+    res.json(JSON.stringify(csv));
+  }
+  catch(error) {
+    ErrorHandler.handleError(res, error);
+  }
+}
+
+function convertRecordsToCSV(records) {
+
+  return [
+    [
+      "StudentName",
+      "StudentID",
+      "Module",
+      "Session",
+      "Date",
+      "AttendanceMark",
+    ],
+    records.map(record => ["\n" +
+      record.StudentName,
+      record.StudentID,
+      record.Module,
+      record.Session,
+      record.Date,
+      record.AttendanceMark,
+    ])
+  ]
+  .map(e => e.join(","));
 }

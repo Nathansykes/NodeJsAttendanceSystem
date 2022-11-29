@@ -5,14 +5,14 @@
             <h3>Reporting</h3>
             <br />
             <div class="row">
-                <div class=col-md-3>
+                <div class="col-md-3">
                     <select class="form-select" @change="selectCourse" :disabled="this.studentId || this.StudentView">
                         <option value="" selected="selected">Select Course</option>
                         <option v-for="course in this.Courses" :key="course.Id" :value="course.Id">{{ course.Name }}
                         </option>
                     </select>
                 </div>
-                <div class=col-md-3 v-if="this.Modules?.length > 0">
+                <div class="col-md-3" v-if="this.Modules?.length > 0">
                     <select class="form-select" @change="selectModule">
                         <option value="" selected>Select Module</option>
                         <option v-for="module in this.Modules" :key="module.Id" :value="module.Id">{{ module.Name }}
@@ -22,14 +22,15 @@
                 <div class="col-md-3" v-else>
                     <i>Please Select a course before selecting a module</i>
                 </div>
-                <div class=col-md-3>
+                <div class="col-md-3">
                     <select class="form-select" @change="selectStudent">
                         <option value="" selected>Select Student</option>
                         <option v-for="student in this.Students" :key="student.Id" :value="student.Id">{{ student.Id }}
                             - {{ student.Name }}</option>
                     </select>
                 </div>
-                <div class=col-md-3>
+                <div class="col-md-3" style="display: flex; justify-content: space-evenly; height: 80%;">
+                    <button type="button" v-if="this.ReportReturned" class="btn btn-primary" @click="DownloadReport">Download</button>
                     <button type="button" class="btn btn-primary" @click="GetReport">Get Report</button>
                 </div>
             </div>
@@ -305,6 +306,24 @@ export default {
                 Absent : (numberOfAbsents / this.Report.Records.length) * 100,
                 Late : (numberOfLates / this.Report.Records.length) * 100,
             }
+        },
+        DownloadReport() {
+            ReportingDataService.downloadReport(JSON.stringify({ Report : this.Report})).then(response => 
+            {
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+
+                var data = JSON.parse(response.data);
+                var blob = new Blob([data], {type: "text/csv"});
+                var url = window.URL.createObjectURL(blob);
+                
+                a.href = url;
+                a.download = "attendace_record.csv";
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
         }
     },
     mounted() {
