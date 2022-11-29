@@ -12,6 +12,8 @@ const UserDAO = require("../DAO/user.DAO");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
+
+
   if (!req.body.FirstName) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
@@ -56,14 +58,7 @@ async function createUserFromBody(body, res) {
         }
         break;
     }
-  }
-  catch (error) {
-    ErrorHandler.handleError(res, error);
-    return;
-  }
-
-
-  try {
+    
     var user = await createUser(data, userType);
     return user;
   }

@@ -44,11 +44,15 @@ exports.importAttendance = async (req, res) => {
             Attendance: x.Attendance,
         })));
 
-        var count = 0;
-        var result = await AttendanceRecord.insertMany(attendanceData, { ordered: false });
-        count = result.length;
+        try{
+            var promises = attendanceData.map(async item => await save(item));
+            var savedAttendance = await Promise.all(promises);
+        }
+        catch(error){
+            res.status(400).send({ message: `Failed to save, ${savedAttendance?.length ?? 0}/${attendanceData?.length ?? 0} attendance records saved in database`, SavedAttendance: savedAttendance, Error: error });
+        }
         
-        res.send({ message: `File uploaded successfully. ${count} attendance records added to the database.` });
+        res.send({ message: `File uploaded successfully. ${savedAttendance.length} attendance records added to the database.` });
     }    
     catch (error) {
         ErrorHandler.handleError(res, error);
@@ -182,8 +186,9 @@ function handleFile(file) {
         var rows = str.split('\r\n');
         var headers = rows[0].split(',');
         var data = [];
-        for (var i = 1; i < rows.length; i++) {
-            var row = rows[i].split(',');
+        var dataRows = rows.slice(1).filter(x => x != "");//remove the headers and any empty rows
+        for (var i = 0; i < dataRows.length; i++) {
+            var row = dataRows[i].split(',');
             var obj = {};
             for (var j = 0; j < headers.length; j++) {
                 obj[headers[j]] = row[j];

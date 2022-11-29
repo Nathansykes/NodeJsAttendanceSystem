@@ -4,6 +4,7 @@ const UserTypes = require('../../shared/usertypes');
 const ErrorHandler = require('../handlers/error.handler');
 const Attendance = require("../models/attendanceRecord.model");
 const AttendanceDAO = require("../DAO/attendance.DAO");
+const Generic = require("../generic/functions");
 
 // Create and Save a new Attendance
 exports.create = async (req, res) => {
@@ -22,8 +23,8 @@ exports.create = async (req, res) => {
 function createAttendance(body)
 {
   var data = {
-    _id: mongoose.Types.ObjectId(body.Id),
-    Student: mongoose.Types.ObjectId(body.Student.Id),
+    _id: Generic.CreateObjectId(body.Id),
+    Student: Generic.CreateObjectId(body.Student.Id),
     Attendance: body.Attendance,
   }
   var attendance = new Attendance(data);
