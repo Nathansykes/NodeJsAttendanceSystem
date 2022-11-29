@@ -16,7 +16,7 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: "timeGridWeek",
-        editable: true,
+        editable: false,
         selectable: true,
         weekends: false,
         eventClick: this.onEventClick,

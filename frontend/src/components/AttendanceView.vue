@@ -96,7 +96,7 @@ export default {
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 });
             }
-        }
+        },
     },
     mounted() {
         if (!this.$route.params.id) {
