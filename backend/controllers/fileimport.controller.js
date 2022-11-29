@@ -8,6 +8,7 @@ const Generic = require("../generic/functions");
 const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const AttendanceRecord = require("../models/attendanceRecord.model");
+const UserDAO = require("../DAO/user.DAO");
 
 const ValidFileTypes = ["csv"];
 
@@ -108,7 +109,7 @@ exports.importUsers = async (req, res) => {
                 LastName: x.LastName,
                 Password: await Auth.createHash(await x.Password),
         })));
-        var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
+        var users = await Promise.all(userData.map(async x => await UserDAO.createUser(x, parseInt(x.UserType))));
         try{
             var promises = users.map(async user => await saveDocument(user));
             var savedUsers = await Promise.all(promises);//save all users asynchronously
