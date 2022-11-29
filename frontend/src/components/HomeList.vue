@@ -44,8 +44,7 @@
   import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
   import ObjectHelper from "@/helpers/object.helper";
-import httpCommonDataService from "@/services/http-common.data.service";
-import UserTypes from "../../../shared/usertypes";
+  import UserTypes from "../../../shared/usertypes";
 
   export default {
     name: "courses-list",
@@ -230,7 +229,7 @@ import UserTypes from "../../../shared/usertypes";
     },
     mounted() {
         this.retrieveCourses();
-        if (httpCommonDataService.getApplicationUser().UserTypeId == UserTypes.Student.Id)
+        if (ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId == UserTypes.Student.Id)
         {
           this.$router.push("/timetable");
         }
