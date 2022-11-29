@@ -82,9 +82,6 @@ export default
         },
         cancel() {
             this.$router.push(this.$router.go(-1));
-        },
-        disableDate(evt) {
-            return false;
         }
     },
     mounted() {
