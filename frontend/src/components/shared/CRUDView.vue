@@ -86,7 +86,6 @@ export default
     },
     mounted() {
         this.getProperties();
-        this.errorMessage = "Im Dead";
     }
 }
 </script>
