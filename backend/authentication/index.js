@@ -46,7 +46,7 @@ function createApplicationUser(user) {
 exports.generateToken = (user) => {
     var ApplicationUser = createApplicationUser(user);
     try {
-        var token = jwt.sign(ApplicationUser, process.env.TOKEN_SECRET);
+        var token = jwt.sign(ApplicationUser, process.env.TOKEN_SECRET, { expiresIn: '1h' });
         return token;
     }
     catch (error) {

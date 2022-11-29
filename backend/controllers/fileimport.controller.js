@@ -9,6 +9,16 @@ const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const AttendanceRecord = require("../models/attendanceRecord.model");
 
+const ValidFileTypes = ["csv"];
+
+function ValidFileType(file){
+    var parts = file.name.split(".");
+    var ext = parts[parts.length - 1];
+    if (ValidFileTypes.includes(ext)) {
+        return true;
+    }
+    return false;
+}
 
 
 exports.importAttendance = async (req, res) => {
@@ -16,6 +26,9 @@ exports.importAttendance = async (req, res) => {
     if (!file) {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
         return;
+    }
+    if(!ValidFileType(file)){
+        return res.status(400).send({message: "Invalid file type. Only CSV files are accepted."});
     }
     try{
         var data = handleFile(file);
@@ -73,7 +86,9 @@ exports.importUsers = async (req, res) => {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
         return;
     }
-
+    if(!ValidFileType(file)){
+        return res.status(400).send({message: "Invalid file type. Only CSV files are accepted."});
+    }
     try {
         var data = handleFile(file)
         //test the file to make sure data is valid
