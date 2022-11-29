@@ -8,7 +8,18 @@ const Generic = require("../generic/functions");
 const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const AttendanceRecord = require("../models/attendanceRecord.model");
+const UserDAO = require("../DAO/user.DAO");
 
+const ValidFileTypes = ["csv"];
+
+function ValidFileType(file){
+    var parts = file.name.split(".");
+    var ext = parts[parts.length - 1];
+    if (ValidFileTypes.includes(ext)) {
+        return true;
+    }
+    return false;
+}
 
 
 exports.importAttendance = async (req, res) => {
@@ -16,6 +27,9 @@ exports.importAttendance = async (req, res) => {
     if (!file) {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
         return;
+    }
+    if(!ValidFileType(file)){
+        return res.status(400).send({message: "Invalid file type. Only CSV files are accepted."});
     }
     try{
         var data = handleFile(file);
@@ -31,11 +45,19 @@ exports.importAttendance = async (req, res) => {
             Attendance: x.Attendance,
         })));
 
-        var count = 0;
-        var result = await AttendanceRecord.insertMany(attendanceData, { ordered: false });
-        count = result.length;
+        var attendances = await Promise.all(attendanceData.map(x => new AttendanceRecord(x)));
+
+        try{
+            var promises = attendances.map(async item => await saveDocument(item));
+            var savedAttendance = await Promise.all(promises);
+        }
+        catch(error){
+            console.log(error);
+            res.status(400).send({ message: `Failed to save, ${savedAttendance?.length ?? 0}/${attendanceData?.length ?? 0} attendance records saved in database`, SavedAttendance: savedAttendance, Error: error });
+            return;
+        }
         
-        res.send({ message: `File uploaded successfully. ${count} attendance records added to the database.` });
+        res.send({ message: `File uploaded successfully. ${savedAttendance.length} attendance records added to the database.` });
     }    
     catch (error) {
         ErrorHandler.handleError(res, error);
@@ -73,7 +95,9 @@ exports.importUsers = async (req, res) => {
         ErrorHandler.handleError(res, new Error("No file uploaded STATUS_CODE: 400"));
         return;
     }
-
+    if(!ValidFileType(file)){
+        return res.status(400).send({message: "Invalid file type. Only CSV files are accepted."});
+    }
     try {
         var data = handleFile(file)
         //test the file to make sure data is valid
@@ -89,7 +113,7 @@ exports.importUsers = async (req, res) => {
                 LastName: x.LastName,
                 Password: await Auth.createHash(await x.Password),
         })));
-        var users = await Promise.all(userData.map(async x => await UserController.createUser(x, parseInt(x.UserType))));
+        var users = await Promise.all(userData.map(async x => await UserDAO.createUser(x, parseInt(x.UserType))));
         try{
             var promises = users.map(async user => await saveDocument(user));
             var savedUsers = await Promise.all(promises);//save all users asynchronously
@@ -167,8 +191,9 @@ function handleFile(file) {
         var rows = str.split('\r\n');
         var headers = rows[0].split(',');
         var data = [];
-        for (var i = 1; i < rows.length; i++) {
-            var row = rows[i].split(',');
+        var dataRows = rows.slice(1).filter(x => x != "");//remove the headers and any empty rows
+        for (var i = 0; i < dataRows.length; i++) {
+            var row = dataRows[i].split(',');
             var obj = {};
             for (var j = 0; j < headers.length; j++) {
                 obj[headers[j]] = row[j];

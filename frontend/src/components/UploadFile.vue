@@ -7,7 +7,7 @@
                     <div class="row justify-content-center">
                         <div class="col-md-6 col-offset">
                             <div class="input-group">
-                                <input class="form-control" name="UploadFile" type="file" @change="handleFileUpload">
+                                <input class="form-control" name="UploadFile" type="file" accept=".csv" @change="handleFileUpload">
                                 <span class="input-group-text">.csv</span>
                             </div>
                         </div>

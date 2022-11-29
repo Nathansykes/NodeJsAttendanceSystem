@@ -12,16 +12,24 @@ const UserDAO = require("../DAO/user.DAO");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
+
+
   if (!req.body.FirstName) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
-  // Create a User model object
-  const user = await createUserFromBody(req.body, res);
+  var userData = await createUserFromBody(req.body, res);// Create a User data object
+  if (req.body.UserType) {
+    var userType = parseInt(req.body.UserType);// check userType is able to be parsed
+  }
+  else{
+    ErrorHandler.handleError(res, new Error("UserType is not valid."));
+    return;
+  }
 
   try {
-    var data = await UserDAO.tryCreate(user);
+    var data = await UserDAO.tryCreate(userData, userType);
     res.json(JSON.stringify(data));
   }
   catch (error) {
@@ -56,47 +64,15 @@ async function createUserFromBody(body, res) {
         }
         break;
     }
-  }
-  catch (error) {
-    ErrorHandler.handleError(res, error);
-    return;
-  }
 
-
-  try {
-    var user = await createUser(data, userType);
-    return user;
+    return data;
   }
   catch (error) {
     ErrorHandler.handleError(res, error);
   }
 }
 
-async function createUser(data, userType) {
-  var errorMessage = `User could not be created: ${userType} is not a valid UserType.`;
-  var user;
-  switch (userType) {
-    case UserTypes.Student.Id:
-      user = new Student(data);
-      break;
-    case UserTypes.AcademicAdvisor.Id:
-      user = new AcademicAdvisor(data);
-      break;
-    case UserTypes.ModuleLeader.Id:
-      user = new ModuleLeader(data);
-      break;
-    case UserTypes.CourseLeader.Id:
-      user = new CourseLeader(data);
-      break;
-    case UserTypes.Tutor.Id:
-      user = new Tutor(data);
-      break;
-    default:
-      throw new Error(errorMessage);
-  }
-  return user;
-}
-exports.createUser = createUser;
+
 
 // Find all users matching query
 exports.find = async (req, res) => {

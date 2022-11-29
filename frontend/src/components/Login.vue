@@ -25,6 +25,7 @@
 <script>
 import Authentication from '../services/authentication.data.service';
 import ErrorHandlerService from '@/services/error.handler.service';
+import HTTPCommonDataService from '../services/http-common.data.service'
 
 export default{
     
@@ -40,7 +41,7 @@ export default{
             Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
-                document.cookie=`access_token=${token}`;
+                HTTPCommonDataService.setCookie("access_token", token, 1);
                 this.$router.push('/home')
                 window.location.href= '/home';
             })
