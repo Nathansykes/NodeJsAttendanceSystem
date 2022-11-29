@@ -42,7 +42,6 @@ export default{
             {
                 var token = (JSON.parse(response.data)).Token;
                 HTTPCommonDataService.setCookie("access_token", token, 1);
-                document.cookie=`access_token=${token}`;
                 this.$router.push('/home')
                 window.location.href= '/home';
             })

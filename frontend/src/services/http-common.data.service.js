@@ -10,7 +10,7 @@ class HTTPCommonDataService {
             var expires = "expires="+ d.toUTCString();
             cookieString += expires + ";";
         }
-        document.cookie = cookieString += "path=/;" + "SameSite=Strict;";
+        document.cookie = cookieString += " path=/; SameSite=Strict; Secure";
     }
 
     getCookie = (name) => 
