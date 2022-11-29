@@ -2,15 +2,15 @@ import httpCommonDataService from "./http-common.data.service";
 
 class ErrorHandlerService {
 
-    handlerError(error) {
-
-        console.log(error);
-        
+    handlerError(error) {     
+           
         if (error.code === 'ERR_NETWORK') {
             window.location.href = `/error/network_error`;
         }
         
         switch(error?.response?.status) {
+            case 400:
+                return error;// if its a 400 the user has done something wrong, so we return the whole error containing any info
             case 401:
                 httpCommonDataService.deleteCookie("access_token");
                 break;

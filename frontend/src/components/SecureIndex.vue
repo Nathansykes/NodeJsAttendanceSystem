@@ -10,15 +10,9 @@
           </li>
 
           <li v-if="this.showUploadFileDropDown()" class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Upload File
+            <a class="nav-link" href="#">
+              <router-link to="/upload" class="dropdown-item">Upload File</router-link>
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <router-link to="/upload" class="dropdown-item">Users</router-link>
-              </li>
-            </ul>
           </li>
 
           <li v-if="this.showReportLink()" class="nav-item">
