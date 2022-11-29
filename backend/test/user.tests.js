@@ -147,7 +147,6 @@ describe('DELETE /users', () => {
         .delete(`/users/912155`)
         .auth(token, {type: 'bearer'})
         .end((err, res) => {
-            console.log(res);
             res.status.should.eql(404);
             done();
         });

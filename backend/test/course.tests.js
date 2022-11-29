@@ -22,8 +22,8 @@ describe('GET /courses', () => {
 });
 //Finished GET /courses
 
-var courseId = "cour16492841";
-var courseTitle = "Software Engineering"
+var courseId = "course123456";
+var courseTitle = "Test Course"
 //Testing POST /courses - positive test
 describe('POST /courses', () => {
     let course;
@@ -49,7 +49,6 @@ describe('POST /courses', () => {
             .send(course)
             .end((err, res) => {
                 const returnedCourse = (Course)(JSON.parse(res.body));
-
                 res.should.have.status(200);
                 returnedCourse.should.have.property('_id');
                 returnedCourse.should.have.property('Title');

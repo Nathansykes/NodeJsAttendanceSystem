@@ -34,10 +34,27 @@ async function createUserFromBody(body, res) {
   try {
     var data = {
       _id: Generic.CreateObjectId(body.Id),
-      AccessLevel: body.AccessLevel,
       FirstName: body.FirstName,
       LastName: body.LastName,
       Password: passwordHash,
+    }
+    if (body.UserType) {
+      var userType = parseInt(body.UserType);
+    } // check userType is able to be parsed
+
+    switch (userType) {
+      case UserTypes.AcademicAdvisor.Id:
+        if (body.Students) {
+          studentList = body.Students.split(",").map((id) => Generic.CreateObjectId(id));
+          data.Students = studentList;
+        }
+        break;
+      case UserTypes.Tutor.Id:
+        if (body.Sessions) {
+          sessionList = body.Sessions.split(",").map((id) => Generic.CreateObjectId(id));
+          data.Sessions = sessionList;
+        }
+        break;
     }
   }
   catch (error) {
@@ -45,9 +62,6 @@ async function createUserFromBody(body, res) {
     return;
   }
 
-  if (body.UserType) {
-    var userType = parseInt(body.UserType);
-  } // check userType is able to be parsed
 
   try {
     var user = await createUser(data, userType);
@@ -188,6 +202,20 @@ exports.update = async (req, res) => {
 
   try{
     var updatedData = await UserDAO.tryUpdate(id, updateData)
+    switch (updatedData.__t) {
+      case UserTypes.AcademicAdvisor.ModelName:
+        if(req.body.Students){
+          var studentList = req.body.Students.split(",").map((id) => Generic.CreateObjectId(id));
+          updatedData = await UserDAO.tryAddToArrayField(id, "Students", studentList);
+        }
+        break;
+      case UserTypes.Tutor.ModelName:
+        if(req.body.Modules){
+          var moduleList = req.body.Modules.split(",").map((id) => Generic.CreateObjectId(id));
+          updatedData = await UserDAO.tryAddToArrayField(id, "Modules", moduleList);
+        }
+        break;
+    }
     res.json(JSON.stringify(updatedData));
   }
   catch(error){

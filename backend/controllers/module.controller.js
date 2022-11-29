@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const ErrorHandler = require("../handlers/error.handler");
 const Module = require("../models/module.model");
 const ModuleDAO = require("../DAO/module.DAO");
+const Generic = require("../generic/functions");
 
 // Create and Save a new Module
 exports.create = async (req, res) => {
@@ -18,12 +19,17 @@ function createModule(body, res) {
   console.log("trying to create a module");
   var module;
   var data = {
-    _id: mongoose.Types.ObjectId(body.Id),
+    _id: Generic.CreateObjectId(body.Id),
     Title: body.Title,
     ModuleLeader: body.ModuleLeader,
-    Tutors: body.Tutors,
-    Sessions: body.Sessions,
-    Students: body.Students,
+  }
+  if(body.Tutors){
+    var tutorList = body.Tutors.split(",").map((id) => Generic.CreateObjectId(id));
+    data.Tutors = tutorList;
+  }
+  if(body.Sessions)  {
+    var sessionList = body.Sessions.split(",").map((id) => Generic.CreateObjectId(id));
+    data.Sessions = sessionList;
   }
   module = new Module(data);
   return module;
