@@ -27,6 +27,7 @@
 import Authentication from '../services/authentication.data.service';
 import ErrorHandlerService from '@/services/error.handler.service';
 import HTTPCommonDataService from '../services/http-common.data.service'
+import UserTypes from '../../../shared/usertypes';
 
 export default{
     
@@ -44,7 +45,7 @@ export default{
             {
                 var token = (JSON.parse(response.data)).Token;
                 HTTPCommonDataService.setCookie("access_token", token, 1);
-                if (HTTPCommonDataService.getApplicationUser().UserTypeId == 1)
+                if (HTTPCommonDataService.getApplicationUser().UserTypeId == UserTypes.Student.Id)
                 {
                     this.$router.push('/timetable')
                     window.location.href= '/timetable';

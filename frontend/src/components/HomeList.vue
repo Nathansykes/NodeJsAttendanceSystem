@@ -45,6 +45,7 @@
   import TreeItem from './shared/TreeItem.vue'
   import ObjectHelper from "@/helpers/object.helper";
 import httpCommonDataService from "@/services/http-common.data.service";
+import UserTypes from "../../../shared/usertypes";
 
   export default {
     name: "courses-list",
@@ -229,7 +230,7 @@ import httpCommonDataService from "@/services/http-common.data.service";
     },
     mounted() {
         this.retrieveCourses();
-        if (httpCommonDataService.getApplicationUser().UserTypeId == 1)
+        if (httpCommonDataService.getApplicationUser().UserTypeId == UserTypes.Student.Id)
         {
           this.$router.push("/timetable");
         }
