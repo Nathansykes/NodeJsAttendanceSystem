@@ -24,7 +24,7 @@
                 </div>
             </form>
             <br />
-            <div v-if="uploadSuccess != null" class="alert alert-dismissible" :class="uploadSuccess === true ? 'alert-success' : 'alert-warning'">
+            <div v-if="uploadSuccess === true || uploadSuccess === false" class="alert alert-dismissible" :class="uploadSuccess === true ? 'alert-success' : 'alert-warning'">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <h4 class="alert-heading">{{uploadSuccess === true ? 'Success' : 'Error'}}</h4>
                 <p v-if="uploadSuccess === true">{{ response }}</p>
@@ -69,10 +69,10 @@ export default {
                             this.uploadSuccess = true;
                             this.response = response.data.message;
                         }
+                        else {
+                            this.handleErrors(response);
+                        }
                     })
-                    .catch(e => {
-                        this.handleErrors(e);
-                    });
                     break;
                 case this.fileTypes[1]:
                     UploadFileService.uploadAttendanceFile(this.file).then(response => {
@@ -80,18 +80,18 @@ export default {
                             this.uploadSuccess = true;
                             this.response = response.data.message;
                         }
+                        else{
+                            this.handleErrors(response);
+                        }
                     })
-                    .catch(e => {
-                        this.handleErrors(e);
-                    });
                     break;
             }
             
         },
         handleErrors(e) {
             var response = e.response;
-            console.log(response);
             if (response.status == 400) {
+                console.log("is 400");
                 this.uploadSuccess = false;
                 var errStr = "";
                 if(response.data.result) {          
@@ -100,8 +100,10 @@ export default {
                         errStr += key + ': '+ val + '\r\n';
                     });
                 }
+                console.log("setting response");
                 this.response = response.data.message + "\n" + errStr;
             }
+            console.log(this.response);
         }
     }
 }
