@@ -200,7 +200,6 @@ export default {
             }
             if (this.AdvisorView) 
             {
-                console.log(this.ApplicationUser.Id);
                 ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
                     .then(response => {
 
@@ -280,10 +279,7 @@ export default {
                 sessions = (modules.find(x => x.Id == this.moduleId)).Sessions;
             }
 
-            var students = (sessions.find(x => x)).Students;
-            console.log(students);
-
-            return students;
+            return (sessions.find(x => x)).Students;
         },
         calculateAverage() {
             var numberOfLates = 0;
