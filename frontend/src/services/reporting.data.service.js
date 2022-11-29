@@ -15,6 +15,10 @@ class ReportingDataService {
         return http.get(`/reporting/course`, { params: { CourseId: courseId } });
     }
 
+    getAdvisorReport(advisorId) {
+        return http.get(`/reporting/advisor`, { params: { AdvisorId: advisorId } });
+    }
+
     downloadReport(report) {
         return jsonHttp.post(`/reporting/download`, report);
     }

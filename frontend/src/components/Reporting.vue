@@ -113,6 +113,11 @@ export default {
                     .then(response => this.setReport(response.data))
                     .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
+            if (this.AdvisorView && (!(this.courseId) && !(this.studentId))) {
+                ReportingDataService.getAdvisorReport(this.ApplicationUser.Id)
+                    .then(response => this.setReport(response.data))
+                    .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
+            }
             else if (this.moduleId) {
                 ReportingDataService.getModuleReport(this.moduleId)
                     .then(response => this.setReport(response.data))
@@ -189,17 +194,17 @@ export default {
         PopulateStudents() {
             if (this.StudentView) 
             {
-                ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
+                ModelDataService.UserDataService.get(this.ApplicationUser.Id)
                     .then(response => {
                         var data = JSON.parse(response.data);
-                        this.Students = data.map(x => ({
-                            Id: parseInt(x.Id),
-                            Name: x.FirstName + ' ' + x.LastName,
-                        }));
+                        this.Students = [{
+                            Id: parseInt(data.Id),
+                            Name: data.FirstName + ' ' + data.LastName,
+                        }];
                     })
                     .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
-            if (this.AdvisorView) 
+            else if (this.AdvisorView) 
             {
                 ModelDataService.UserDataService.get(this.ApplicationUser.Id, this.ApplicationUser.UserTypeId)
                     .then(response => {
