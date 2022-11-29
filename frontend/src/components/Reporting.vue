@@ -29,7 +29,7 @@
                             - {{ student.Name }}</option>
                     </select>
                 </div>
-                <div class="col-md-3" style="display: flex; justify-content: space-evenly; height: 80%;">
+                <div class="col-md-3 flexEvenly">
                     <button type="button" v-if="this.ReportReturned" class="btn btn-primary" @click="DownloadReport">Download</button>
                     <button type="button" class="btn btn-primary" @click="GetReport">Get Report</button>
                 </div>
@@ -319,7 +319,7 @@ export default {
                 var url = window.URL.createObjectURL(blob);
                 
                 a.href = url;
-                a.download = "attendace_record.csv";
+                a.download = this.Report.ReportType;
                 a.click();
                 window.URL.revokeObjectURL(url);
             })
