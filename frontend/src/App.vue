@@ -20,7 +20,7 @@ export default {
   },
   components: {
       LoginVue,
-      Index
+      Index,
     },
   methods: {
     isLoggedIn() {

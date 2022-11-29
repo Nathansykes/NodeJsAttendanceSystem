@@ -2,7 +2,7 @@
   <div id="index">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="container">
-        <router-link to="/home" class="navbar-brand">{{this.title}}</router-link>
+          <router-link :to="this.getDefaultRoute()" class="navbar-brand">{{this.title}}</router-link>
         <div class="navbar-nav me-auto">
 
           <li v-if="this.showTimetableLink()" class="nav-item">
@@ -25,6 +25,11 @@
 
         </div>
         <div class="navbar-nav mr-auto">
+          <li id="currUser" class="nav-item">
+            <form>
+              <input type="submit" class="nav-link" :value="this.currentUserName" />
+            </form>
+          </li>
           <li class="nav-item">
             <form action="/">
               <input type="submit" to="/login" class="nav-link" value="Logout" @click="Logout()" />
@@ -50,6 +55,7 @@ export default {
         return{
             title: document.title,
             currentUser: httpCommonService.getApplicationUser(),
+            currentUserName: httpCommonService.getApplicationUser().Name
         }
     },
   methods:
@@ -73,7 +79,34 @@ export default {
     showReportLink()
     {
       return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_REPORT);
+    },
+    canReturnToHome()
+    {
+      return permissions.hasPermission(this.currentUser.UserTypeId, actions.RETURN_HOME)
+    },
+    sendDefaultRoute()
+    {
+      if (httpCommonService.getApplicationUser().UserTypeId == 1)
+      {
+        this.$router.push("/timetable");
+        return;
+      }
+      
+      this.$router.push("/home");
+    },
+    getDefaultRoute()
+    {
+      if (httpCommonService.getApplicationUser().UserTypeId == 1)
+      {
+        return("/timetable");
+      }
+      
+      return("/home");
     }
+  },
+  mounted() {
+    this.sendDefaultRoute();
+    console.log(this.currentUserName);
   },
   computed: {
     currentRoute() {
@@ -83,3 +116,9 @@ export default {
 };
 </script>
   
+<style>
+  #currUser{
+    color: white;
+    
+  }
+</style>
