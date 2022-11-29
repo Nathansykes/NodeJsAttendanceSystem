@@ -63,9 +63,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ this.Average.Present }}%</td>
-                            <td>{{ this.Average.Late }}%</td>
-                            <td>{{ this.Average.Absent }}%</td>
+                            <td>{{ this.Average.Present.toFixed(1) }}%</td>
+                            <td>{{ this.Average.Late.toFixed(1) }}%</td>
+                            <td>{{ this.Average.Absent.toFixed(1) }}%</td>
                         </tr>
                     </tbody>
                 </table>
