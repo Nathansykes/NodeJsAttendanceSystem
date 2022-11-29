@@ -4,6 +4,7 @@ const Attendance = require("../models/attendanceRecord.model");
 const Module = require("../models/module.model");
 const Course = require("../models/course.model");
 const Student = require("../models/student.model");
+const Advisor = require("../models/advisor.model");
 const Auth = require('../authentication')
 const UserTypes = require('../../shared/usertypes');
 const GenericFunctions = require('../../shared/functions');
@@ -223,6 +224,63 @@ exports.GetAttendanceForCourse = async (req, res) => {
   
   res.json(JSON.stringify(returnObject));
   
+}
+
+exports.GetAttendanceForAdvisor = async (req, res) => {
+  var advisorId = req.query.AdvisorId;
+  if (!advisorId) {
+    res.status(400).send("AdvisorId is required");
+    return;
+  }
+
+  var records = [];
+  var reportType;
+
+  var advisor = await (Advisor.findById(advisorId).populate("Students"));
+  var students = advisor.Students;
+
+  var courses = await (Course.find().populate({
+    path: 'Modules',
+    populate: {
+      path: 'Sessions',
+      populate: {
+        path: 'AttendanceRecords',
+        model: 'AttendanceRecord',
+        populate: {
+          path: 'Student',
+          model: 'Student'
+        }
+      }
+    }
+  }));
+
+  reportType = "Attendance for all advised students across all courses";
+
+  courses.forEach(c => {
+    c.Modules.forEach(m => {
+      m.Sessions.forEach(s => {
+        s.AttendanceRecords.forEach(a => {
+          records.push({
+            StudentName: a.Student.FirstName + ' ' + a.Student.LastName,
+            StudentID: parseInt(a.Student._id),
+            Module: m.Title,
+            Session: s.Title,
+            Date: new Date(s.DateAndTime).toLocaleDateString(),
+            AttendanceMark: GenericFunctions.GetAttendanceTypeById(a.Attendance).Name,
+          });
+        });
+      });
+    });
+  });
+
+  records = records.filter(record => students.map(student => parseInt(student._id)).includes(record.StudentID));
+
+  var returnObject = {
+    ReportType: reportType,
+    Records: records
+  }
+  
+  res.json(JSON.stringify(returnObject));
 }
 
 exports.DownloadReport = (req, res) => {

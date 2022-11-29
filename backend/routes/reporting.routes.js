@@ -11,6 +11,8 @@ router.get("/reporting/module", Auth.AllowedUserType(UserTypes.AcademicAdvisor.I
 
 router.get("/reporting/course", Auth.AllowedUserType(UserTypes.AcademicAdvisor.Id), reportingController.GetAttendanceForCourse);
 
+router.get("/reporting/advisor", Auth.AllowedUserType(UserTypes.AcademicAdvisor.Id), reportingController.GetAttendanceForAdvisor);
+
 router.post("/reporting/download", reportingController.DownloadReport);
 
 module.exports = router;
