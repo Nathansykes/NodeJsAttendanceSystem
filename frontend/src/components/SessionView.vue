@@ -37,8 +37,6 @@ export default {
   methods: {
     selectedUser(event) {
         this.selectedStudentId = event.target.value;
-        console.log(event.target.value);
-        console.log(this.selectedStudentId);
     },
     getStudents() {
         ModelDataService.UserDataService.getAll(1).then((response) => {
@@ -65,12 +63,8 @@ export default {
       });
     },
     addStudent() {
-        console.log(this.selectedStudentId);
         ModelDataService.SessionDataService.update(this.$route.params.id, { Students : (this.selectedStudentId) }).then(response => 
-        {
-            // var data = JSON.parse(response);
-            console.log(response);
-        })
+        {})
         .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
     },
     canEditSessionData() {
