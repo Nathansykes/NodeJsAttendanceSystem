@@ -9,7 +9,6 @@ const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const AttendanceRecord = require("../models/attendanceRecord.model");
 
-const { parse } = require('csv-parse');
 
 
 exports.importAttendance = async (req, res) => {
