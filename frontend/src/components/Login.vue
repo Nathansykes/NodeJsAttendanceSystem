@@ -10,7 +10,8 @@
                         <i>Id: 1000, Password: password</i>
                         <form>
                             <label>Login:</label>
-                            <input v-model="userId" class="field_class" name="Id" type="text" placeholder="Id" autofocus>
+                            <input v-model="userId" class="field_class" name="Id" placeholder="Id" autofocus 
+                             maxlength="4" input type='text' @keypress='this.validate(event)'  title="Four number username please">
                             <label>Password:</label>
                             <input v-model="userPassword" id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
                             <button class="submit_class" type="button" @click="login()">Login</button>
@@ -31,12 +32,14 @@ export default{
     name:"app",
     data(){
         return{
+
             errorMessage: "",
         }
     },
     methods: {
         login() 
         {
+            console.log(this.userId, this.userPassword);
             Authentication.login({Id: this.userId, Password : this.userPassword}).then(response => 
             {
                 var token = (JSON.parse(response.data)).Token;
@@ -45,6 +48,23 @@ export default{
                 window.location.href= '/home';
             })
             .catch(error => this.errorMessage = ErrorHandlerService.handlerError(error));
+        },
+        validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+        // Handle key press
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+        }
         }
     }
 }
