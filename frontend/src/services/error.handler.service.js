@@ -2,10 +2,8 @@ import httpCommonDataService from "./http-common.data.service";
 
 class ErrorHandlerService {
 
-    handlerError(error) {
-
-        //console.log(error);
-        
+    handlerError(error) {     
+           
         if (error.code === 'ERR_NETWORK') {
             window.location.href = `/error/network_error`;
         }
