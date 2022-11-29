@@ -108,7 +108,6 @@ describe('PUT /sessions', () => {
         Session.find({})
         .then(data => {
             session = {
-                Students: students,
                 DateAndTime: updateDateTime,
                 Location: updateLocation,
             };
