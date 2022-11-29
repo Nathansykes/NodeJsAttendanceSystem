@@ -3,7 +3,7 @@
       <div class="col-md-12">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Search by name"
-            v-model="name"/>
+            v-model="name" maxlength="100"/>
             <select class="form-select" @change="filterTypeChange($event)">
               <option v-for="modelType in modelTypes" :key="modelType.Id" :value="modelType.Id">{{modelType.PathName}}</option>
             </select>
