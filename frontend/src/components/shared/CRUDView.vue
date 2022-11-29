@@ -6,8 +6,8 @@
                 <div class="form-group" v-for="(property) in this.modelProperties"
                     :key="property">
                     <label class="form-label mt-4">{{property.key}}</label> 
-                    <input :readonly="this.isReadOnly" v-if="property.key === 'DateAndTime'" class="form-control" type="datetime-local" v-model="property.value"/>
-                    <input :readonly="this.isReadOnly" v-else class="form-control" v-model="property.value"/>
+                    <input :readonly="this.isReadOnly" v-if="property.key === 'DateAndTime'" class="form-control" type="datetime-local" v-model="property.value" maxlength="100"/>
+                    <input :readonly="this.isReadOnly" v-else class="form-control" v-model="property.value" maxlength="100"/>
                 </div>
                 <p style="margin-top: 10%;" v-if="errorMessage">{{errorMessage}}</p>
             </fieldset>
@@ -82,6 +82,9 @@ export default
         },
         cancel() {
             this.$router.push(this.$router.go(-1));
+        },
+        disableDate(evt) {
+            return false;
         }
     },
     mounted() {
