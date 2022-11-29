@@ -57,7 +57,7 @@ export default
         return {
             errorMessage : "",
             modelProperties : [],
-            model: null
+            model: null,
         }   
     },
     methods: {
@@ -89,6 +89,7 @@ export default
     },
     mounted() {
         this.getProperties();
+        this.errorMessage = "Im Dead";
     }
 }
 </script>
