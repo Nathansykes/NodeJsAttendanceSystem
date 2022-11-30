@@ -1,9 +1,8 @@
 <template>
   <div>
-    <CRUDView :data-service="this.dataService" title="Sessions" :isReadOnly="this.canEditSessionData()" />
-    <router-link v-if="!this.canEditSessionData()" :to="`/attendance/${this.$route.params.id}`" class="btn btn-primary" style="margin-top: 2%; margin: 1em; display: inline">Mark Attendance</router-link>
-    <a id="searchButton" class="btn btn-primary" @click="this.searchStudents = true">Search Student</a>
-    <form class="Search" v-if="this.searchStudents">
+    <CRUDView :data-service="this.dataService" title="Sessions" :isReadOnly="!this.canEditSessionData()" />
+    <router-link v-if="this.canRegisterAttendance()" :to="`/attendance/${this.$route.params.id}`" class="btn btn-primary" style="margin-top: 2%; margin: 1em; display: inline">Mark Attendance</router-link>
+    <form class="Search" v-if="this.canEditSessionData()">
       <select class="form-select" id="studentMenu" @change="selectedUser">
         <option v-for="student in this.filteredStudents" :key="student.Id" :value="student.Id">{{`${student.FirstName} ${student.LastName}`}}</option>
       </select>
@@ -17,6 +16,7 @@ import ModelDataService from "@/services/models.data.service";
 import CRUDView from "./shared/CRUDView.vue";
 import permissions from "../services/permissions.data.service";
 import { actions } from "../../constants";
+import UserTypes from '../../../shared/usertypes';
 
 export default {
   components: {
@@ -31,7 +31,6 @@ export default {
       filteredStudents: [],
       session: null,
       selectedStudentId: null,
-      searchStudents: false,
     };
   },
   methods: {
@@ -39,7 +38,7 @@ export default {
         this.selectedStudentId = event.target.value;
     },
     getStudents() {
-        ModelDataService.UserDataService.getAll(1).then((response) => {
+        ModelDataService.UserDataService.getAll(UserTypes.Student.Id).then((response) => {
         // ALL STUDENTS
         var data = JSON.parse(response.data);
         this.allStudents = data;
@@ -63,19 +62,22 @@ export default {
       });
     },
     addStudent() {
-        ModelDataService.SessionDataService.update(this.$route.params.id, { Students : (this.selectedStudentId) }).then(response => 
-        {})
+        ModelDataService.SessionDataService.update(this.$route.params.id, { Students : (this.selectedStudentId) })
+        .then(response => console.log(response))
         .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
     },
     canEditSessionData() {
-      //Invert the return as we are using a variable called 'isReadOnly' --
-      //The hasPermission function returns true if the current user has permission to edit a session
-      //Therefore we want 'isReadOnly' to be true.
-      return !permissions.hasPermission(
+      return permissions.hasPermission(
         ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId,
         actions.EDIT_SESSION
       );
     },
+    canRegisterAttendance() {
+      return permissions.hasPermission(
+        ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId,
+        actions.MARK_ATTENDANCE
+      ); 
+    }
   },
   mounted() {
     this.getSession();

@@ -30,6 +30,8 @@
 
 import UserMarkAttendance from './shared/UserMarkAttendance.vue';
 import ModelDataService from '../services/models.data.service';
+import permissions from "../services/permissions.data.service";
+import { actions } from "../../constants";
 
 export default {
     components: {
@@ -54,6 +56,10 @@ export default {
                 this.session = data;
                 this.students = data.Students;
                 this.attendances = data.AttendanceRecords;
+                if (new Date() < new Date(this.session.DateAndTime)) 
+                {
+                    this.$router.push(this.$router.options.history.state.back || "/home");
+                }
             })
             .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
         },
@@ -92,15 +98,22 @@ export default {
                     const attendanceIds = this.attendances.map(attendance => attendance._id || attendance.Id);
 
                     ModelDataService.SessionDataService.update(this.sessionId, { AttendanceRecords : attendanceIds.join(",") })
-                    .then(response => this.$router.go("/home"))
+                    .then(response => this.$router.go(this.$router.options.history.state.back || "/home"))
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 });
             }
         },
+        canRegisterAttendance() {
+            return permissions.hasPermission(
+                ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId,
+                actions.MARK_ATTENDANCE);
+
+            
+        }
     },
     mounted() {
-        if (!this.$route.params.id) {
-            this.$router.push("/home");
+        if (!this.$route.params.id || !this.canRegisterAttendance()) {
+            this.$router.push(this.$router.options.history.state.back || "/home");
         }
         this.retrieveUsers();
     }

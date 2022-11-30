@@ -35,7 +35,12 @@ function createModule(body, res) {
   return module;
 }
 
-var populateArgs = {
+var populateArgs = [
+  {
+    path: 'Tutors',
+    model: 'Tutor',
+  },
+  {
   path: 'Sessions',
   model: 'Session',
   populate: [{
@@ -46,7 +51,7 @@ var populateArgs = {
     path: 'AttendanceRecords',
     model: 'AttendanceRecord',
   }]
-}
+}]
 
 // Retrieve all Modules from the database.
 exports.findAll = async (req, res) => {

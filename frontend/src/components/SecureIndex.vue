@@ -86,9 +86,6 @@ export default {
       return("/home");
     }
   },
-  mounted() {
-    console.log(this.currentUserName);
-  },
   computed: {
     currentRoute() {
       return this.$route.name;
