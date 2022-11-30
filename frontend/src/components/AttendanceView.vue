@@ -3,26 +3,28 @@
         <body v-if="session">
             <h2> {{session.Title + " " + new Date(session.DateAndTime).toLocaleString()}} </h2>
         </body>
-        <table style="width:75%">
-            <tr>
-                <th>Student</th>
-                <th>Attendance</th>
-            </tr>
-            <tr v-for="(student, index) in students" :key="index">
-                <td>
-                    {{ student.FirstName + " " + student.LastName }}
-                </td>
-                <td>
-                    <UserMarkAttendance :value="this.attendances[index]?.Attendance || -1" @selectMark="(value) => updateMark(value, index)"/>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
-                </td>
-            </tr>
-        </table>
+        <form>
+            <div class="container">
+                <div class="row justify-content-start">
+                    <div class="col"><h4>Student</h4></div>
+                    <div class="col"><h4>Attendance</h4></div>
+                </div>
+                <div class="row justify-content-start" v-for="(student, index) in students" :key="index">
+                    <div class="col">
+                        {{ student.FirstName + " " + student.LastName }}
+                    </div>
+                    <div class="col">
+                        <UserMarkAttendance style="margin: 0.2rem" :value="this.attendances[index]?.Attendance || -1" @selectMark="(value) => updateMark(value, index)"/>
+                    </div>
+                </div>
+                <div class="row justify-content-start">
+                    <div class="col"></div>
+                    <div class="col">
+                        <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </template>
 
@@ -79,7 +81,7 @@ export default {
             this.attendances = this.attendances.filter(x => !(attendancesToCreate.find(y => x === y)));
 
             // try and get attendance data first
-            if (this.session.AttendanceRecords !== [] && this.session.AttendanceRecords !== undefined) 
+            if (this.session.AttendanceRecords && this.session.AttendanceRecords.length > 0) 
             {
                 this.attendances.map(attendance =>
                 {
@@ -88,7 +90,7 @@ export default {
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
             }
-            if (attendancesToCreate !== [] && attendancesToCreate !== undefined ) 
+            if (attendancesToCreate && attendancesToCreate.length > 0) 
             {
                 // else try and create
                 ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(attendancesToCreate))).then(response => 
@@ -106,9 +108,7 @@ export default {
         canRegisterAttendance() {
             return permissions.hasPermission(
                 ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId,
-                actions.MARK_ATTENDANCE);
-
-            
+                actions.MARK_ATTENDANCE);            
         }
     },
     mounted() {

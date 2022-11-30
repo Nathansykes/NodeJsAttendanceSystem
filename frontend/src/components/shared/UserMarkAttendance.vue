@@ -1,5 +1,5 @@
 <template>
-    <select class="form-select" @change="selectMark">
+    <select class="form-select" @change="selectMark" required>
         <option value="" selected disabled hidden>Select Attendance</option>
         <option v-for="attendanceType in attendanceTypes" :key="attendanceType.Id" :value="attendanceType.Id" :selected="attendanceType.Id.toString() === this.value.toString()">{{attendanceType.Name}}</option>
     </select>
