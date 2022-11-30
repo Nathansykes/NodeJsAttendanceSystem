@@ -7,13 +7,12 @@
             <main>
                 <div id="login_form" class="form_class">
                     <div class="form_div">
-                        <i>Id: 1000, Password: password</i>
                         <form>
                             <label>Login:</label>
-                            <input v-model="userId" class="field_class" name="Id" placeholder="Id" autofocus 
+                            <input v-model="userId" class="field_class" name="Id" placeholder="User Id" autofocus 
                              maxlength="4" input type='text' @keypress='this.validate(event)'  title="Four number username please">
                             <label>Password:</label>
-                            <input v-model="userPassword" id="pass" class="field_class" name="Password" type="password" placeholder="Password here">
+                            <input v-model="userPassword" id="pass" class="field_class" name="Password" type="password" placeholder="Password">
                             <button class="submit_class" type="button" @click="login()">Login</button>
                         </form>
                     </div>
