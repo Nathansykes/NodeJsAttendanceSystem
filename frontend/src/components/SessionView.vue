@@ -8,7 +8,7 @@
           {{ `${student.FirstName} ${student.LastName}` }}
         </option>
       </select>
-      <a class="btn btn-primary" id="submit" @click="addStudent()">Add Student to Session</a>
+      <button class="btn btn-primary" id="submit" @click="addStudent()">Add Student to Session</button>
     </form>
   </div>
 </template>
