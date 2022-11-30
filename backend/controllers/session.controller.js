@@ -4,7 +4,7 @@ const Auth = require("../authentication");
 const ErrorHandler = require("../handlers/error.handler");
 const SessionDAO = require("../DAO/session.DAO");
 const Generic = require("../generic/functions");
-
+const UserTypes = require("../../shared/usertypes");
 // Create and Save a new Session
 exports.create = async (req, res) => {
   try {
@@ -47,14 +47,42 @@ var populateArgs = [{
 
 // Retrieve all Sessions from the database.
 exports.findAll = async (req, res) => {
-
+  var appUser = Auth.getApplicationUser(req);
   var filter = {};
+  var field;
+  var title;
   if (req.query.Title) {
-    filter.Title = req.query.Title;
+    title = "Title";
+  }
+  if(appUser.UserTypeId == UserTypes.Tutor.Id){
+    field = "Tutors";
+  }
+  if(appUser.UserTypeId == UserTypes.ModuleLeader.Id){
+    field = "ModuleLeader";
   }
 
+  var coursePopulateArgs = [{
+    path: 'Modules',
+    model: 'Module',
+    match: field ? { [field]: appUser.Id } : {},
+    populate: {
+      path: 'Sessions',
+      model: 'Session',
+      match: title ? { [title]: req.query.Title } : {},
+      populate: [{
+        path: 'Students',
+        model: 'Student',
+      },
+      {
+        path: 'AttendanceRecords',
+        model: 'AttendanceRecord',
+      }]
+    }
+  }];
+
+
   try {
-    var data = await SessionDAO.tryGet(filter, populateArgs, res);
+    var data = await SessionDAO.tryGet(filter, coursePopulateArgs, res);
     res.json(JSON.stringify(data));
   }
   catch (error) {

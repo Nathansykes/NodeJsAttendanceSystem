@@ -1,6 +1,8 @@
 const Session = require("../models/session.model");
+const Module = require("../models/module.model");
 const ErrorHandler = require("../handlers/error.handler");
 const Formatter = require("../formatters/models.formatter");
+const Course = require("../models/course.model");
 
 // Create Methods
 exports.canCreate = () => {
@@ -31,10 +33,10 @@ exports.canGet = () => {
 exports.tryGet = async (filter, populateArgs, res) => {
 
   if (this.canGet) {
-
-    data = await Session.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
+    data = await Course.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
     if(data) {
-      return data.map(session => Formatter.formatSession(session))
+      var sessions = data.map(course => course.Modules.map(module => module.Sessions)).flat(2);
+      return sessions.map(session => Formatter.formatSession(session))
     }
     else{
       throw new Error("No sessions found.");
