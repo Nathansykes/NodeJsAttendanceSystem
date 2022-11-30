@@ -40,7 +40,6 @@ export default {
         {
           var modules = JSON.parse(response.data)
           var sessions = [];
-          console.log(modules);
           modules = modules.filter(module => module.Tutors.find(tutor => tutor.Id === this.ApplicationUser.Id));
           modules.map(module => module.Sessions.map(session => sessions.push(session)));
           this.createEvents(sessions);
@@ -80,7 +79,6 @@ export default {
     },
     onEventClick(eventClickInfo) {
       this.$router.push(`/sessions/${eventClickInfo.event.id}`)
-      console.log(eventClickInfo);
     },
   },
   mounted() {
