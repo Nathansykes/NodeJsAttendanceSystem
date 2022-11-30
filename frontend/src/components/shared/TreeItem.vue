@@ -39,13 +39,17 @@ export default {
   <div>
     <ul class="list-group" v-for="(item, index) in model" :key="index">
       <li class="list-group-item list-group-item-action" @click="toggle(item, index)">
-        <span class="clickable" v-if="hasChildren(item)" style="display:inline-block">
-          <i class="fa-solid fa-plus" v-if="!isOpen[index]"></i>
-          <i class="fa-solid fa-minus" v-if="isOpen[index]"></i>
-        </span>
-        <ul style="display:inline-block">
-          <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
-        </ul>
+        <div style="display:flex">
+          <div class="col-md-1">
+            <span class="clickable" v-if="hasChildren(item)" style="display:inline-block">
+              <i class="fa-solid fa-plus" v-if="!isOpen[index]"></i>
+              <i class="fa-solid fa-minus" v-if="isOpen[index]"></i>
+            </span>
+          </div>
+          <div class="col-md-11 ">
+            <router-link :to="item.routerLink" class="nav-link">{{item.name}}</router-link>
+          </div>
+        </div>
       </li>
       <ul v-show="isOpen[index]" v-if="hasChildren(item)">
         <TreeItem :model="item.children" @selectedModel="(value) => this.$emit('selectedModel', value)"/>

@@ -32,7 +32,7 @@ exports.tryGet = async (filter, populateArgs, res) => {
 
   if (this.canGet) {
 
-    data = await Session.find(filter).populate(populateArgs)
+    data = await Session.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
     if(data) {
       return data.map(session => Formatter.formatSession(session))
     }
