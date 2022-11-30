@@ -18,7 +18,9 @@
         </div>
       </div>
       <div class="col-md-6">
-        <TreeItem :model="treeViewData" @selectedModel="(value) => setActiveModel(value)"/>
+        <div style="height:85vh; overflow-y:auto;"> 
+          <TreeItem :model="treeViewData" @selectedModel="(value) => setActiveModel(value)"/>
+        </div>
       </div>
       <div class="col-md-6">
         <div v-if="currentModel" class="card text-white bg-primary mb-3" style="max-width: 20rem;">
