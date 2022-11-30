@@ -19,7 +19,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
+                    <button type="button" class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
                 </div>
             </div>
         </form>
@@ -78,17 +78,18 @@ export default {
             var attendancesToCreate = this.attendances.filter(x => !x.Id)
             this.attendances = this.attendances.filter(x => !(attendancesToCreate.find(y => x === y)));
 
+            var update = this.session.AttendanceRecords.filter(x => x?.Id != null).length > 0;
             // try and get attendance data first
-            if (this.session.AttendanceRecords && this.session.AttendanceRecords.length > 0) 
+            if (update) 
             {
                 this.attendances.map(attendance =>
                 {
-                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify({ Attendance : parseInt(attendance.Attendance) }))
-                    .then(response => console.log(response))
+                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify({ Attendance : parseInt(attendance.Attendance), Student: attendance.Student.Id}))
+                    .then(response => this.$router.go())
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
             }
-            if (attendancesToCreate && attendancesToCreate.length > 0) 
+            else
             {
                 // else try and create
                 ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(attendancesToCreate))).then(response => 
