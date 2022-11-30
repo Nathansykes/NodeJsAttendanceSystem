@@ -233,6 +233,10 @@
         {
           this.$router.push("/timetable");
         }
+        else if (ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId == UserTypes.AcademicAdvisor.Id)
+        {
+          this.$router.push("/reporting");
+        }
     }
   };
 </script>
