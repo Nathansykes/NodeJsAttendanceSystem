@@ -3,25 +3,23 @@
         <body v-if="session">
             <h2> {{session.Title + " " + new Date(session.DateAndTime).toLocaleString()}} </h2>
         </body>
+        <br />
         <form>
-            <div class="container">
-                <div class="row justify-content-start">
-                    <div class="col"><h4>Student</h4></div>
-                    <div class="col"><h4>Attendance</h4></div>
+            <div class="row">
+                <div class="col-md-3 offset-2"><h4>Student</h4></div>
+                <div class="col-md-4"><h4>Attendance</h4></div>
+            </div>
+            <div class="row" v-for="(student, index) in students" :key="index">
+                <div class="col-md-3 offset-2">
+                    {{ student.FirstName + " " + student.LastName }}
                 </div>
-                <div class="row justify-content-start" v-for="(student, index) in students" :key="index">
-                    <div class="col">
-                        {{ student.FirstName + " " + student.LastName }}
-                    </div>
-                    <div class="col">
-                        <UserMarkAttendance style="margin: 0.2rem" :value="this.attendances[index]?.Attendance || -1" @selectMark="(value) => updateMark(value, index)"/>
-                    </div>
+                <div class="col-md-4">
+                    <UserMarkAttendance style="margin: 0.2rem" :value="this.attendances[index]?.Attendance || -1" @selectMark="(value) => updateMark(value, index)"/>
                 </div>
-                <div class="row justify-content-start">
-                    <div class="col"></div>
-                    <div class="col">
-                        <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
                 </div>
             </div>
         </form>
