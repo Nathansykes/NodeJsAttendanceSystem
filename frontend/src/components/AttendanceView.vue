@@ -19,7 +19,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <button class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
+                    <button type="button" class="btn btn-primary" style="margin-top:2%" @click="save()">Submit</button>
                 </div>
             </div>
         </form>
@@ -52,6 +52,7 @@ export default {
             ModelDataService.SessionDataService.get(this.sessionId).then(response => 
             {
                 var data = JSON.parse(response.data)[0]
+                console.log(data)
                 data.AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
                 this.session = data;
                 this.students = data.Students;
@@ -83,14 +84,15 @@ export default {
             {
                 this.attendances.map(attendance =>
                 {
-                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify({ Attendance : parseInt(attendance.Attendance) }))
-                    .then(response => console.log(response))
+                    ModelDataService.AttendanceDataService.update(attendance.Id, JSON.stringify({ Attendance : parseInt(attendance.Attendance), Student: attendance.Student.Id}))
+                    .then(response => this.$router.go())
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
             }
-            if (attendancesToCreate && attendancesToCreate.length > 0) 
+            else if (attendancesToCreate && attendancesToCreate.length > 0) 
             {
                 // else try and create
+                console.log("creating");
                 ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(attendancesToCreate))).then(response => 
                 {
                     const data = JSON.parse(response.data);
