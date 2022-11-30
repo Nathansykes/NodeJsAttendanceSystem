@@ -7,14 +7,14 @@
             <div class="row">
                 <div class="col-md-3">
                     <select class="form-select" @change="selectCourse" :disabled="this.studentId || this.StudentView">
-                        <option value="" selected="selected">Select Course</option>
+                        <option v-if="(this.Courses.length > 1)" value="" selected="selected">Select Course</option>
                         <option v-for="course in this.Courses" :key="course.Id" :value="course.Id">{{ course.Name }}
                         </option>
                     </select>
                 </div>
                 <div class="col-md-3" v-if="this.Modules?.length > 0">
                     <select class="form-select" @change="selectModule">
-                        <option value="" selected>Select Module</option>
+                        <option v-if="(this.Modules.length > 1)" value="" selected>Select Module</option>
                         <option v-for="module in this.Modules" :key="module.Id" :value="module.Id">{{ module.Name }}
                         </option>
                     </select>
@@ -176,6 +176,10 @@ export default {
                         Id: x.Id,
                         Name: x.Title,
                     }));
+                    if(this.Courses.length == 1){
+                        this.courseId = this.Courses[0].Id;
+                        this.PopulateModules();
+                    }
                 })
                 .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
         },
@@ -188,6 +192,10 @@ export default {
                         Id: x.Id,
                         Name: x.Title,
                     }));
+                    if(this.Modules.length == 1){
+                        this.moduleId = this.Modules[0].Id;
+                        this.PopulateStudents();
+                    }
                 })
                 .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
         },

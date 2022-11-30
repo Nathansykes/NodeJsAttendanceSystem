@@ -3,12 +3,18 @@
     <CRUDView :data-service="this.dataService" title="Sessions" :isReadOnly="!this.canEditSessionData()" />
     <router-link v-if="this.canRegisterAttendance() && this.canMarkAttendance" :to="`/attendance/${this.$route.params.id}`" id="mark" class="btn btn-primary" style="margin-top: 2%; margin: 1em; display: inline" >Mark Attendance</router-link>
     <form class="Search" v-if="this.canEditSessionData()">
-      <select class="form-select" id="studentMenu" @change="selectedUser">
-        <option v-for="student in this.filteredStudents" :key="student.Id" :value="student.Id">
-          {{ `${student.FirstName} ${student.LastName}` }}
-        </option>
-      </select>
-      <button class="btn btn-primary" id="submit" @click="addStudent()">Add Student to Session</button>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="input-group">
+            <select class="form-select" id="studentMenu" @change="selectedUser">
+              <option v-for="student in this.filteredStudents" :key="student.Id" :value="student.Id">
+                {{ `${student.FirstName} ${student.LastName}` }}
+              </option>
+            </select>
+            <button class="btn btn-primary" id="submit" @click="addStudent()">Add Student to Session</button>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </template>
