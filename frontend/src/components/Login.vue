@@ -46,8 +46,13 @@ export default{
                 HTTPCommonDataService.setCookie("access_token", token, 1);
                 if (HTTPCommonDataService.getApplicationUser().UserTypeId == UserTypes.Student.Id)
                 {
-                    this.$router.push('/timetable')
+                    this.$router.push('/timetable');
                     window.location.href= '/timetable';
+                }
+                else if (HTTPCommonDataService.getApplicationUser().UserTypeId == UserTypes.AcademicAdvisor.Id)
+                {
+                    this.$router.push('/reporting');
+                    window.location.href= '/reporting';
                 }
                 else
                 {
