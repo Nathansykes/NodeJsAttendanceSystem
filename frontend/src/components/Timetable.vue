@@ -19,9 +19,16 @@ export default {
         editable: false,
         selectable: true,
         weekends: false,
+        now: this.today,
         eventClick: this.onEventClick,
         events: [],
         ApplicationUser: null,
+        contentHeight:window.innerHeight,
+        businessHours: {
+          daysOfWeek: [1, 2, 3, 4, 5], // Monday - Friday
+          startTime: '08:00',
+          endTime: '19:00',
+        },
       },
     };
   },
@@ -59,14 +66,13 @@ export default {
           });
     },
     getAllSessions(userId) {
-      let sessions = ModelDataService.SessionDataService
-        .getAll()
+      let sessions = ModelDataService.SessionDataService.getAll()
         .then((response) => {
           const data = JSON.parse(response.data);
           sessions = data;
           this.getAllUserSessions(sessions, userId);
         })
-        .catch(error => ModelDataService.ErrorHandlerService(error));
+        .catch((error) => ModelDataService.ErrorHandlerService(error));
     },
     getAllUserSessions(sessions, userId) {
       sessions.map((session) => {
@@ -84,6 +90,7 @@ export default {
   mounted() {
     this.ApplicationUser = ModelDataService.HTTPCommonDataService.getApplicationUser(); 
     this.populateCalendar();
+    var today = new Date();
   },
 };
 </script>
