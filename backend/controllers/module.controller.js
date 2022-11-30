@@ -4,7 +4,7 @@ const Module = require("../models/module.model");
 const ModuleDAO = require("../DAO/module.DAO");
 const Generic = require("../generic/functions");
 var UserType = require("../../shared/userTypes");
-const Auth = requires("../authentication")
+const Auth = require("../authentication")
 
 // Create and Save a new Module
 exports.create = async (req, res) => {
