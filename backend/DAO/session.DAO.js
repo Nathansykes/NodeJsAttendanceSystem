@@ -30,16 +30,27 @@ exports.canGet = () => {
   return true;
 }
 
-exports.tryGet = async (filter, populateArgs, res) => {
+exports.tryGet = async (filter, populateArgs, forUser) => {
 
   if (this.canGet) {
-    data = await Course.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
-    if(data) {
-      var sessions = data.map(course => course.Modules.map(module => module.Sessions)).flat(2);
-      return sessions.map(session => Formatter.formatSession(session))
+    if(forUser){
+      data = await Course.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
+      if(data) {
+        var sessions = data.map(course => course.Modules.map(module => module.Sessions)).flat(2);
+        return sessions.map(session => Formatter.formatSession(session))
+      }
+      else{
+        throw new Error("No sessions found.");
+      }
     }
     else{
-      throw new Error("No sessions found.");
+      data = await Session.find(filter).populate(populateArgs).sort({ DateAndTime: 1 });
+      if(data) {
+        return data.map(session => Formatter.formatSession(session))
+      }
+      else{
+        throw new Error("No sessions found.");
+      }
     }
   }
   else {

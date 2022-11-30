@@ -82,7 +82,7 @@ exports.findAll = async (req, res) => {
 
 
   try {
-    var data = await SessionDAO.tryGet(filter, coursePopulateArgs, res);
+    var data = await SessionDAO.tryGet(filter, coursePopulateArgs, true);
     res.json(JSON.stringify(data));
   }
   catch (error) {
@@ -95,7 +95,7 @@ exports.findAllForUser = async (req, res) => {
   var userId = Auth.getApplicationUser(req).Id;
 
   try {
-    var data = await SessionDAO.tryGet({ Students: userId }, populateArgs, res);
+    var data = await SessionDAO.tryGet({ Students: userId }, populateArgs, false);
     res.json(JSON.stringify(data));
   }
   catch (error) {
@@ -108,7 +108,7 @@ exports.findAllForUser = async (req, res) => {
 exports.findOne = async (req, res) => {
   try {
     const ids = (req.params.id).replace(/ /g, '').split(",");
-    var data = await SessionDAO.tryGet({ _id: { $in: ids } }, populateArgs, res);
+    var data = await SessionDAO.tryGet({ _id: { $in: ids } }, populateArgs, false);
     res.json(JSON.stringify(data));
   }
   catch (error) {
