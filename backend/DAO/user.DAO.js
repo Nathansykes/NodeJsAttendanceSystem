@@ -3,6 +3,10 @@ const ErrorHandler = require("../handlers/error.handler");
 const Formatter = require("../formatters/models.formatter");
 const mongoose = require('mongoose');
 const Student = require("../models/student.model");
+const AcademicAdvisor = require("../models/advisor.model");
+const ModuleLeader = require("../models/moduleLeader.model");
+const CourseLeader = require("../models/courseLeader.model");
+const Tutor = require("../models/tutor.model");
 const UserTypes = require("../../shared/usertypes");
 
 // Create Methods
