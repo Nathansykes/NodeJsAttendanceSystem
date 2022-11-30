@@ -52,7 +52,6 @@ export default {
             ModelDataService.SessionDataService.get(this.sessionId).then(response => 
             {
                 var data = JSON.parse(response.data)[0]
-                console.log(data)
                 data.AttendanceRecords.map(attendance => attendance.Attendance = attendance.Attendance.toString());
                 this.session = data;
                 this.students = data.Students;
@@ -79,8 +78,9 @@ export default {
             var attendancesToCreate = this.attendances.filter(x => !x.Id)
             this.attendances = this.attendances.filter(x => !(attendancesToCreate.find(y => x === y)));
 
+            var update = this.session.AttendanceRecords.filter(x => x?.Id != null).length > 0;
             // try and get attendance data first
-            if (this.session.AttendanceRecords && this.session.AttendanceRecords.length > 0) 
+            if (update) 
             {
                 this.attendances.map(attendance =>
                 {
@@ -89,10 +89,9 @@ export default {
                     .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
                 })
             }
-            else if (attendancesToCreate && attendancesToCreate.length > 0) 
+            else
             {
                 // else try and create
-                console.log("creating");
                 ModelDataService.AttendanceDataService.create(JSON.stringify(Array.from(attendancesToCreate))).then(response => 
                 {
                     const data = JSON.parse(response.data);
