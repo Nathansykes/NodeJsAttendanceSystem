@@ -106,7 +106,6 @@ export default {
   },
   mounted() {
     this.sendDefaultRoute();
-    console.log(this.currentUserName);
   },
   computed: {
     currentRoute() {

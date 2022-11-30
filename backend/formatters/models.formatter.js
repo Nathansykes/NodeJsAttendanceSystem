@@ -16,6 +16,7 @@ class ModelFormatter
             Id: data._id,
             Title: data.Title,
             ModuleLeader: data.ModuleLeader ?? "n/a",
+            Tutors: data.Tutors?.map(tutor => this.formatUser(tutor)),
             Sessions : data.Sessions?.map(session => this.formatSession(session)),
         }
     }

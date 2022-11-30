@@ -44,6 +44,7 @@
   import UserSelectList from "./shared/UserSelectList.vue";
   import TreeItem from './shared/TreeItem.vue'
   import ObjectHelper from "@/helpers/object.helper";
+  import UserTypes from "../../../shared/usertypes";
 
   export default {
     name: "courses-list",
@@ -62,6 +63,7 @@
         modelTypes: ModelTypes,
         selectedModelType: null,
         selectedUserType: null,
+        thisUserAccess : null,
       };
     },
     methods: {
@@ -99,15 +101,65 @@
       },
 
       retrieveCourses() {
+        if(this.thisUserAccess == UserTypes.CourseLeader.Id){
+          console.log("Test");
+        }
         ModelDataService.CourseDataService.findByName(this.name)
           .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Course))
           .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
       },
 
       retrieveModules() {
-        ModelDataService.ModuleDataService.findByName(this.name)
-          .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Module))
-          .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
+
+        switch (this.thisUserAccess) {
+          case UserTypes.Tutor.Id:
+                      console.log("user is tutor");
+                      ModelDataService.ModuleDataService.findByName(this.name)
+                      .then(response => 
+                      {
+                        let res = JSON.parse(response.data);
+                        res.forEach(x => {
+                          if(x.Tutors){
+                            x.Tutors.forEach(y =>{
+                              if(ModelDataService.HTTPCommonDataService.getApplicationUser().Id == y.Id){
+                                console.log("If hit");
+                                this.treeViewData = this.createTreeViewData(x, ModelTypes.Module)
+                              }
+                            })
+                          }
+                        });
+                      })
+                      
+                      .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
+            break;
+
+          case UserTypes.ModuleLeader.Id:
+                      ModelDataService.ModuleDataService.findByName(this.name)
+                      .then(response => 
+                      {
+                        let res = JSON.parse(response.data);
+                        res.forEach(x => {
+                          if(x.ModuleLeader){
+                              if(ModelDataService.HTTPCommonDataService.getApplicationUser().Id == x.ModuleLeader){
+                                this.treeViewData = this.createTreeViewData(x, ModelTypes.Module)
+                              }
+                            
+                          }
+                        });
+                      })
+                      
+                      .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
+              break;
+          default:
+                console.log("else hit");
+                ModelDataService.ModuleDataService.findByName(this.name)
+                .then(response => this.treeViewData = this.createTreeViewData(JSON.parse(response.data), ModelTypes.Module))
+                .catch(error => ModelDataService.ErrorHandlerService.handlerError(error));
+
+
+            break;
+        }
+
       },
 
       retrieveSessions() {
@@ -227,7 +279,21 @@
       },
     },
     mounted() {
-        this.retrieveCourses();
+      this.thisUserAccess = ModelDataService.HTTPCommonDataService.getApplicationUser().UserTypeId;
+
+      switch (this.thisUserAccess) {
+        case UserTypes.Tutor.Id:
+            this.retrieveModules();
+          break;
+        case UserTypes.ModuleLeader.Id:
+            this.retrieveModules();
+          break;
+      
+        default:
+            this.retrieveCourses();
+          break;
+      }
+      
     }
   };
 </script>
