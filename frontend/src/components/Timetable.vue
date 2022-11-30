@@ -3,8 +3,8 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import httpCommonDataService from "@/services/http-common.data.service";
 import ModelDataService from "@/services/models.data.service";
+import UserTypes from '../../../shared/usertypes';
 
 export default {
   name: "app",
@@ -21,15 +21,34 @@ export default {
         weekends: false,
         eventClick: this.onEventClick,
         events: [],
+        ApplicationUser: null,
       },
     };
   },
   methods: {
-    populateCalendar() {
-      try {
-        ModelDataService.SessionDataService.getSessionForUser().then((response) => {
-          let sessions = JSON.parse(response.data);
-          sessions.map((session) => {
+    populateCalendar() 
+    {
+      if (this.ApplicationUser.UserTypeId === UserTypes.Student.Id) 
+      {
+        ModelDataService.SessionDataService.getSessionForUser()
+        .then(response => this.createEvents(JSON.parse(response.data)))
+        .catch(error => ModelDataService.ErrorHandlerService(error));
+      }
+      else if (this.ApplicationUser.UserTypeId === UserTypes.Tutor.Id) 
+      {
+        ModelDataService.ModuleDataService.getAll().then(response => 
+        {
+          var modules = JSON.parse(response.data)
+          var sessions = [];
+          modules = modules.filter(module => module.Tutors.find(tutor => tutor.Id === this.ApplicationUser.Id));
+          modules.map(module => module.Sessions.map(session => sessions.push(session)));
+          this.createEvents(sessions);
+        })
+        .catch(error => ModelDataService.ErrorHandlerService(error));
+      }
+    },
+    createEvents(sessions) {
+      sessions.map((session) => {
             let event = {
               id : session.Id,
               title: session.Title ?? "N/A",
@@ -38,10 +57,6 @@ export default {
             };
             this.calendarOptions.events.push(event);
           });
-        });
-      } catch (error) {
-        ModelDataService.ErrorHandlerService(error);
-      }
     },
     getAllSessions(userId) {
       let sessions = ModelDataService.SessionDataService
@@ -64,10 +79,10 @@ export default {
     },
     onEventClick(eventClickInfo) {
       this.$router.push(`/sessions/${eventClickInfo.event.id}`)
-      console.log(eventClickInfo);
     },
   },
   mounted() {
+    this.ApplicationUser = ModelDataService.HTTPCommonDataService.getApplicationUser(); 
     this.populateCalendar();
   },
 };

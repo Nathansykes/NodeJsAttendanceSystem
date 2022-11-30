@@ -1,6 +1,5 @@
 import { actions, roles } from "../../constants";
 
-
 const mappings = new Map();
 
 mappings.set(actions.UPLOAD_FILE, [roles.COURSE_LEADER]);
@@ -11,6 +10,7 @@ mappings.set(actions.EDIT_COURSE, [roles.COURSE_LEADER]);
 mappings.set(actions.EDIT_MODULE, [roles.COURSE_LEADER]);
 mappings.set(actions.EDIT_SESSION, [roles.COURSE_LEADER, roles.MODULE_LEADER]);
 mappings.set(actions.ADD_STUDENT_TO_SESSION, [roles.COURSE_LEADER, roles.MODULE_LEADER, roles.TUTOR])
+mappings.set(actions.MARK_ATTENDANCE, [roles.TUTOR])
 
 class permissionsService{
     hasPermission(userTypeId, action) {
