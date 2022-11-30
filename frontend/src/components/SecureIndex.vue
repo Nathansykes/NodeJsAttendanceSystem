@@ -19,10 +19,6 @@
             <router-link to="/reporting" class="nav-link">Reporting</router-link>
           </li>
 
-          <li v-if="this.showAdvisorViewLink()" class="nav-item">
-            <router-link to="/advisor" class="nav-link">Advisor View</router-link>
-          </li>
-
         </div>
         <div class="navbar-nav mr-auto">
           <li id="currUser" class="nav-item">
@@ -71,10 +67,6 @@ export default {
     showUploadFileDropDown()
     {
       return permissions.hasPermission(this.currentUser.UserTypeId, actions.UPLOAD_FILE);
-    },
-    showAdvisorViewLink()
-    {
-      return permissions.hasPermission(this.currentUser.UserTypeId, actions.VIEW_ADVISOR_VIEW);
     },
     showReportLink()
     {

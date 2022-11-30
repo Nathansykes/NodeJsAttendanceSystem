@@ -14,12 +14,6 @@ const routes = [
         component: () => import("./components/Login.vue")
     },
     {
-        path:"/advisor",
-        alias:"/advisor",
-        name:"Advisor Page",
-        component: () => import("./components/AdvisorView.vue")
-    },
-    {
         path: "/",
         alias: "/secure",
         name: "Secure Index",
