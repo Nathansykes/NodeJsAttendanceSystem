@@ -188,7 +188,7 @@ function validateUserData(fileData) {
 function handleFile(file) {
     try {
         var str = file.data.toString('utf8');
-        var rows = str.split('\r\n');
+        var rows = str.split("\r\n").join("|").split("\n").join("|").split("\r").join("|").split("|");
         var headers = rows[0].split(',');
         var data = [];
         var dataRows = rows.slice(1).filter(x => x != "");//remove the headers and any empty rows

@@ -3,6 +3,8 @@ const ErrorHandler = require("../handlers/error.handler");
 const Course = require("../models/course.model");
 const CourseDAO = require("../DAO/course.DAO");
 const Generic = require("../generic/functions");
+const Auth = require("../authentication");
+const UserTypes = require("../../shared/userTypes");
  
 // Create and Save a new Course
 exports.create = async (req, res) => {
@@ -30,21 +32,69 @@ function createCourse(body) {
   return course;
 }
 
-var populateArgs = { 
-  path: 'Modules',
-  populate: {
-    path: 'Sessions',
-    model: 'Session',
-    populate: [{
-      path: 'Students',
-      model: 'Student',
-    },
-    {
-      path: 'AttendanceRecords',
-      model: 'AttendanceRecord',
-    }]
-  } 
+function GetPopulateArgs(userTypeId, userId){
+  var populateArgs = {};
+  switch (userTypeId){
+    case UserTypes.ModuleLeader.Id:
+      populateArgs = {
+        path: 'Modules',
+        model: 'Module',
+        match: { ModuleLeader: userId },
+        populate: {
+          path: 'Sessions',
+          model: 'Session',
+          populate: [{
+            path: 'Students',
+            model: 'Student',
+          },
+          {
+            path: 'AttendanceRecords',
+            model: 'AttendanceRecord',
+          }]
+        }
+      }
+      break;
+    case UserTypes.Tutor.Id:
+      populateArgs = {
+        path: 'Modules',
+        model: 'Module',
+        match: { Tutors: userId },
+        populate: {
+          path: 'Sessions',
+          model: 'Session',
+          populate: [{
+            path: 'Students',
+            model: 'Student',
+          },
+          {
+            path: 'AttendanceRecords',
+            model: 'AttendanceRecord',
+          }]
+        }
+      }
+      break;
+    default:
+      populateArgs = {
+        path: 'Modules',
+        model: 'Module',
+        populate: {
+          path: 'Sessions',
+          model: 'Session',
+          populate: [{
+            path: 'Students',
+            model: 'Student',
+          },
+          {
+            path: 'AttendanceRecords',
+            model: 'AttendanceRecord',
+          }]
+        }
+      }
+      break;
+  }
+  return populateArgs;
 }
+
  
 // Retrieve all Courses from the database.
 exports.findAll = async (req, res) => {
@@ -53,9 +103,17 @@ exports.findAll = async (req, res) => {
     filter.Title = req.query.Title;
   }
 
+  var applicationUser = Auth.getApplicationUser(req);      
+  var populateArgs = GetPopulateArgs(applicationUser.UserTypeId, applicationUser.Id);
+
+  if(applicationUser.UserTypeId == UserTypes.CourseLeader.Id){
+    filter.CourseLeader = applicationUser.Id;
+  }
+  
   try{
     var data = await CourseDAO.tryGet(filter, populateArgs);
-    res.json(JSON.stringify(data));
+    var returnData = data.filter(x => x.Modules.length > 0);
+    res.json(JSON.stringify(returnData));
   }
   catch(error){
     ErrorHandler.handleError(res, error);
@@ -65,6 +123,9 @@ exports.findAll = async (req, res) => {
 // Find a single Course with an id
 exports.findOne = async (req, res) => {
   try{
+
+    var applicationUser = Auth.getApplicationUser(req);      
+    var populateArgs = GetPopulateArgs(applicationUser.UserTypeId, applicationUser.Id);
     const ids = (req.params.id).replace(/ /g, '').split(",");
     var data = await CourseDAO.tryGet({ _id: { $in: ids } }, populateArgs);
     res.json(JSON.stringify(data));
