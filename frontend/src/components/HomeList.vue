@@ -168,10 +168,21 @@
           {
             model[i].Type = type;
 
+            let displayName = "";
+            if(model[i].Title){
+              displayName = model[i].Title;
+              if(model[i].DateAndTime){
+                displayName = new Date((model[i]).DateAndTime).toLocaleDateString() + ' - ' + displayName;
+              }
+            }
+            else{
+              displayName = (`${model[i].FirstName} ${model[i].LastName}`);
+            }
+
             let item =
             {
               id : model[i].Id,
-              name : model[i].Title || (`${model[i].FirstName} ${model[i].LastName}`),
+              name :  displayName,
               routerLink : `${type.PathName}/${model[i].Id}`,
             };
             if (type === ModelTypes.Session) 
@@ -186,13 +197,13 @@
 
               if (childType === ModelTypes.Session)
               {
-                var TitleSessions = Array.from(new Set(item.children.map(item => item.name)));
-                var sessions = []
+                let TitleSessions = Array.from(new Set(item.children.map(item => item.name)));
+                let sessions = []
 
                 TitleSessions.map(title => {
 
-                  var filterChildren = item.children.filter(child => child.name === title);
-                  var sortChildren = filterChildren.sort((a, b) => a.date - b.date);
+                  let filterChildren = item.children.filter(child => child.name === title);
+                  let sortChildren = filterChildren.sort((a, b) => a.date - b.date);
                   sortChildren.map(child => child.name = ` ${child.date.toLocaleDateString()}`)
 
                   sessions.push({

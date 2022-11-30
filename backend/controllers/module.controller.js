@@ -3,6 +3,8 @@ const ErrorHandler = require("../handlers/error.handler");
 const Module = require("../models/module.model");
 const ModuleDAO = require("../DAO/module.DAO");
 const Generic = require("../generic/functions");
+var UserType = require("../../shared/userTypes");
+const Auth = requires("../authentication")
 
 // Create and Save a new Module
 exports.create = async (req, res) => {
@@ -56,6 +58,14 @@ exports.findAll = async (req, res) => {
     filter.Title = req.query.Title;
   }
   try {
+    var appUser = Auth.getApplicationUser(req);
+    if(appUser.UserTypeId == UserType.ModuleLeader.Id){
+      filter.ModuleLeader = appUser.Id;
+    }
+    if(appUser.UserTypeId == UserType.Tutor.Id){
+      filter.Tutors = appUser.Id;
+    }
+
     var data = await ModuleDAO.tryGet(filter, populateArgs, res);
     res.json(JSON.stringify(data));
   }
