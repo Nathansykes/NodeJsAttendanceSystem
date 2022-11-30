@@ -173,7 +173,7 @@
             let displayName = "";
             if(model[i].Title){
               displayName = model[i].Title;
-              if(model[i].DateAndTime){
+              if(model[i].DateAndTime && this.selectedModelType === ModelTypes.Session.Id.toString()){
                 displayName = new Date((model[i]).DateAndTime).toLocaleDateString() + ' - ' + displayName;
               }
             }
