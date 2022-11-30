@@ -108,13 +108,13 @@ export default {
     },
     methods: {
         GetReport() {
-            if (this.studentId) {
-                ReportingDataService.getStudentReport(this.studentId, this.moduleId, this.courseId)
+            if (this.AdvisorView && (!(this.courseId) && !(this.studentId))) {
+                ReportingDataService.getAdvisorReport(this.ApplicationUser.Id)
                     .then(response => this.setReport(response.data))
                     .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
-            if (this.AdvisorView && (!(this.courseId) && !(this.studentId))) {
-                ReportingDataService.getAdvisorReport(this.ApplicationUser.Id)
+            else if (this.studentId) {
+                ReportingDataService.getStudentReport(this.studentId, this.moduleId, this.courseId)
                     .then(response => this.setReport(response.data))
                     .catch(error => ModelDataService.ErrorHandlerService.handleError(error));
             }
